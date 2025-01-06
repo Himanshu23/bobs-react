@@ -4,12 +4,12 @@ import DishSlider from "../components/dish-slider";
 
 const LandingPage = () => {
   // Google Analytics Tracking
-  React.useEffect(() => {
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { window.dataLayer.push(arguments); }
-    gtag("js", new Date());
-    gtag("config", "G-2PPH12EZSP", { page_path: "/instagram-landing" });
-  }, []);
+  // React.useEffect(() => {
+  //   window.dataLayer = window.dataLayer || [];
+  //   function gtag() { window.dataLayer.push(arguments); }
+  //   gtag("js", new Date());
+  //   gtag("config", "G-2PPH12EZSP", { page_path: "/instagram-landing" });
+  // }, []);
 
   return (
     <Box
@@ -41,9 +41,9 @@ const LandingPage = () => {
           href="https://wa.me/919643310092"
           target="_blank"
           rel="noopener noreferrer"
-          onClick={() =>
-            gtag("event", "click", { event_category: "instagram_promotion", event_label: "whatsapp" })
-          }
+          // onClick={() =>
+          //   gtag("event", "click", { event_category: "instagram_promotion", event_label: "whatsapp" })
+          // }
           sx={{
             display: "flex",
             alignItems: "center",
@@ -114,9 +114,9 @@ const LandingPage = () => {
             href="https://link.zomato.com/xqzv/rshare?id=9438730630563d53"
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() =>
-              gtag("event", "click", { event_category: "instagram_promotion", event_label: "zomato" })
-            }
+            // onClick={() =>
+            //   gtag("event", "click", { event_category: "instagram_promotion", event_label: "zomato" })
+            // }
             sx={{ background: "transparent", padding: 0 }}
           >
             <Box component="img" src="/imgs/zomato-button.jpg" alt="Zomato" sx={{ width: 120 }} />
@@ -127,9 +127,9 @@ const LandingPage = () => {
             href="https://www.swiggy.com/direct/brand/48321?source=swiggy-direct&subSource=instagram"
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() =>
-              gtag("event", "click", { event_category: "instagram_promotion", event_label: "swiggy" })
-            }
+            // onClick={() =>
+            //   gtag("event", "click", { event_category: "instagram_promotion", event_label: "swiggy" })
+            // }
             sx={{ background: "transparent", padding: 0 }}
           >
             <Box component="img" src="/imgs/swiggy-button.jpg" alt="Swiggy" sx={{ width: 120 }} />
