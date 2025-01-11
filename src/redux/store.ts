@@ -1,15 +1,7 @@
 import { configureStore, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import foodReducer from './foodSlice';
+import { CartItem, ItemOptions } from '../types';
 
-// Define cart item type
-interface CartItem {
-  id: string;
-  name: string;
-  price: number;
-  image: string;
-  quantity: number;
-  option: string;
-}
 
 // Define cart state type
 interface CartState {
@@ -35,21 +27,24 @@ const cartSlice = createSlice({
       if (existingItem) {
         existingItem.quantity += quantity;
       } else {
-        state.items.push({ id, name, price, image, quantity, option });
+        state.items.push({
+          id, name, price, image, quantity, option,
+          description: '',
+        });
       }
 
       state.totalItems += quantity;
     },
-    updateQuantity: (state, action: PayloadAction<{ id: string; option: string; quantity: number }>) => {
+    updateQuantity: (state, action: PayloadAction<{ id: string; option: ItemOptions; quantity: number }>) => {
       const { id, option, quantity } = action.payload;
-      const item = state.items.find(item => item.id === id && item.option === option);
+      const item = state.items.find(item => item.id === id && item.option === option.base);
 
       if (item) {
         state.totalItems += quantity - item.quantity;
         item.quantity = quantity;
       }
     },
-    removeFromCart: (state, action: PayloadAction<{ id: string; option: string }>) => {
+    removeFromCart: (state, action: PayloadAction<{ id: string; option: ItemOptions }>) => {
       const { id, option } = action.payload;
       const itemIndex = state.items.findIndex(item => item.id === id && item.option === option);
 

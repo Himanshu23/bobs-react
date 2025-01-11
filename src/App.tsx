@@ -22,7 +22,6 @@ function App() {
         <Route path="/bobs/foodList" element={<FoodList  />} />
         <Route path="/" element={<FoodList  />} />
         <Route path="/cart" element={<CartPage  />} />
-        <Route path="/product" element={<ProductDetail  />}/>
       </Routes>
     </Router>
   );
