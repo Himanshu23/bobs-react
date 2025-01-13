@@ -2,6 +2,9 @@ import React from "react";
 import { Box, Typography, Button, Rating } from "@mui/material";
 import { CheckCircle, Cancel } from "@mui/icons-material"; // Veg & Non-Veg Icons
 import { FoodItem } from "../types";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
+import { QuantityButtons } from "./quantityButton";
 
 interface FoodItemCardProps {
   item: FoodItem;
@@ -9,6 +12,8 @@ interface FoodItemCardProps {
 }
 
 const FoodItemCard = ({ item, onAddToCart }: FoodItemCardProps) => {
+   const cartItems = useSelector((state: RootState) => state.cart.items); 
+   const cartItem = cartItems.find(el => el.id === item.id);
   return (
     <Box
       sx={{
@@ -55,9 +60,9 @@ const FoodItemCard = ({ item, onAddToCart }: FoodItemCardProps) => {
           )}
         </Box>
 
-        <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={() => onAddToCart(item)}>
+        {cartItem ? <Box sx={{width: "50%"}}><QuantityButtons product={item}></QuantityButtons></Box>: <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={() => onAddToCart(item)}>
           Add to Cart
-        </Button>
+        </Button>} 
       </Box>
 
       <Box
