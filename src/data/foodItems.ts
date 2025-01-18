@@ -18,7 +18,7 @@ export default {
             size: {
               "Quarter": 75,
               "Half": 150,
-              "full": 300
+              "Full": 300
             },
           }
       },

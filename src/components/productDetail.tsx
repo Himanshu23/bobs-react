@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../redux/store";
 import {
@@ -18,7 +18,7 @@ import {
   Paper,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { FoodItem } from "../types";
+import { FoodItem, ItemOptions } from "../types";
 
 interface ProductDetailModalProps {
   open: boolean;
@@ -26,25 +26,39 @@ interface ProductDetailModalProps {
   product: FoodItem;
 }
 
-const ProductDetailModal = ({ open, onClose, product }: any) => {
+const ProductDetailModal = ({
+  open,
+  onClose,
+  product,
+}: ProductDetailModalProps) => {
   const dispatch = useDispatch();
 
   const [quantity, setQuantity] = useState(1);
-  const [selectedSize, setSelectedSize] = useState("Full");
-  const [selectedType, setSelectedType] = useState("");
-  const [selectedBase, setSelectedBase] = useState("");
+  const [selectedSize, setSelectedSize] = useState<ItemOptions["size"]>("Full");
+  const [selectedType, setSelectedType] =  useState<ItemOptions["style"]>("Gravy");
+  const [selectedBase, setSelectedBase] =  useState<ItemOptions["base"]>("Roomali");
+
+  const total = useMemo((() => (selectedSize ? product.priceOptions.size[selectedSize] : 0) +
+  (selectedType && product.priceOptions?.type?.[selectedType]
+    ? product.priceOptions?.type?.[selectedType]
+    : 0) +
+  (selectedBase && product.priceOptions?.base?.[selectedBase]
+    ? product.priceOptions?.base?.[selectedBase]
+    : 0) ), [product, selectedType, selectedSize, selectedBase])
 
   const handleAddToCart = () => {
     dispatch(
       addToCart({
         id: product.id,
         name: product.name,
-        // type: selectedType,
-        // base: selectedBase,
         price:
           (selectedSize ? product.priceOptions.size[selectedSize] : 0) +
-          (selectedType ? product.priceOptions.type[selectedType] : 0) +
-          (selectedBase ? product.priceOptions.base[selectedBase] : 0),
+          (selectedType && product.priceOptions?.type?.[selectedType]
+            ? product.priceOptions?.type?.[selectedType]
+            : 0) +
+          (selectedBase && product.priceOptions?.base?.[selectedBase]
+            ? product.priceOptions?.base?.[selectedBase]
+            : 0),
         image: product.image,
         quantity,
         option: {
@@ -108,7 +122,7 @@ const ProductDetailModal = ({ open, onClose, product }: any) => {
                 <FormControl component="fieldset">
                   <RadioGroup
                     value={selectedSize}
-                    onChange={(e) => setSelectedSize(e.target.value)}
+                    onChange={(e) => setSelectedSize(e.target.value as ItemOptions['size'])}
                   >
                     {Object.entries(product.priceOptions.size).map(
                       ([size, price]) => (
@@ -133,7 +147,7 @@ const ProductDetailModal = ({ open, onClose, product }: any) => {
                 <Typography variant="h6">Select Type</Typography>
                 <Select
                   value={selectedType}
-                  onChange={(e) => setSelectedType(e.target.value)}
+                  onChange={(e) => setSelectedType(e.target.value as ItemOptions["style"])}
                   fullWidth
                 >
                   {Object.entries(product.priceOptions.type).map(
@@ -153,19 +167,23 @@ const ProductDetailModal = ({ open, onClose, product }: any) => {
             <Card>
               <CardContent>
                 <Typography variant="h6">Select Base</Typography>
-                <Select
-                  value={selectedBase}
-                  onChange={(e) => setSelectedBase(e.target.value)}
-                  fullWidth
-                >
-                  {Object.entries(product.priceOptions.base).map(
-                    ([base, price]) => (
-                      <MenuItem key={base} value={base}>
-                        {`${base} - ₹${price}`}
-                      </MenuItem>
-                    )
-                  )}
-                </Select>
+                <FormControl component="fieldset">
+                  <RadioGroup
+                    value={selectedBase}
+                    onChange={(e) => setSelectedBase(e.target.value as ItemOptions["base"])}
+                  >
+                    {Object.entries(product.priceOptions.base).map(
+                      ([base, price]) => (
+                        <FormControlLabel
+                          key={base}
+                          value={base}
+                          control={<Radio />}
+                          label={`${base} - ₹${price}`}
+                        />
+                      )
+                    )}
+                  </RadioGroup>
+                </FormControl>
               </CardContent>
             </Card>
           )}
@@ -240,7 +258,7 @@ const ProductDetailModal = ({ open, onClose, product }: any) => {
                 (product.priceOptions.base && !selectedBase)
               }
             >
-              Add to Cart
+              Add Item &#8377;{total * quantity}
             </Button>
           </Box>
         </Paper>

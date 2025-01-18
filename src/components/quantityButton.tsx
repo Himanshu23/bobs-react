@@ -2,20 +2,22 @@ import {
   Card,
   CardContent,
   Typography,
-  Select,
-  MenuItem,
   Box,
   Button,
-  Paper,
 } from "@mui/material";
 import { FoodItem } from "../types";
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 
 interface QuantityButtonsProps {
   product: FoodItem;
+  onAddtoCart: (foodItem: FoodItem) => void;
 }
-export const QuantityButtons = ({ product }: QuantityButtonsProps) => {
-  const [quantity, setQuantity] = useState(1);
+export const QuantityButtons = ({ product, onAddtoCart }: QuantityButtonsProps) => {
+  const cartItems = useSelector((state: RootState) => state.cart.items);
+  const quantity = cartItems.filter(el => el.id === product.id)?.length ?? 0;
+ 
   return (
     <Card
       sx={{
@@ -37,14 +39,14 @@ export const QuantityButtons = ({ product }: QuantityButtonsProps) => {
         <Box display="flex" alignItems="center" justifyContent="center" gap={1}>
           <Button
             sx={{ minWidth: "30px", padding: "5px" }}
-            onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+            onClick={() => {}}
           >
             -
           </Button>
           <Typography sx={{ minWidth: "30px" }}>{quantity}</Typography>
           <Button
             sx={{ minWidth: "30px", padding: "5px" }}
-            onClick={() => setQuantity((q) => q + 1)}
+            onClick={() => onAddtoCart(product)}
           >
             +
           </Button>

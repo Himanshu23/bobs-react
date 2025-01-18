@@ -6,9 +6,7 @@ export interface FoodItem {
   rating: number;
   image: string;
   priceOptions: {
-    size?: {
-      [key: string]: number; // e.g., { "Full": 500, "Half": 300, "Quarter": 200 }
-    };
+    size: Record<ItemOptions["size"], number>;
     type?: {
       [key: string]: number; // e.g., { "Dry": 400, "Gravy": 450 }
     };

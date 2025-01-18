@@ -60,7 +60,8 @@ const FoodItemCard = ({ item, onAddToCart }: FoodItemCardProps) => {
           )}
         </Box>
 
-        {cartItem ? <Box sx={{width: "50%"}}><QuantityButtons product={item}></QuantityButtons></Box>: <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={() => onAddToCart(item)}>
+        {cartItem ? <Box sx={{width: "50%"}}>
+          <QuantityButtons product={item} onAddtoCart={() => onAddToCart(item)}></QuantityButtons></Box>: <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={() => onAddToCart(item)}>
           Add to Cart
         </Button>} 
       </Box>
@@ -76,7 +77,7 @@ const FoodItemCard = ({ item, onAddToCart }: FoodItemCardProps) => {
           objectFit: "cover",
         }}
       />
-    </Box>
+    </Box>    
   );
 };
 
