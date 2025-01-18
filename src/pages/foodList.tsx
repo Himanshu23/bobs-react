@@ -12,8 +12,10 @@ import QuantityUpdate from '../components/quantityUpdate';
 const FoodListPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const cartItems = useSelector((state: RootState) => state.cart.items);
-  
-  const { items, status, error } = useSelector((state: RootState) => state.food);
+
+  const { items, status, error } = useSelector(
+    (state: RootState) => state.food
+  );
   const [productDetailModal, setProductDetailModal] = useState(false);
   const [quantityUpdateModal, setQuantityUpdateModal] = useState(false);
   const [quantityUpdateItem, setquantityUpdateItem] = useState<FoodItem>();
@@ -26,19 +28,19 @@ const FoodListPage: React.FC = () => {
   }, [status, dispatch]);
 
   const handleAddToCart = (foodItem: FoodItem) => {
-    if(cartItems.find(el => el.id === foodItem.id)) {
+    if (cartItems.find((el) => el.id === foodItem.id)) {
       setQuantityUpdateModal(true);
       setquantityUpdateItem(foodItem);
     } else {
-    setProductDetailModal(true);
-    setProduct(foodItem);
+      setProductDetailModal(true);
+      setProduct(foodItem);
     }
- };
+  };
 
- const handleQuantityUpdateClose = () => {
-  setQuantityUpdateModal(false);
-  setquantityUpdateItem(undefined);
- }
+  const handleQuantityUpdateClose = () => {
+    setQuantityUpdateModal(false);
+    setquantityUpdateItem(undefined);
+  };
 
   if (status === 'loading') {
     return <CircularProgress />;
@@ -50,23 +52,39 @@ const FoodListPage: React.FC = () => {
 
   return (
     <>
-    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, justifyContent: 'center', padding: 3 }}>
-      {items.map((food: FoodItem) => (
-        <FoodItemCard  key={`list_${food.id}`} item={food} onAddToCart={handleAddToCart} />
-      ))}
-    </Box>
-    {productDetailModal && product && <ProductDetailModal
-     open={productDetailModal}
-     onClose={() => setProductDetailModal(false)}
-     product={product}
-   />}
-   {quantityUpdateModal && quantityUpdateItem &&
-    <QuantityUpdate open={quantityUpdateModal} item={quantityUpdateItem} onClose={() => handleQuantityUpdateClose()} />
-   }
-   </>
+      <Box
+        sx={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: 2,
+          justifyContent: 'center',
+          padding: 3,
+        }}
+      >
+        {items.map((food: FoodItem) => (
+          <FoodItemCard
+            key={`list_${food.id}`}
+            item={food}
+            onAddToCart={handleAddToCart}
+          />
+        ))}
+      </Box>
+      {productDetailModal && product && (
+        <ProductDetailModal
+          open={productDetailModal}
+          onClose={() => setProductDetailModal(false)}
+          product={product}
+        />
+      )}
+      {quantityUpdateModal && quantityUpdateItem && (
+        <QuantityUpdate
+          open={quantityUpdateModal}
+          item={quantityUpdateItem}
+          onClose={() => handleQuantityUpdateClose()}
+        />
+      )}
+    </>
   );
 };
 
 export default FoodListPage;
-
-

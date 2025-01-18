@@ -6,7 +6,7 @@ export interface FoodItem {
   rating: number;
   image: string;
   priceOptions: {
-    size: Record<ItemOptions["size"], number>;
+    size: Record<ItemOptions['size'], number>;
     type?: {
       [key: string]: number; // e.g., { "Dry": 400, "Gravy": 450 }
     };
@@ -18,7 +18,7 @@ export interface FoodItem {
   nowPrice?: number;
 }
 
-export interface ItemOptions{
+export interface ItemOptions {
   size: 'Full' | 'Half' | 'Quarter';
   style?: 'Gravy' | 'Dry';
   base?: 'Paratha' | 'Roomali';
@@ -53,9 +53,7 @@ export interface CartItem {
   };
 }
 
-  
-  export interface CartState {
-    items: CartItem[];
-    totalItems: number;
-  }
-  
+export interface CartState {
+  items: CartItem[];
+  totalItems: number;
+}

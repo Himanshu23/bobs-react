@@ -1,6 +1,6 @@
-import React from "react";
-import { Box, Button, Typography, Container } from "@mui/material";
-import DishSlider from "../components/dish-slider";
+import React from 'react';
+import { Box, Button, Typography, Container } from '@mui/material';
+import DishSlider from '../components/dish-slider';
 
 const LandingPage = () => {
   // Google Analytics Tracking
@@ -14,29 +14,34 @@ const LandingPage = () => {
   return (
     <Box
       sx={{
-        minHeight: "100vh",
+        minHeight: '100vh',
         backgroundImage: "url('/imgs/black-bg.jpg')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        color: "white",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "space-between",
-        overflow: "hidden",
-        paddingBottom: "20px",
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        color: 'white',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        overflow: 'hidden',
+        paddingBottom: '20px',
       }}
     >
       {/* Header */}
       <Box
         sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          width: "100%",
-          padding: "10px",
+          display: 'flex',
+          justifyContent: 'space-between',
+          width: '100%',
+          padding: '10px',
         }}
       >
-        <Box component="img" src="/imgs/logo.png" alt="Logo" sx={{ width: 150 }} />
+        <Box
+          component="img"
+          src="/imgs/logo.png"
+          alt="Logo"
+          sx={{ width: 150 }}
+        />
         <Button
           href="https://wa.me/919643310092"
           target="_blank"
@@ -45,43 +50,48 @@ const LandingPage = () => {
           //   gtag("event", "click", { event_category: "instagram_promotion", event_label: "whatsapp" })
           // }
           sx={{
-            display: "flex",
-            alignItems: "center",
-            backgroundColor: "#25d366",
-            color: "white",
-            fontSize: "16px",
-            fontWeight: "bold",
-            padding: "5px 10px",
-            borderRadius: "5px",
-            maxHeight: "40px",
-            "&:hover": { backgroundColor: "#1ebe5b" },
+            display: 'flex',
+            alignItems: 'center',
+            backgroundColor: '#25d366',
+            color: 'white',
+            fontSize: '16px',
+            fontWeight: 'bold',
+            padding: '5px 10px',
+            borderRadius: '5px',
+            maxHeight: '40px',
+            '&:hover': { backgroundColor: '#1ebe5b' },
           }}
         >
-          <Box component="img" src="/imgs/whats_app.svg" alt="WhatsApp" sx={{ width: 20, mr: 1 }} />
+          <Box
+            component="img"
+            src="/imgs/whats_app.svg"
+            alt="WhatsApp"
+            sx={{ width: 20, mr: 1 }}
+          />
           +91 9643310092
         </Button>
       </Box>
 
       <Box
         sx={{
-          position: "absolute",
+          position: 'absolute',
           top: 148,
-          left: "15%",
-          transform: "translateX(-50%)",
+          left: '15%',
+          transform: 'translateX(-50%)',
           backgroundImage: "url('/imgs/50-per-off-ribbon.png') ", // Change to your image path
-          backgroundSize: "cover",
-          backgroundRepeat: "no-repeat",
-          backgroundPosition: "center",
-          color: "white",
-          padding: "12px 24px",
-          borderRadius: "8px",
-          fontWeight: "bold",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          width: "66px", // Ensures visibility
-          height: "77px",
-          zIndex: 2
+          backgroundSize: 'cover',
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'center',
+          color: 'white',
+          padding: '12px 24px',
+          borderRadius: '8px',
+          fontWeight: 'bold',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '66px', // Ensures visibility
+          height: '77px',
+          zIndex: 2,
         }}
       />
 
@@ -104,11 +114,11 @@ const LandingPage = () => {
       /> */}
 
       {/* Order Buttons */}
-      <Container sx={{ textAlign: "center", mb: 5 }}>
-        <Typography variant="h4" sx={{ fontWeight: "bold", mb: 2 }}>
+      <Container sx={{ textAlign: 'center', mb: 5 }}>
+        <Typography variant="h4" sx={{ fontWeight: 'bold', mb: 2 }}>
           Order on
         </Typography>
-        <Box sx={{ display: "flex", justifyContent: "center", gap: 2 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
           <Button
             component="a"
             href="https://link.zomato.com/xqzv/rshare?id=9438730630563d53"
@@ -117,9 +127,14 @@ const LandingPage = () => {
             // onClick={() =>
             //   gtag("event", "click", { event_category: "instagram_promotion", event_label: "zomato" })
             // }
-            sx={{ background: "transparent", padding: 0 }}
+            sx={{ background: 'transparent', padding: 0 }}
           >
-            <Box component="img" src="/imgs/zomato-button.jpg" alt="Zomato" sx={{ width: 120 }} />
+            <Box
+              component="img"
+              src="/imgs/zomato-button.jpg"
+              alt="Zomato"
+              sx={{ width: 120 }}
+            />
           </Button>
 
           <Button
@@ -130,9 +145,14 @@ const LandingPage = () => {
             // onClick={() =>
             //   gtag("event", "click", { event_category: "instagram_promotion", event_label: "swiggy" })
             // }
-            sx={{ background: "transparent", padding: 0 }}
+            sx={{ background: 'transparent', padding: 0 }}
           >
-            <Box component="img" src="/imgs/swiggy-button.jpg" alt="Swiggy" sx={{ width: 120 }} />
+            <Box
+              component="img"
+              src="/imgs/swiggy-button.jpg"
+              alt="Swiggy"
+              sx={{ width: 120 }}
+            />
           </Button>
         </Box>
       </Container>

@@ -4,13 +4,12 @@ import CloseIcon from '@mui/icons-material/Close';
 import { FoodItem } from '../types';
 
 interface QuantityUpdateProps {
-    open: boolean;
-    item: FoodItem;
-    onClose: () => void;
+  open: boolean;
+  item: FoodItem;
+  onClose: () => void;
 }
 
-const QuantityUpdate = ({open, onClose}: QuantityUpdateProps) => {
-
+const QuantityUpdate = ({ open, onClose }: QuantityUpdateProps) => {
   return (
     <div>
       <Drawer
@@ -25,14 +24,18 @@ const QuantityUpdate = ({open, onClose}: QuantityUpdateProps) => {
           },
         }}
       >
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, padding: 2 }}>
+        <Box
+          sx={{ display: 'flex', flexDirection: 'column', gap: 2, padding: 2 }}
+        >
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Typography variant="h6">Bottom Drawer Content</Typography>
             <IconButton onClick={() => onClose()}>
               <CloseIcon />
             </IconButton>
           </Box>
-          <Typography variant="body1">This is the content inside the drawer.</Typography>
+          <Typography variant="body1">
+            This is the content inside the drawer.
+          </Typography>
           <Button variant="contained" onClick={() => onClose()}>
             Close
           </Button>

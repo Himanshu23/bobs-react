@@ -19,9 +19,9 @@ function App() {
 
       <Routes>
         <Route path="/bobs/landing" element={<LandingPage />} />
-        <Route path="/bobs/foodList" element={<FoodList  />} />
-        <Route path="/" element={<FoodList  />} />
-        <Route path="/cart" element={<CartPage  />} />
+        <Route path="/bobs/foodList" element={<FoodList />} />
+        <Route path="/" element={<FoodList />} />
+        <Route path="/cart" element={<CartPage />} />
       </Routes>
     </Router>
   );

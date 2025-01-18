@@ -14,7 +14,11 @@ const CartPage: React.FC = () => {
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const dispatch = useDispatch();
 
-  const handleQuantityChange = (id: string, option: ItemOptions, newQuantity: number) => {
+  const handleQuantityChange = (
+    id: string,
+    option: ItemOptions,
+    newQuantity: number
+  ) => {
     dispatch(updateQuantity({ id, option, quantity: newQuantity }));
   };
 
@@ -29,9 +33,20 @@ const CartPage: React.FC = () => {
         <Typography>Your cart is empty.</Typography>
       ) : (
         <List>
-          {cartItems.map(item => (
-            <ListItem key={`${item.id}-${item.option}`} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <img src={item.image} alt={item.name} style={{ width: '80px', borderRadius: '5px' }} />
+          {cartItems.map((item) => (
+            <ListItem
+              key={`${item.id}-${item.option}`}
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}
+            >
+              <img
+                src={item.image}
+                alt={item.name}
+                style={{ width: '80px', borderRadius: '5px' }}
+              />
               <Box>
                 <Typography variant="h6">{item.name}</Typography>
                 <Typography>{item.option?.size}</Typography>
@@ -40,11 +55,39 @@ const CartPage: React.FC = () => {
                 <Typography>₹{item.price}</Typography>
               </Box>
               <Box>
-                <Button onClick={() => handleQuantityChange(item.id, item.option as ItemOptions, Math.max(1, item.quantity - 1))}>-</Button>
+                <Button
+                  onClick={() =>
+                    handleQuantityChange(
+                      item.id,
+                      item.option as ItemOptions,
+                      Math.max(1, item.quantity - 1)
+                    )
+                  }
+                >
+                  -
+                </Button>
                 <Typography>{item.quantity}</Typography>
-                <Button onClick={() => handleQuantityChange(item.id, item.option as ItemOptions, item.quantity + 1)}>+</Button>
+                <Button
+                  onClick={() =>
+                    handleQuantityChange(
+                      item.id,
+                      item.option as ItemOptions,
+                      item.quantity + 1
+                    )
+                  }
+                >
+                  +
+                </Button>
               </Box>
-              <Button variant="contained" color="error" onClick={() => handleRemove(item.id, item.option as ItemOptions)}>Remove</Button>
+              <Button
+                variant="contained"
+                color="error"
+                onClick={() =>
+                  handleRemove(item.id, item.option as ItemOptions)
+                }
+              >
+                Remove
+              </Button>
             </ListItem>
           ))}
         </List>
