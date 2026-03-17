@@ -1,16 +1,9 @@
 import React from 'react';
 import { Box, Button, Typography, Container } from '@mui/material';
 import DishSlider from '../components/dish-slider';
+import { LocationOn } from '@mui/icons-material';
 
 const LandingPage = () => {
-  // Google Analytics Tracking
-  // React.useEffect(() => {
-  //   window.dataLayer = window.dataLayer || [];
-  //   function gtag() { window.dataLayer.push(arguments); }
-  //   gtag("js", new Date());
-  //   gtag("config", "G-2PPH12EZSP", { page_path: "/instagram-landing" });
-  // }, []);
-
   return (
     <Box
       sx={{
@@ -24,7 +17,6 @@ const LandingPage = () => {
         alignItems: 'center',
         justifyContent: 'space-between',
         overflow: 'hidden',
-        paddingBottom: '20px',
       }}
     >
       {/* Header */}
@@ -32,6 +24,7 @@ const LandingPage = () => {
         sx={{
           display: 'flex',
           justifyContent: 'space-between',
+          alignItems: 'center',
           width: '100%',
           padding: '10px',
         }}
@@ -40,93 +33,29 @@ const LandingPage = () => {
           component="img"
           src="/imgs/logo.png"
           alt="Logo"
-          sx={{ width: 150 }}
+          sx={{ width: 100 }}
         />
-        <Button
-          href="https://wa.me/919643310092"
-          target="_blank"
-          rel="noopener noreferrer"
-          // onClick={() =>
-          //   gtag("event", "click", { event_category: "instagram_promotion", event_label: "whatsapp" })
-          // }
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            backgroundColor: '#25d366',
-            color: 'white',
-            fontSize: '16px',
-            fontWeight: 'bold',
-            padding: '5px 10px',
-            borderRadius: '5px',
-            maxHeight: '40px',
-            '&:hover': { backgroundColor: '#1ebe5b' },
-          }}
-        >
-          <Box
-            component="img"
-            src="/imgs/whats_app.svg"
-            alt="WhatsApp"
-            sx={{ width: 20, mr: 1 }}
-          />
-          +91 9643310092
-        </Button>
       </Box>
 
+      {/* Dish Slider */}
       <Box
-        sx={{
-          position: 'absolute',
-          top: 148,
-          left: '15%',
-          transform: 'translateX(-50%)',
-          backgroundImage: "url('/imgs/50-per-off-ribbon.png') ", // Change to your image path
-          backgroundSize: 'cover',
-          backgroundRepeat: 'no-repeat',
-          backgroundPosition: 'center',
-          color: 'white',
-          padding: '12px 24px',
-          borderRadius: '8px',
-          fontWeight: 'bold',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          width: '66px', // Ensures visibility
-          height: '77px',
-          zIndex: 2,
-        }}
-      />
+        id="dishSliderContainer"
+        sx={{ flex: 1, width: '100%', mb: 1, mt: 1, maxHeight: '250px' }}
+      >
+        <DishSlider />
+      </Box>
 
-      {/* Rotating Image */}
-      <DishSlider />
-      {/* <Box
-        component="img"
-        src="/imgs/food-gif.png"
-        alt="Food Platter"
-        sx={{
-          width: 300,
-          height: 300,
-          objectFit: "cover",
-          animation: "spin 100s linear infinite",
-          "@keyframes spin": {
-            "0%": { transform: "rotate(0deg)" },
-            "100%": { transform: "rotate(360deg)" },
-          },
-        }}
-      /> */}
-
-      {/* Order Buttons */}
-      <Container sx={{ textAlign: 'center', mb: 5 }}>
+      {/* Order Section */}
+      <Container sx={{ textAlign: 'center', mb: 1 }}>
         <Typography variant="h4" sx={{ fontWeight: 'bold', mb: 2 }}>
           Order on
         </Typography>
-        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mb: 3 }}>
           <Button
             component="a"
             href="https://link.zomato.com/xqzv/rshare?id=9438730630563d53"
             target="_blank"
             rel="noopener noreferrer"
-            // onClick={() =>
-            //   gtag("event", "click", { event_category: "instagram_promotion", event_label: "zomato" })
-            // }
             sx={{ background: 'transparent', padding: 0 }}
           >
             <Box
@@ -142,9 +71,6 @@ const LandingPage = () => {
             href="https://www.swiggy.com/direct/brand/48321?source=swiggy-direct&subSource=instagram"
             target="_blank"
             rel="noopener noreferrer"
-            // onClick={() =>
-            //   gtag("event", "click", { event_category: "instagram_promotion", event_label: "swiggy" })
-            // }
             sx={{ background: 'transparent', padding: 0 }}
           >
             <Box
@@ -155,7 +81,70 @@ const LandingPage = () => {
             />
           </Button>
         </Box>
+
+        {/* WhatsApp Section */}
+        <Typography
+          variant="h6"
+          sx={{ fontWeight: 'bold', mb: 1, color: '#FFFFFF' }}
+        >
+          For Better Deals Connect
+        </Typography>
+        <Button
+          href="https://wa.me/919643310092"
+          target="_blank"
+          rel="noopener noreferrer"
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: '#25d366',
+            color: 'white',
+            fontSize: '16px',
+            fontWeight: 'bold',
+            padding: '8px 16px',
+            borderRadius: '5px',
+            animation: 'pulse 2.5s infinite',
+            '&:hover': { backgroundColor: '#1ebe5b' },
+            '@keyframes pulse': {
+              '0%': { transform: 'scale(1)' },
+              '50%': { transform: 'scale(1.05)' },
+              '100%': { transform: 'scale(1)' },
+            },
+          }}
+        >
+          <Box
+            component="img"
+            src="/imgs/whats_app.svg"
+            alt="WhatsApp"
+            sx={{ width: 20, mr: 1 }}
+          />
+          +91 9643310092
+        </Button>
       </Container>
+
+      {/* Footer */}
+      <Box
+        component="footer"
+        sx={{
+          width: '100%',
+          textAlign: 'left',
+        }}
+      >
+        <Typography
+          variant="body1"
+          sx={{
+            color: '#fff',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: 1,
+            fontSize: '14px',
+          }}
+        >
+          <LocationOn color="primary" />
+          Shop No 66, Habitat 78, Sector 78 Faridabad, 121004
+        </Typography>
+      </Box>
     </Box>
   );
 };

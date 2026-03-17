@@ -1,19 +1,17 @@
-import React from 'react';
-import { Box, Typography, Button, Rating } from '@mui/material';
-import { CheckCircle, Cancel } from '@mui/icons-material'; // Veg & Non-Veg Icons
-import { FoodItem } from '../types';
+import { Box, Typography, Button, Rating, Badge } from '@mui/material';
+import { CircleSharp } from '@mui/icons-material'; // Veg & Non-Veg Icons
+import { CartActions, FoodItem, ItemOptions } from '../../types';
 import { useSelector } from 'react-redux';
-import { RootState } from '../redux/store';
-import { QuantityButtons } from './quantityButton';
+import { selectProductTotalQuantity } from '../../redux/selectors';
 
 interface FoodItemCardProps {
   item: FoodItem;
-  onAddToCart: (item: FoodItem) => void;
+  handleCart: (id: string, action: CartActions, option?: ItemOptions) => void;
 }
 
-const FoodItemCard = ({ item, onAddToCart }: FoodItemCardProps) => {
-  const cartItems = useSelector((state: RootState) => state.cart.items);
-  const cartItem = cartItems.find((el) => el.id === item.id);
+const FoodItemCard = ({ item, handleCart }: FoodItemCardProps) => {
+  const totalQuantity = useSelector(selectProductTotalQuantity(item.id));
+
   return (
     <Box
       sx={{
@@ -31,9 +29,9 @@ const FoodItemCard = ({ item, onAddToCart }: FoodItemCardProps) => {
       <Box sx={{ flex: 1 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           {item.veg ? (
-            <CheckCircle sx={{ color: 'green' }} />
+            <CircleSharp sx={{ color: 'green' }} />
           ) : (
-            <Cancel sx={{ color: 'red' }} />
+            <CircleSharp sx={{ color: 'red' }} />
           )}
           <Typography variant="body1" fontWeight="bold">
             {item.name}
@@ -66,19 +64,33 @@ const FoodItemCard = ({ item, onAddToCart }: FoodItemCardProps) => {
           )}
         </Box>
 
-        {cartItem ? (
-          <Box sx={{ width: '50%' }}>
-            <QuantityButtons
-              product={item}
-              onAddtoCart={() => onAddToCart(item)}
-            ></QuantityButtons>
-          </Box>
+        {totalQuantity > 0 ? (
+          <Badge
+            badgeContent={totalQuantity}
+            color="primary"
+            sx={{
+              '& .MuiBadge-badge': {
+                right: -3,
+                top: 13,
+                fontSize: '12px',
+              },
+            }}
+          >
+            <Button
+              variant="contained"
+              color="primary"
+              sx={{ mt: 2, textTransform: 'none' }}
+              onClick={() => handleCart(item.id, 'Add')}
+            >
+              View Cart Items
+            </Button>
+          </Badge>
         ) : (
           <Button
             variant="contained"
             color="primary"
             sx={{ mt: 2 }}
-            onClick={() => onAddToCart(item)}
+            onClick={() => handleCart(item.id, 'Add')}
           >
             Add to Cart
           </Button>

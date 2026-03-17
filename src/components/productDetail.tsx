@@ -1,6 +1,11 @@
 import React, { useMemo, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { addToCart } from '../redux/store';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  addToCart,
+  removeFromCart,
+  updateQuantity,
+  RootState,
+} from '../redux/store';
 import {
   Box,
   Button,
@@ -16,9 +21,15 @@ import {
   Radio,
   RadioGroup,
   Paper,
+  Divider,
+  List,
+  ListItem,
+  ListItemText,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { FoodItem, ItemOptions } from '../types';
+import { createCartItem } from '../utils/cartUtils';
 
 interface ProductDetailModalProps {
   open: boolean;
@@ -32,17 +43,27 @@ const ProductDetailModal = ({
   product,
 }: ProductDetailModalProps) => {
   const dispatch = useDispatch();
+  const cartItems = useSelector((state: RootState) => state.cart.items);
 
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState<ItemOptions['size']>('Full');
-  const [selectedType, setSelectedType] =
-    useState<ItemOptions['style']>('Gravy');
-  const [selectedBase, setSelectedBase] =
-    useState<ItemOptions['base']>('Roomali');
+  const [selectedType, setSelectedType] = useState<ItemOptions['style']>();
+  const [selectedBase, setSelectedBase] = useState<ItemOptions['base']>();
+
+  // Get all variants of this product in the cart
+  const variants = cartItems.filter((item) => item.id === product.id);
+
+  const formatVariant = (option: ItemOptions): string => {
+    const parts = [];
+    if (option.size) parts.push(`Size: ${option.size}`);
+    if (option.style) parts.push(`Style: ${option.style}`);
+    if (option.base) parts.push(`Base: ${option.base}`);
+    return parts.length > 0 ? parts.join(' • ') : 'Default';
+  };
 
   const total = useMemo(
     () =>
-      (selectedSize ? product.priceOptions.size[selectedSize] : 0) +
+      (selectedSize ? (product.priceOptions.size?.[selectedSize] ?? 0) : 0) +
       (selectedType && product.priceOptions?.type?.[selectedType]
         ? product.priceOptions?.type?.[selectedType]
         : 0) +
@@ -53,28 +74,30 @@ const ProductDetailModal = ({
   );
 
   const handleAddToCart = () => {
+    const newCartItem = createCartItem(
+      product,
+      quantity,
+      selectedSize,
+      selectedType,
+      selectedBase
+    );
+    dispatch(addToCart(newCartItem));
+    setQuantity(1);
+    onClose();
+  };
+
+  const handleRemoveVariant = (variant: any) => {
+    dispatch(removeFromCart({ id: variant.id, option: variant.option }));
+  };
+
+  const handleAddMoreSameVariant = (variant: any) => {
     dispatch(
-      addToCart({
-        id: product.id,
-        name: product.name,
-        price:
-          (selectedSize ? product.priceOptions.size[selectedSize] : 0) +
-          (selectedType && product.priceOptions?.type?.[selectedType]
-            ? product.priceOptions?.type?.[selectedType]
-            : 0) +
-          (selectedBase && product.priceOptions?.base?.[selectedBase]
-            ? product.priceOptions?.base?.[selectedBase]
-            : 0),
-        image: product.image,
-        quantity,
-        option: {
-          size: 'Full',
-          style: 'Dry',
-          base: 'Paratha',
-        },
+      updateQuantity({
+        id: variant.id,
+        option: variant.option,
+        quantity: variant.quantity + 1,
       })
     );
-    onClose();
   };
 
   return (
@@ -82,7 +105,14 @@ const ProductDetailModal = ({
       anchor="bottom"
       open={open}
       onClose={onClose}
-      PaperProps={{ sx: { borderRadius: '16px 16px 0 0', padding: 2 } }}
+      PaperProps={{
+        sx: {
+          borderRadius: '16px 16px 0 0',
+          padding: 2,
+          maxHeight: '90vh',
+          overflowY: 'auto',
+        },
+      }}
     >
       <Box
         sx={{
@@ -111,6 +141,58 @@ const ProductDetailModal = ({
           style={{ width: '100%', borderRadius: '10px' }}
         />
         <Typography variant="body1">{product.description}</Typography>
+
+        {/* Show existing variants */}
+        {variants.length > 0 && (
+          <>
+            <Divider sx={{ width: '100%' }} />
+            <Typography variant="h6" sx={{ width: '100%' }}>
+              Cart Items ({variants.length})
+            </Typography>
+            <List sx={{ width: '100%' }}>
+              {variants.map((variant, idx) => (
+                <ListItem
+                  key={idx}
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    border: '1px solid #eee',
+                    borderRadius: 1,
+                    mb: 1,
+                    p: 1,
+                  }}
+                >
+                  <Box sx={{ flex: 1 }}>
+                    <ListItemText
+                      primary={formatVariant(variant.option)}
+                      secondary={`₹${variant.price} x ${variant.quantity}`}
+                    />
+                  </Box>
+                  <Box sx={{ display: 'flex', gap: 1 }}>
+                    <Button
+                      size="small"
+                      variant="outlined"
+                      onClick={() => handleAddMoreSameVariant(variant)}
+                    >
+                      +
+                    </Button>
+                    <Button
+                      size="small"
+                      variant="outlined"
+                      color="error"
+                      startIcon={<DeleteIcon />}
+                      onClick={() => handleRemoveVariant(variant)}
+                    >
+                      Remove
+                    </Button>
+                  </Box>
+                </ListItem>
+              ))}
+            </List>
+            <Divider sx={{ width: '100%' }} />
+          </>
+        )}
 
         <Box
           sx={{
@@ -205,7 +287,7 @@ const ProductDetailModal = ({
           elevation={3}
           sx={{
             width: '100%',
-            minHeight: '80px',
+            minHeight: '60px',
             padding: '2px',
             display: 'flex',
             flexDirection: 'column',
@@ -217,7 +299,7 @@ const ProductDetailModal = ({
             alignItems="center"
             justifyContent="space-between"
             gap={1}
-            sx={{ width: '100%', minHeight: '60px' }}
+            sx={{ width: '100%', minHeight: '48px' }}
           >
             <Card
               sx={{
@@ -225,7 +307,7 @@ const ProductDetailModal = ({
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                height: '55px',
+                height: '48px',
                 flexShrink: 0, // Prevents shrinking in flex container
               }}
             >
@@ -243,14 +325,14 @@ const ProductDetailModal = ({
                   gap={1}
                 >
                   <Button
-                    sx={{ minWidth: '30px', padding: '5px' }}
+                    sx={{ minWidth: '30px', padding: '2px' }}
                     onClick={() => setQuantity((q) => Math.max(1, q - 1))}
                   >
                     -
                   </Button>
                   <Typography sx={{ minWidth: '30px' }}>{quantity}</Typography>
                   <Button
-                    sx={{ minWidth: '30px', padding: '5px' }}
+                    sx={{ minWidth: '30px', padding: '2px' }}
                     onClick={() => setQuantity((q) => q + 1)}
                   >
                     +
@@ -263,7 +345,7 @@ const ProductDetailModal = ({
               variant="contained"
               color="primary"
               onClick={handleAddToCart}
-              sx={{ width: '75%', height: '60px' }}
+              sx={{ width: '75%', height: '48px' }}
               disabled={
                 (product.priceOptions.size && !selectedSize) ||
                 (product.priceOptions.type && !selectedType) ||

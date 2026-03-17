@@ -1,3 +1,6 @@
+type TypeKey = Exclude<ItemOptions['style'], undefined>;
+type BaseKey = Exclude<ItemOptions['base'], undefined>;
+
 export interface FoodItem {
   id: string;
   name: string;
@@ -5,14 +8,11 @@ export interface FoodItem {
   veg: boolean;
   rating: number;
   image: string;
+  category: string;
   priceOptions: {
-    size: Record<ItemOptions['size'], number>;
-    type?: {
-      [key: string]: number; // e.g., { "Dry": 400, "Gravy": 450 }
-    };
-    base?: {
-      [key: string]: number; // e.g., { "Paratha": 50, "Roomali": 40 }
-    };
+    size: Partial<Record<ItemOptions['size'], number>>;
+    type?: Record<TypeKey, number>;
+    base?: Record<BaseKey, number>;
   };
   wasPrice?: number;
   nowPrice?: number;
@@ -24,18 +24,21 @@ export interface ItemOptions {
   base?: 'Paratha' | 'Roomali';
 }
 
+export type CartActions = 'Add' | 'Remove';
+
 export interface CartItem {
   id: string;
   name: string;
   price: number;
   image: string;
   description?: string;
+  product: FoodItem;
   // veg: boolean;
   // rating: number;
   // wasPrice: number;
   // nowPrice: number;
   quantity: number;
-  option?: ItemOptions;
+  option: ItemOptions;
   priceOptions?: {
     size: {
       full?: number;

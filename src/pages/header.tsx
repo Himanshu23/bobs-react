@@ -11,15 +11,19 @@ interface RootState {
 }
 
 const Header: React.FC = () => {
-  // Use the correct type for useSelector hook
   const totalItems = useSelector((state: RootState) => state.cart.totalItems);
   const navigate = useNavigate();
 
   return (
     <AppBar position="static">
       <Toolbar>
-        <Typography variant="h6" sx={{ flexGrow: 1 }}>
-          Bob's
+        <Typography
+          variant="h6"
+          sx={{ flexGrow: 1 }}
+          onClick={() => navigate('/')}
+          style={{ cursor: 'pointer' }}
+        >
+          Bob&apos;s
         </Typography>
         <IconButton color="inherit" onClick={() => navigate('/cart')}>
           <Badge badgeContent={totalItems} color="error">

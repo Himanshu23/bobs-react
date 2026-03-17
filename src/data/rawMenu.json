@@ -1,0 +1,2410 @@
+[
+  {
+    "itemName": "Paneer Tikka [6 Pieces]",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 299,
+    "taxRatePercent": 5,
+    "taxAmount": 14.95,
+    "finalAmount": 313.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Veg Fried Rice",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 149,
+    "taxRatePercent": 5,
+    "taxAmount": 7.45,
+    "finalAmount": 156.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Veg Fried Rice",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 299,
+    "taxRatePercent": 5,
+    "taxAmount": 14.95,
+    "finalAmount": 313.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Cheese Garlic Naan",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 120,
+    "taxRatePercent": 5,
+    "taxAmount": 6,
+    "finalAmount": 126,
+    "status": "Live"
+  },
+  {
+    "itemName": "Paneer Butter Masala",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 259,
+    "taxRatePercent": 5,
+    "taxAmount": 12.95,
+    "finalAmount": 271.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Paneer Butter Masala",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 369,
+    "taxRatePercent": 5,
+    "taxAmount": 18.45,
+    "finalAmount": 387.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Tikka Masala",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 719,
+    "taxRatePercent": 5,
+    "taxAmount": 35.95,
+    "finalAmount": 754.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Tikka Masala",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 459,
+    "taxRatePercent": 5,
+    "taxAmount": 22.95,
+    "finalAmount": 481.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Tikka Masala",
+    "variant": "Quarter",
+    "itemTag": "Services",
+    "priceExcludingTax": 299,
+    "taxRatePercent": 5,
+    "taxAmount": 14.95,
+    "finalAmount": 313.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Laccha Paratha",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 50,
+    "taxRatePercent": 5,
+    "taxAmount": 2.5,
+    "finalAmount": 52.5,
+    "status": "Live"
+  },
+  {
+    "itemName": "Mushroom Matar",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 219,
+    "taxRatePercent": 5,
+    "taxAmount": 10.95,
+    "finalAmount": 229.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Mushroom Matar",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 349,
+    "taxRatePercent": 5,
+    "taxAmount": 17.45,
+    "finalAmount": 366.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Rumali Roti",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 25,
+    "taxRatePercent": 5,
+    "taxAmount": 1.25,
+    "finalAmount": 26.25,
+    "status": "Live"
+  },
+  {
+    "itemName": "Pasta",
+    "variant": "Red Sauce",
+    "itemTag": "Services",
+    "priceExcludingTax": 249,
+    "taxRatePercent": 5,
+    "taxAmount": 12.45,
+    "finalAmount": 261.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Pasta",
+    "variant": "White Sauce",
+    "itemTag": "Services",
+    "priceExcludingTax": 249,
+    "taxRatePercent": 5,
+    "taxAmount": 12.45,
+    "finalAmount": 261.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Hariyali Paneer Tikka Roll",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 199,
+    "taxRatePercent": 5,
+    "taxAmount": 9.95,
+    "finalAmount": 208.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Cheese Roll",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 149,
+    "taxRatePercent": 5,
+    "taxAmount": 7.45,
+    "finalAmount": 156.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Tandoori Chicken",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 349,
+    "taxRatePercent": 5,
+    "taxAmount": 17.45,
+    "finalAmount": 366.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Tandoori Chicken",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 649,
+    "taxRatePercent": 5,
+    "taxAmount": 32.45,
+    "finalAmount": 681.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Punjabi",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 459,
+    "taxRatePercent": 5,
+    "taxAmount": 22.95,
+    "finalAmount": 481.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Punjabi",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 719,
+    "taxRatePercent": 5,
+    "taxAmount": 35.95,
+    "finalAmount": 754.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Punjabi",
+    "variant": "Quarter",
+    "itemTag": "Services",
+    "priceExcludingTax": 299,
+    "taxRatePercent": 5,
+    "taxAmount": 14.95,
+    "finalAmount": 313.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Butter Naan",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 65,
+    "taxRatePercent": 5,
+    "taxAmount": 3.25,
+    "finalAmount": 68.25,
+    "status": "Live"
+  },
+  {
+    "itemName": "Dal Bukhara",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 199,
+    "taxRatePercent": 5,
+    "taxAmount": 9.95,
+    "finalAmount": 208.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Dal Bukhara",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 329,
+    "taxRatePercent": 5,
+    "taxAmount": 16.45,
+    "finalAmount": 345.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Hariyali Chicken Tikka Roll",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 229,
+    "taxRatePercent": 5,
+    "taxAmount": 11.45,
+    "finalAmount": 240.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Plain Curd",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 80,
+    "taxRatePercent": 5,
+    "taxAmount": 4,
+    "finalAmount": 84,
+    "status": "Live"
+  },
+  {
+    "itemName": "Bobs Special Mutton Keema Naan",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 249,
+    "taxRatePercent": 5,
+    "taxAmount": 12.45,
+    "finalAmount": 261.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Schezwan Noodles",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 179,
+    "taxRatePercent": 5,
+    "taxAmount": 8.95,
+    "finalAmount": 187.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Schezwan Noodles",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 319,
+    "taxRatePercent": 5,
+    "taxAmount": 15.95,
+    "finalAmount": 334.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Dal Makhani",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 199,
+    "taxRatePercent": 5,
+    "taxAmount": 9.95,
+    "finalAmount": 208.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Dal Makhani",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 329,
+    "taxRatePercent": 5,
+    "taxAmount": 16.45,
+    "finalAmount": 345.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Mushroom Kadhai",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 219,
+    "taxRatePercent": 5,
+    "taxAmount": 10.95,
+    "finalAmount": 229.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Mushroom Kadhai",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 349,
+    "taxRatePercent": 5,
+    "taxAmount": 17.45,
+    "finalAmount": 366.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Afghani Chicken",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 399,
+    "taxRatePercent": 5,
+    "taxAmount": 19.95,
+    "finalAmount": 418.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Afghani Chicken",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 699,
+    "taxRatePercent": 5,
+    "taxAmount": 34.95,
+    "finalAmount": 733.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Boondi Raita",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 120,
+    "taxRatePercent": 5,
+    "taxAmount": 6,
+    "finalAmount": 126,
+    "status": "Live"
+  },
+  {
+    "itemName": "Tandoori Butter Roti",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 35,
+    "taxRatePercent": 5,
+    "taxAmount": 1.75,
+    "finalAmount": 36.75,
+    "status": "Live"
+  },
+  {
+    "itemName": "Paneer Malai Tikka [6 Pieces]",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 349,
+    "taxRatePercent": 5,
+    "taxAmount": 17.45,
+    "finalAmount": 366.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Paneer Tawa",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 259,
+    "taxRatePercent": 5,
+    "taxAmount": 12.95,
+    "finalAmount": 271.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Paneer Tawa",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 369,
+    "taxRatePercent": 5,
+    "taxAmount": 18.45,
+    "finalAmount": 387.45,
+    "status": "Live"
+  },
+
+  {
+    "itemName": "Malai Kofta",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 269,
+    "taxRatePercent": 5,
+    "taxAmount": 13.45,
+    "finalAmount": 282.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Malai Kofta",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 389,
+    "taxRatePercent": 5,
+    "taxAmount": 19.45,
+    "finalAmount": 408.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Garlic Naan",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 80,
+    "taxRatePercent": 5,
+    "taxAmount": 4,
+    "finalAmount": 84,
+    "status": "Live"
+  },
+  {
+    "itemName": "Malai Chicken Tikka Roll",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 229,
+    "taxRatePercent": 5,
+    "taxAmount": 11.45,
+    "finalAmount": 240.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Kali Mirch Gravy",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 549,
+    "taxRatePercent": 5,
+    "taxAmount": 27.45,
+    "finalAmount": 576.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Kali Mirch Gravy",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 799,
+    "taxRatePercent": 5,
+    "taxAmount": 39.95,
+    "finalAmount": 838.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Kali Mirch Gravy",
+    "variant": "Quarter",
+    "itemTag": "Services",
+    "priceExcludingTax": 349,
+    "taxRatePercent": 5,
+    "taxAmount": 17.45,
+    "finalAmount": 366.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Bobs Special Paneer Gravy",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 289,
+    "taxRatePercent": 5,
+    "taxAmount": 14.45,
+    "finalAmount": 303.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Bobs Special Paneer Gravy",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 429,
+    "taxRatePercent": 5,
+    "taxAmount": 21.45,
+    "finalAmount": 450.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Paneer Matar",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 259,
+    "taxRatePercent": 5,
+    "taxAmount": 12.95,
+    "finalAmount": 271.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Paneer Matar",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 369,
+    "taxRatePercent": 5,
+    "taxAmount": 18.45,
+    "finalAmount": 387.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Rara",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 799,
+    "taxRatePercent": 5,
+    "taxAmount": 39.95,
+    "finalAmount": 838.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Rara",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 549,
+    "taxRatePercent": 5,
+    "taxAmount": 27.45,
+    "finalAmount": 576.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Rara",
+    "variant": "Quarter",
+    "itemTag": "Services",
+    "priceExcludingTax": 349,
+    "taxRatePercent": 5,
+    "taxAmount": 17.45,
+    "finalAmount": 366.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Steamed Rice",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 120,
+    "taxRatePercent": 5,
+    "taxAmount": 6,
+    "finalAmount": 126,
+    "status": "Live"
+  },
+  {
+    "itemName": "Gravy",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 20,
+    "taxRatePercent": 0,
+    "taxAmount": 0,
+    "finalAmount": 20,
+    "status": "Live"
+  },
+  {
+    "itemName": "Paneer Lababdar",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 259,
+    "taxRatePercent": 5,
+    "taxAmount": 12.95,
+    "finalAmount": 271.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Paneer Lababdar",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 369,
+    "taxRatePercent": 5,
+    "taxAmount": 18.45,
+    "finalAmount": 387.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Curry",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 469,
+    "taxRatePercent": 5,
+    "taxAmount": 23.45,
+    "finalAmount": 492.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Curry",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 729,
+    "taxRatePercent": 5,
+    "taxAmount": 36.45,
+    "finalAmount": 765.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Curry",
+    "variant": "Quarter",
+    "itemTag": "Services",
+    "priceExcludingTax": 299,
+    "taxRatePercent": 5,
+    "taxAmount": 14.95,
+    "finalAmount": 313.95,
+    "status": "Live"
+  },
+
+  {
+    "itemName": "Methi Paratha",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 65,
+    "taxRatePercent": 5,
+    "taxAmount": 3.25,
+    "finalAmount": 68.25,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Kali Mirch Tikka [8 Pieces]",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 399,
+    "taxRatePercent": 5,
+    "taxAmount": 19.95,
+    "finalAmount": 418.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Malai Paneer Tikka Roll",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 199,
+    "taxRatePercent": 5,
+    "taxAmount": 9.95,
+    "finalAmount": 208.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Tandoori Chicken Tikka Roll",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 199,
+    "taxRatePercent": 5,
+    "taxAmount": 9.95,
+    "finalAmount": 208.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Bobs Special Chicken Gravy",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 559,
+    "taxRatePercent": 5,
+    "taxAmount": 27.95,
+    "finalAmount": 586.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Bobs Special Chicken Gravy",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 839,
+    "taxRatePercent": 5,
+    "taxAmount": 41.95,
+    "finalAmount": 880.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Achari Paneer Tikka [6 Pieces]",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 319,
+    "taxRatePercent": 5,
+    "taxAmount": 15.95,
+    "finalAmount": 334.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Malabar Parantha",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 55,
+    "taxRatePercent": 5,
+    "taxAmount": 2.75,
+    "finalAmount": 57.75,
+    "status": "Live"
+  },
+  {
+    "itemName": "Butter Chicken Special",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 549,
+    "taxRatePercent": 5,
+    "taxAmount": 27.45,
+    "finalAmount": 576.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Butter Chicken Special",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 799,
+    "taxRatePercent": 5,
+    "taxAmount": 39.95,
+    "finalAmount": 838.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Butter Chicken Special",
+    "variant": "Quarter",
+    "itemTag": "Services",
+    "priceExcludingTax": 349,
+    "taxRatePercent": 5,
+    "taxAmount": 17.45,
+    "finalAmount": 366.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Hakka Noodles",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 159,
+    "taxRatePercent": 5,
+    "taxAmount": 7.95,
+    "finalAmount": 166.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Hakka Noodles",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 299,
+    "taxRatePercent": 5,
+    "taxAmount": 14.95,
+    "finalAmount": 313.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Schezwan Fried Rice",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 149,
+    "taxRatePercent": 5,
+    "taxAmount": 7.45,
+    "finalAmount": 156.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Schezwan Fried Rice",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 299,
+    "taxRatePercent": 5,
+    "taxAmount": 14.95,
+    "finalAmount": 313.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Veg Kolhapuri",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 169,
+    "taxRatePercent": 5,
+    "taxAmount": 8.45,
+    "finalAmount": 177.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Veg Kolhapuri",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 299,
+    "taxRatePercent": 5,
+    "taxAmount": 14.95,
+    "finalAmount": 313.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Plain Naan",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 50,
+    "taxRatePercent": 5,
+    "taxAmount": 2.5,
+    "finalAmount": 52.5,
+    "status": "Live"
+  },
+  {
+    "itemName": "Tandoori Aloo Paratha",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 80,
+    "taxRatePercent": 5,
+    "taxAmount": 4,
+    "finalAmount": 84,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chilli Paneer",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 219,
+    "taxRatePercent": 5,
+    "taxAmount": 10.95,
+    "finalAmount": 229.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chilli Paneer",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 319,
+    "taxRatePercent": 5,
+    "taxAmount": 15.95,
+    "finalAmount": 334.95,
+    "status": "Live"
+  },
+
+  {
+    "itemName": "Tandoori Paneer Tikka Roll",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 169,
+    "taxRatePercent": 5,
+    "taxAmount": 8.45,
+    "finalAmount": 177.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Mutton Seekh [2 Seekh]",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 309,
+    "taxRatePercent": 5,
+    "taxAmount": 15.45,
+    "finalAmount": 324.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Paneer Kali Mirch Gravy",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 279,
+    "taxRatePercent": 5,
+    "taxAmount": 13.95,
+    "finalAmount": 292.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Paneer Kali Mirch Gravy",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 399,
+    "taxRatePercent": 5,
+    "taxAmount": 19.95,
+    "finalAmount": 418.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Tandoori Paneer Paratha",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 120,
+    "taxRatePercent": 5,
+    "taxAmount": 6,
+    "finalAmount": 126,
+    "status": "Live"
+  },
+  {
+    "itemName": "Jeera Rice",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 140,
+    "taxRatePercent": 5,
+    "taxAmount": 7,
+    "finalAmount": 147,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chilli Potato",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 229,
+    "taxRatePercent": 5,
+    "taxAmount": 11.45,
+    "finalAmount": 240.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chilli Potato",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 169,
+    "taxRatePercent": 5,
+    "taxAmount": 8.45,
+    "finalAmount": 177.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chili Chicken",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 259,
+    "taxRatePercent": 5,
+    "taxAmount": 12.95,
+    "finalAmount": 271.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chili Chicken",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 349,
+    "taxRatePercent": 5,
+    "taxAmount": 17.45,
+    "finalAmount": 366.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Seekh [2 Seekh]",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 259,
+    "taxRatePercent": 5,
+    "taxAmount": 12.95,
+    "finalAmount": 271.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Tikka [8 Pieces]",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 379,
+    "taxRatePercent": 5,
+    "taxAmount": 18.95,
+    "finalAmount": 397.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chilli Garlic Fried Rice",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 149,
+    "taxRatePercent": 5,
+    "taxAmount": 7.45,
+    "finalAmount": 156.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chilli Garlic Fried Rice",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 299,
+    "taxRatePercent": 5,
+    "taxAmount": 14.95,
+    "finalAmount": 313.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Mix Veg Raita",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 120,
+    "taxRatePercent": 5,
+    "taxAmount": 6,
+    "finalAmount": 126,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Malai Tikka [8 Pieces]",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 399,
+    "taxRatePercent": 5,
+    "taxAmount": 19.95,
+    "finalAmount": 418.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Aloo Naan",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 100,
+    "taxRatePercent": 5,
+    "taxAmount": 5,
+    "finalAmount": 105,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chilli Garlic Noodles",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 179,
+    "taxRatePercent": 5,
+    "taxAmount": 8.95,
+    "finalAmount": 187.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chilli Garlic Noodles",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 319,
+    "taxRatePercent": 5,
+    "taxAmount": 15.95,
+    "finalAmount": 334.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Veg Cheese Burger",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 99,
+    "taxRatePercent": 5,
+    "taxAmount": 4.95,
+    "finalAmount": 103.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Malai Chaap Roll",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 169,
+    "taxRatePercent": 5,
+    "taxAmount": 8.45,
+    "finalAmount": 177.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Mushroom Masala",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 219,
+    "taxRatePercent": 5,
+    "taxAmount": 10.95,
+    "finalAmount": 229.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Mushroom Masala",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 349,
+    "taxRatePercent": 5,
+    "taxAmount": 17.45,
+    "finalAmount": 366.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Hari Mirch Paratha",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 60,
+    "taxRatePercent": 5,
+    "taxAmount": 3,
+    "finalAmount": 63,
+    "status": "Live"
+  },
+  {
+    "itemName": "Veg Manchurian",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 299,
+    "taxRatePercent": 5,
+    "taxAmount": 14.95,
+    "finalAmount": 313.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Veg Manchurian",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 199,
+    "taxRatePercent": 5,
+    "taxAmount": 9.95,
+    "finalAmount": 208.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Kadhai",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 459,
+    "taxRatePercent": 5,
+    "taxAmount": 22.95,
+    "finalAmount": 481.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Kadhai",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 719,
+    "taxRatePercent": 5,
+    "taxAmount": 35.95,
+    "finalAmount": 754.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Kadhai",
+    "variant": "Quarter",
+    "itemTag": "Services",
+    "priceExcludingTax": 299,
+    "taxRatePercent": 5,
+    "taxAmount": 14.95,
+    "finalAmount": 313.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Missi Roti",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 50,
+    "taxRatePercent": 5,
+    "taxAmount": 2.5,
+    "finalAmount": 52.5,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Cheese Burger",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 149,
+    "taxRatePercent": 5,
+    "taxAmount": 7.45,
+    "finalAmount": 156.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Lababdar",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 459,
+    "taxRatePercent": 5,
+    "taxAmount": 22.95,
+    "finalAmount": 481.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Lababdar",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 719,
+    "taxRatePercent": 5,
+    "taxAmount": 35.95,
+    "finalAmount": 754.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Lababdar",
+    "variant": "Quarter",
+    "itemTag": "Services",
+    "priceExcludingTax": 299,
+    "taxRatePercent": 5,
+    "taxAmount": 14.95,
+    "finalAmount": 313.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Tandoori Chaap",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 169,
+    "taxRatePercent": 5,
+    "taxAmount": 8.45,
+    "finalAmount": 177.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Tandoori Chaap",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 269,
+    "taxRatePercent": 5,
+    "taxAmount": 13.45,
+    "finalAmount": 282.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Mushroom Tikka",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 259,
+    "taxRatePercent": 5,
+    "taxAmount": 12.95,
+    "finalAmount": 271.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Tandoori Chaap Roll",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 149,
+    "taxRatePercent": 5,
+    "taxAmount": 7.45,
+    "finalAmount": 156.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Bobs Special Chicken Keema Naan",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 199,
+    "taxRatePercent": 5,
+    "taxAmount": 9.95,
+    "finalAmount": 208.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Mix Veg",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 199,
+    "taxRatePercent": 5,
+    "taxAmount": 9.95,
+    "finalAmount": 208.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Mix Veg",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 329,
+    "taxRatePercent": 5,
+    "taxAmount": 16.45,
+    "finalAmount": 345.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Navratan Korma",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 209,
+    "taxRatePercent": 5,
+    "taxAmount": 10.45,
+    "finalAmount": 219.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Navratan Korma",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 289,
+    "taxRatePercent": 5,
+    "taxAmount": 14.45,
+    "finalAmount": 303.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Paneer Kadhai",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 259,
+    "taxRatePercent": 5,
+    "taxAmount": 12.95,
+    "finalAmount": 271.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Paneer Kadhai",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 369,
+    "taxRatePercent": 5,
+    "taxAmount": 18.45,
+    "finalAmount": 387.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Hariyali Chaap Roll",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 169,
+    "taxRatePercent": 5,
+    "taxAmount": 8.45,
+    "finalAmount": 177.45,
+    "status": "Live"
+  },
+
+  {
+    "itemName": "Tandoori Afghani Chaap",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 199,
+    "taxRatePercent": 5,
+    "taxAmount": 9.95,
+    "finalAmount": 208.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Tandoori Afghani Chaap",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 299,
+    "taxRatePercent": 5,
+    "taxAmount": 14.95,
+    "finalAmount": 313.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Kali Mirch Chaap",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 199,
+    "taxRatePercent": 5,
+    "taxAmount": 9.95,
+    "finalAmount": 208.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Kali Mirch Chaap",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 299,
+    "taxRatePercent": 5,
+    "taxAmount": 14.95,
+    "finalAmount": 313.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Hariyali Tikka [8 Pieces]",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 379,
+    "taxRatePercent": 5,
+    "taxAmount": 18.95,
+    "finalAmount": 397.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Tandoori Roti",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 25,
+    "taxRatePercent": 5,
+    "taxAmount": 1.25,
+    "finalAmount": 26.25,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Manchurian",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 359,
+    "taxRatePercent": 5,
+    "taxAmount": 17.95,
+    "finalAmount": 376.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Manchurian",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 259,
+    "taxRatePercent": 5,
+    "taxAmount": 12.95,
+    "finalAmount": 271.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Paneer Naan",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 140,
+    "taxRatePercent": 5,
+    "taxAmount": 7,
+    "finalAmount": 147,
+    "status": "Live"
+  },
+  {
+    "itemName": "Burani Raita",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 120,
+    "taxRatePercent": 5,
+    "taxAmount": 6,
+    "finalAmount": 126,
+    "status": "Live"
+  },
+  {
+    "itemName": "Paneer Shahi",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 259,
+    "taxRatePercent": 5,
+    "taxAmount": 12.95,
+    "finalAmount": 271.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Paneer Shahi",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 369,
+    "taxRatePercent": 5,
+    "taxAmount": 18.45,
+    "finalAmount": 387.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Paneer Palak",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 259,
+    "taxRatePercent": 5,
+    "taxAmount": 12.95,
+    "finalAmount": 271.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Paneer Palak",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 369,
+    "taxRatePercent": 5,
+    "taxAmount": 18.45,
+    "finalAmount": 387.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Tawa Chaap",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 219,
+    "taxRatePercent": 5,
+    "taxAmount": 10.95,
+    "finalAmount": 229.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Tawa Chaap",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 349,
+    "taxRatePercent": 5,
+    "taxAmount": 17.45,
+    "finalAmount": 366.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chaap Butter Masala",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 219,
+    "taxRatePercent": 5,
+    "taxAmount": 10.95,
+    "finalAmount": 229.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chaap Butter Masala",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 349,
+    "taxRatePercent": 5,
+    "taxAmount": 17.45,
+    "finalAmount": 366.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Kadhai Chaap",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 219,
+    "taxRatePercent": 5,
+    "taxAmount": 10.95,
+    "finalAmount": 229.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Kadhai Chaap",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 349,
+    "taxRatePercent": 5,
+    "taxAmount": 17.45,
+    "finalAmount": 366.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Butter Masala",
+    "variant": "Quarter",
+    "itemTag": "Services",
+    "priceExcludingTax": 299,
+    "taxRatePercent": 5,
+    "taxAmount": 14.95,
+    "finalAmount": 313.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Butter Masala",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 459,
+    "taxRatePercent": 5,
+    "taxAmount": 22.95,
+    "finalAmount": 481.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Butter Masala",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 719,
+    "taxRatePercent": 5,
+    "taxAmount": 35.95,
+    "finalAmount": 754.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Achaari Chaap",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 169,
+    "taxRatePercent": 5,
+    "taxAmount": 8.45,
+    "finalAmount": 177.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Achaari Chaap",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 269,
+    "taxRatePercent": 5,
+    "taxAmount": 13.45,
+    "finalAmount": 282.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Paneer Hariyali Tikka [6 Pieces]",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 319,
+    "taxRatePercent": 5,
+    "taxAmount": 15.95,
+    "finalAmount": 334.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Tandoori Tangdi",
+    "variant": "3 Pieces",
+    "itemTag": "Services",
+    "priceExcludingTax": 299,
+    "taxRatePercent": 5,
+    "taxAmount": 14.95,
+    "finalAmount": 313.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Tandoori Tangdi",
+    "variant": "6 Pieces",
+    "itemTag": "Services",
+    "priceExcludingTax": 459,
+    "taxRatePercent": 5,
+    "taxAmount": 22.95,
+    "finalAmount": 481.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Malai Tangdi",
+    "variant": "3 Pieces",
+    "itemTag": "Services",
+    "priceExcludingTax": 349,
+    "taxRatePercent": 5,
+    "taxAmount": 17.45,
+    "finalAmount": 366.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Malai Tangdi",
+    "variant": "6 Pieces",
+    "itemTag": "Services",
+    "priceExcludingTax": 549,
+    "taxRatePercent": 5,
+    "taxAmount": 27.45,
+    "finalAmount": 576.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Fried Rice",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 199,
+    "taxRatePercent": 5,
+    "taxAmount": 9.95,
+    "finalAmount": 208.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Fried Rice",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 349,
+    "taxRatePercent": 5,
+    "taxAmount": 17.45,
+    "finalAmount": 366.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Chilli Garlic Fried Rice",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 199,
+    "taxRatePercent": 5,
+    "taxAmount": 9.95,
+    "finalAmount": 208.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Chilli Garlic Fried Rice",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 349,
+    "taxRatePercent": 5,
+    "taxAmount": 17.45,
+    "finalAmount": 366.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Schezwan Fried Rice",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 199,
+    "taxRatePercent": 5,
+    "taxAmount": 9.95,
+    "finalAmount": 208.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Schezwan Fried Rice",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 349,
+    "taxRatePercent": 5,
+    "taxAmount": 17.45,
+    "finalAmount": 366.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Egg Fried Rice",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 169,
+    "taxRatePercent": 5,
+    "taxAmount": 8.45,
+    "finalAmount": 177.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Egg Fried Rice",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 319,
+    "taxRatePercent": 5,
+    "taxAmount": 15.95,
+    "finalAmount": 334.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Egg Chilli Garlic Fried Rice",
+    "variant": "Quarter",
+    "itemTag": "Services",
+    "priceExcludingTax": 169,
+    "taxRatePercent": 5,
+    "taxAmount": 8.45,
+    "finalAmount": 177.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Egg Chilli Garlic Fried Rice",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 319,
+    "taxRatePercent": 5,
+    "taxAmount": 15.95,
+    "finalAmount": 334.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Egg Schezwan Fried Rice",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 169,
+    "taxRatePercent": 5,
+    "taxAmount": 8.45,
+    "finalAmount": 177.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Egg Schezwan Fried Rice",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 319,
+    "taxRatePercent": 5,
+    "taxAmount": 15.95,
+    "finalAmount": 334.95,
+    "status": "Live"
+  },
+
+  {
+    "itemName": "Chicken Hakka Noodles",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 209,
+    "taxRatePercent": 5,
+    "taxAmount": 10.45,
+    "finalAmount": 219.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Hakka Noodles",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 349,
+    "taxRatePercent": 5,
+    "taxAmount": 17.45,
+    "finalAmount": 366.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Chilli Garlic Noodles",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 219,
+    "taxRatePercent": 5,
+    "taxAmount": 10.95,
+    "finalAmount": 229.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Chilli Garlic Noodles",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 349,
+    "taxRatePercent": 5,
+    "taxAmount": 17.45,
+    "finalAmount": 366.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Schezwan Noodles",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 219,
+    "taxRatePercent": 5,
+    "taxAmount": 10.95,
+    "finalAmount": 229.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Schezwan Noodles",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 349,
+    "taxRatePercent": 5,
+    "taxAmount": 17.45,
+    "finalAmount": 366.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Egg Hakka Noodles",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 169,
+    "taxRatePercent": 5,
+    "taxAmount": 8.45,
+    "finalAmount": 177.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Egg Hakka Noodles",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 319,
+    "taxRatePercent": 5,
+    "taxAmount": 15.95,
+    "finalAmount": 334.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Egg Chilli Garlic Noodles",
+    "variant": "Quarter",
+    "itemTag": "Services",
+    "priceExcludingTax": 179,
+    "taxRatePercent": 5,
+    "taxAmount": 8.95,
+    "finalAmount": 187.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Egg Chilli Garlic Noodles",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 319,
+    "taxRatePercent": 5,
+    "taxAmount": 15.95,
+    "finalAmount": 334.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Egg Schezwan Noodles",
+    "variant": "Quarter",
+    "itemTag": "Services",
+    "priceExcludingTax": 179,
+    "taxRatePercent": 5,
+    "taxAmount": 8.95,
+    "finalAmount": 187.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Egg Schezwan Noodles",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 319,
+    "taxRatePercent": 5,
+    "taxAmount": 15.95,
+    "finalAmount": 334.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Veg Manchurian Gravy",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 229,
+    "taxRatePercent": 5,
+    "taxAmount": 11.45,
+    "finalAmount": 240.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Veg Manchurian Gravy",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 329,
+    "taxRatePercent": 5,
+    "taxAmount": 16.45,
+    "finalAmount": 345.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Manchurian Gravy",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 279,
+    "taxRatePercent": 5,
+    "taxAmount": 13.95,
+    "finalAmount": 292.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Manchurian Gravy",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 379,
+    "taxRatePercent": 5,
+    "taxAmount": 18.95,
+    "finalAmount": 397.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chilli Paneer Gravy",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 249,
+    "taxRatePercent": 5,
+    "taxAmount": 12.45,
+    "finalAmount": 261.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chilli Paneer Gravy",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 349,
+    "taxRatePercent": 5,
+    "taxAmount": 17.45,
+    "finalAmount": 366.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chilli Chicken Gravy",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 289,
+    "taxRatePercent": 5,
+    "taxAmount": 14.45,
+    "finalAmount": 303.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chilli Chicken Gravy",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 379,
+    "taxRatePercent": 5,
+    "taxAmount": 18.95,
+    "finalAmount": 397.95,
+    "status": "Live"
+  },
+
+  {
+    "itemName": "Spring Roll [2 Pieces]",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 229,
+    "taxRatePercent": 5,
+    "taxAmount": 11.45,
+    "finalAmount": 240.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Veg Momos [6 Pieces]",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 99,
+    "taxRatePercent": 5,
+    "taxAmount": 4.95,
+    "finalAmount": 103.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Momos [6 Pieces]",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 149,
+    "taxRatePercent": 5,
+    "taxAmount": 7.45,
+    "finalAmount": 156.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Paneer Momos [6 Pieces]",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 149,
+    "taxRatePercent": 5,
+    "taxAmount": 7.45,
+    "finalAmount": 156.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Veg Fried Momos [6 Pieces]",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 119,
+    "taxRatePercent": 5,
+    "taxAmount": 5.95,
+    "finalAmount": 124.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Fried Momos [6 Pieces]",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 169,
+    "taxRatePercent": 5,
+    "taxAmount": 8.45,
+    "finalAmount": 177.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Paneer Fried Momos [6 Pieces]",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 169,
+    "taxRatePercent": 5,
+    "taxAmount": 8.45,
+    "finalAmount": 177.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Veg Tandoori Momos [6 Pieces]",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 199,
+    "taxRatePercent": 5,
+    "taxAmount": 9.95,
+    "finalAmount": 208.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Paneer Tandoori Momos [6 Pieces]",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 249,
+    "taxRatePercent": 5,
+    "taxAmount": 12.45,
+    "finalAmount": 261.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Tandoori Momos [6 Pieces]",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 249,
+    "taxRatePercent": 5,
+    "taxAmount": 12.45,
+    "finalAmount": 261.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Malai Chicken",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 399,
+    "taxRatePercent": 5,
+    "taxAmount": 19.95,
+    "finalAmount": 418.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Malai Chicken",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 699,
+    "taxRatePercent": 5,
+    "taxAmount": 34.95,
+    "finalAmount": 733.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Veg Kurkure Momos [6 Pieces]",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 199,
+    "taxRatePercent": 5,
+    "taxAmount": 9.95,
+    "finalAmount": 208.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Paneer Kurkure Momos [6 Pieces]",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 249,
+    "taxRatePercent": 5,
+    "taxAmount": 12.45,
+    "finalAmount": 261.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Kurkure Momos [6 Pieces]",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 249,
+    "taxRatePercent": 5,
+    "taxAmount": 12.45,
+    "finalAmount": 261.45,
+    "status": "Live"
+  },
+
+  {
+    "itemName": "Veg Afghani Momos [6 Pieces]",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 199,
+    "taxRatePercent": 5,
+    "taxAmount": 9.95,
+    "finalAmount": 208.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Lollipop [5 Pieces]",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 249,
+    "taxRatePercent": 5,
+    "taxAmount": 12.45,
+    "finalAmount": 261.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Rumali Roti",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 0,
+    "taxRatePercent": 0,
+    "taxAmount": 0,
+    "finalAmount": 0,
+    "status": "Live"
+  },
+  {
+    "itemName": "Paratha",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 0,
+    "taxRatePercent": 0,
+    "taxAmount": 0,
+    "finalAmount": 0,
+    "status": "Live"
+  },
+  {
+    "itemName": "Paneer Afghani Momos [6 Pieces]",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 249,
+    "taxRatePercent": 5,
+    "taxAmount": 12.45,
+    "finalAmount": 261.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken Afghani Momos [6 Pieces]",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 269,
+    "taxRatePercent": 5,
+    "taxAmount": 13.45,
+    "finalAmount": 282.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Hot and Sour Soup",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 120,
+    "taxRatePercent": 5,
+    "taxAmount": 6,
+    "finalAmount": 126,
+    "status": "Live"
+  },
+  {
+    "itemName": "Mutton Rogan Josh [5 Pieces]",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 499,
+    "taxRatePercent": 5,
+    "taxAmount": 24.95,
+    "finalAmount": 523.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Bob's Special Peri Peri Fried Chicken",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 399,
+    "taxRatePercent": 5,
+    "taxAmount": 19.95,
+    "finalAmount": 418.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Bob's Special Peri Peri Fried Chicken",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 699,
+    "taxRatePercent": 5,
+    "taxAmount": 34.95,
+    "finalAmount": 733.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "French Fries",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 119,
+    "taxRatePercent": 5,
+    "taxAmount": 5.95,
+    "finalAmount": 124.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Tandoori Chicken Wings [5 Pieces]",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 349,
+    "taxRatePercent": 5,
+    "taxAmount": 17.45,
+    "finalAmount": 366.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Peri Peri Chicken Wings [5 Pieces]",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 369,
+    "taxRatePercent": 5,
+    "taxAmount": 18.45,
+    "finalAmount": 387.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Peri Peri Chicken Tikka [8 Pieces]",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 359,
+    "taxRatePercent": 5,
+    "taxAmount": 17.95,
+    "finalAmount": 376.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Onion Missi Roti",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 60,
+    "taxRatePercent": 5,
+    "taxAmount": 3,
+    "finalAmount": 63,
+    "status": "Live"
+  },
+  {
+    "itemName": "Tandoori Onion Roti",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 40,
+    "taxRatePercent": 5,
+    "taxAmount": 2,
+    "finalAmount": 42,
+    "status": "Live"
+  },
+  {
+    "itemName": "Egg",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 20,
+    "taxRatePercent": 0,
+    "taxAmount": 0,
+    "finalAmount": 20,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chicken",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 50,
+    "taxRatePercent": 0,
+    "taxAmount": 0,
+    "finalAmount": 50,
+    "status": "Live"
+  },
+
+  {
+    "itemName": "Veg Manchow Soup",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 120,
+    "taxRatePercent": 5,
+    "taxAmount": 6,
+    "finalAmount": 126,
+    "status": "Live"
+  },
+  {
+    "itemName": "GOAT Chilli Chicken Roll",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 349,
+    "taxRatePercent": 5,
+    "taxAmount": 17.45,
+    "finalAmount": 366.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "GOAT Chilli Paneer Roll",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 349,
+    "taxRatePercent": 5,
+    "taxAmount": 17.45,
+    "finalAmount": 366.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "GOAT Fried Rice",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 249,
+    "taxRatePercent": 5,
+    "taxAmount": 12.45,
+    "finalAmount": 261.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "GOAT Fried Rice",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 449,
+    "taxRatePercent": 5,
+    "taxAmount": 22.45,
+    "finalAmount": 471.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "GOAT Kadhai Chaap",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 299,
+    "taxRatePercent": 5,
+    "taxAmount": 14.95,
+    "finalAmount": 313.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "GOAT Kadhai Chaap",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 449,
+    "taxRatePercent": 5,
+    "taxAmount": 22.45,
+    "finalAmount": 471.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Crispy Corn",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 199,
+    "taxRatePercent": 5,
+    "taxAmount": 9.95,
+    "finalAmount": 208.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Crispy Corn",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 279,
+    "taxRatePercent": 5,
+    "taxAmount": 13.95,
+    "finalAmount": 292.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Chutney [30 ml]",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 15,
+    "taxRatePercent": 0,
+    "taxAmount": 0,
+    "finalAmount": 15,
+    "status": "Live"
+  },
+  {
+    "itemName": "Sirka Onion [1 Packet]",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 15,
+    "taxRatePercent": 0,
+    "taxAmount": 0,
+    "finalAmount": 15,
+    "status": "Live"
+  },
+  {
+    "itemName": "Red Chutney [30 ml]",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 15,
+    "taxRatePercent": 0,
+    "taxAmount": 0,
+    "finalAmount": 15,
+    "status": "Live"
+  },
+  {
+    "itemName": "Honey Chilli Potato",
+    "variant": "Half",
+    "itemTag": "Services",
+    "priceExcludingTax": 199,
+    "taxRatePercent": 5,
+    "taxAmount": 9.95,
+    "finalAmount": 208.95,
+    "status": "Live"
+  },
+  {
+    "itemName": "Honey Chilli Potato",
+    "variant": "Full",
+    "itemTag": "Services",
+    "priceExcludingTax": 269,
+    "taxRatePercent": 5,
+    "taxAmount": 13.45,
+    "finalAmount": 282.45,
+    "status": "Live"
+  },
+  {
+    "itemName": "Tawa Roti",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 15,
+    "taxRatePercent": 5,
+    "taxAmount": 0.75,
+    "finalAmount": 15.75,
+    "status": "Live"
+  },
+  {
+    "itemName": "Tawa Butter Roti",
+    "variant": null,
+    "itemTag": "Services",
+    "priceExcludingTax": 25,
+    "taxRatePercent": 5,
+    "taxAmount": 1.25,
+    "finalAmount": 26.25,
+    "status": "Live"
+  }
+]
