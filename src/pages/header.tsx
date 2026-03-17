@@ -23,7 +23,7 @@ const Header: React.FC = () => {
           onClick={() => navigate('/')}
           style={{ cursor: 'pointer' }}
         >
-          Bob&apos;s
+          Bob&#39;s
         </Typography>
         <IconButton color="inherit" onClick={() => navigate('/cart')}>
           <Badge badgeContent={totalItems} color="error">

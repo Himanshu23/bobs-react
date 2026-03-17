@@ -13,7 +13,7 @@ export const QuantityButtons = ({
   option,
   handleCart,
 }: QuantityButtonsProps) => {
-  const cartItem = useSelector(selectCartItemByIdAndOption(id, option!));
+  const cartItem = useSelector(selectCartItemByIdAndOption(id, option));
   return (
     <Card
       sx={{

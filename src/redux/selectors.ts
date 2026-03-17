@@ -22,7 +22,7 @@ export const selectCartItemById = (id: string) =>
   );
 
 // Selector to find a specific cart item by ID and option (uniquely identifies a variant)
-export const selectCartItemByIdAndOption = (id: string, option: ItemOptions) =>
+export const selectCartItemByIdAndOption = (id: string, option?: ItemOptions) =>
   createSelector([selectCartItems], (cartItems) =>
     cartItems.find(
       (item) =>
