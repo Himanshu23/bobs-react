@@ -21,7 +21,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/chilli-fried-rice.avif',
       category: 'Rice',
       priceOptions: {
         size: {
@@ -37,7 +37,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Breads',
       priceOptions: {
         size: {
@@ -52,7 +52,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Main Course',
       priceOptions: {
         size: {
@@ -85,7 +85,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Breads',
       priceOptions: {
         size: {
@@ -100,7 +100,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Others',
       priceOptions: {
         size: {
@@ -116,7 +116,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Breads',
       priceOptions: {
         size: {
@@ -131,7 +131,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Pasta',
       priceOptions: {
         size: {
@@ -176,7 +176,7 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Others',
       priceOptions: {
         size: {
@@ -192,7 +192,7 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Others',
       priceOptions: {
         size: {
@@ -209,7 +209,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Breads',
       priceOptions: {
         size: {
@@ -224,7 +224,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Others',
       priceOptions: {
         size: {
@@ -255,7 +255,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Sides',
       priceOptions: {
         size: {
@@ -270,7 +270,7 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Breads',
       priceOptions: {
         size: {
@@ -285,7 +285,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Noodles',
       priceOptions: {
         size: {
@@ -301,7 +301,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Others',
       priceOptions: {
         size: {
@@ -317,7 +317,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Main Course',
       priceOptions: {
         size: {
@@ -333,7 +333,7 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/afgani-chicken.jpg',
       category: 'Others',
       priceOptions: {
         size: {
@@ -349,7 +349,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/boondi-raita.avif',
       category: 'Sides',
       priceOptions: {
         size: {
@@ -364,7 +364,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Breads',
       priceOptions: {
         size: {
@@ -394,7 +394,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Others',
       priceOptions: {
         size: {
@@ -410,7 +410,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Others',
       priceOptions: {
         size: {
@@ -426,7 +426,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Breads',
       priceOptions: {
         size: {
@@ -456,7 +456,7 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Main Course',
       priceOptions: {
         size: {
@@ -473,7 +473,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Main Course',
       priceOptions: {
         size: {
@@ -489,7 +489,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Others',
       priceOptions: {
         size: {
@@ -505,7 +505,7 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Others',
       priceOptions: {
         size: {
@@ -522,7 +522,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Rice',
       priceOptions: {
         size: {
@@ -537,7 +537,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Main Course',
       priceOptions: {
         size: {
@@ -552,7 +552,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Others',
       priceOptions: {
         size: {
@@ -568,7 +568,7 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Main Course',
       priceOptions: {
         size: {
@@ -585,7 +585,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Breads',
       priceOptions: {
         size: {
@@ -645,7 +645,7 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Main Course',
       priceOptions: {
         size: {
@@ -676,7 +676,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Others',
       priceOptions: {
         size: {
@@ -691,7 +691,7 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Others',
       priceOptions: {
         size: {
@@ -708,7 +708,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Noodles',
       priceOptions: {
         size: {
@@ -724,7 +724,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Rice',
       priceOptions: {
         size: {
@@ -740,7 +740,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Main Course',
       priceOptions: {
         size: {
@@ -756,7 +756,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Breads',
       priceOptions: {
         size: {
@@ -771,7 +771,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Breads',
       priceOptions: {
         size: {
@@ -786,7 +786,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Others',
       priceOptions: {
         size: {
@@ -832,7 +832,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Main Course',
       priceOptions: {
         size: {
@@ -848,7 +848,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Breads',
       priceOptions: {
         size: {
@@ -863,7 +863,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Rice',
       priceOptions: {
         size: {
@@ -878,7 +878,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Snacks',
       priceOptions: {
         size: {
@@ -894,7 +894,7 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Others',
       priceOptions: {
         size: {
@@ -940,7 +940,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Rice',
       priceOptions: {
         size: {
@@ -956,7 +956,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Sides',
       priceOptions: {
         size: {
@@ -986,7 +986,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Breads',
       priceOptions: {
         size: {
@@ -1001,7 +1001,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/chilli-garlic-noodles.avif',
       category: 'Noodles',
       priceOptions: {
         size: {
@@ -1017,7 +1017,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Burgers',
       priceOptions: {
         size: {
@@ -1047,7 +1047,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Main Course',
       priceOptions: {
         size: {
@@ -1063,7 +1063,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Breads',
       priceOptions: {
         size: {
@@ -1094,7 +1094,7 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Main Course',
       priceOptions: {
         size: {
@@ -1111,7 +1111,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Breads',
       priceOptions: {
         size: {
@@ -1126,7 +1126,7 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Burgers',
       priceOptions: {
         size: {
@@ -1141,7 +1141,7 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Others',
       priceOptions: {
         size: {
@@ -1158,7 +1158,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Others',
       priceOptions: {
         size: {
@@ -1204,7 +1204,7 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Breads',
       priceOptions: {
         size: {
@@ -1219,7 +1219,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Others',
       priceOptions: {
         size: {
@@ -1235,7 +1235,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Others',
       priceOptions: {
         size: {
@@ -1251,7 +1251,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Main Course',
       priceOptions: {
         size: {
@@ -1282,7 +1282,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Others',
       priceOptions: {
         size: {
@@ -1298,7 +1298,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Others',
       priceOptions: {
         size: {
@@ -1329,7 +1329,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Breads',
       priceOptions: {
         size: {
@@ -1360,7 +1360,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Breads',
       priceOptions: {
         size: {
@@ -1375,7 +1375,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Sides',
       priceOptions: {
         size: {
@@ -1390,7 +1390,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Others',
       priceOptions: {
         size: {
@@ -1406,7 +1406,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Others',
       priceOptions: {
         size: {
@@ -1422,7 +1422,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Others',
       priceOptions: {
         size: {
@@ -1438,7 +1438,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Main Course',
       priceOptions: {
         size: {
@@ -1454,7 +1454,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Main Course',
       priceOptions: {
         size: {
@@ -1470,7 +1470,7 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Main Course',
       priceOptions: {
         size: {
@@ -1487,7 +1487,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Others',
       priceOptions: {
         size: {
@@ -1518,7 +1518,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Others',
       priceOptions: {
         size: {
@@ -1533,7 +1533,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Others',
       priceOptions: {
         size: {
@@ -1548,7 +1548,7 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Rice',
       priceOptions: {
         size: {
@@ -1564,7 +1564,7 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Rice',
       priceOptions: {
         size: {
@@ -1580,7 +1580,7 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Rice',
       priceOptions: {
         size: {
@@ -1596,7 +1596,7 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Rice',
       priceOptions: {
         size: {
@@ -1612,7 +1612,7 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Rice',
       priceOptions: {
         size: {
@@ -1628,7 +1628,7 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Rice',
       priceOptions: {
         size: {
@@ -1644,7 +1644,7 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Noodles',
       priceOptions: {
         size: {
@@ -1660,7 +1660,7 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Noodles',
       priceOptions: {
         size: {
@@ -1676,7 +1676,7 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Noodles',
       priceOptions: {
         size: {
@@ -1692,7 +1692,7 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Noodles',
       priceOptions: {
         size: {
@@ -1708,7 +1708,7 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Noodles',
       priceOptions: {
         size: {
@@ -1724,7 +1724,7 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Noodles',
       priceOptions: {
         size: {
@@ -1740,7 +1740,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Main Course',
       priceOptions: {
         size: {
@@ -1756,7 +1756,7 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Main Course',
       priceOptions: {
         size: {
@@ -1772,7 +1772,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Main Course',
       priceOptions: {
         size: {
@@ -1788,7 +1788,7 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Main Course',
       priceOptions: {
         size: {
@@ -1804,7 +1804,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/paneer-tikka.jpg',
+      image: '/imgs/food/starter/spring-roll.avif',
       category: 'Starters',
       priceOptions: {
         size: {
@@ -1954,7 +1954,7 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/malai-chicken.jpg',
       category: 'Others',
       priceOptions: {
         size: {
@@ -2045,7 +2045,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Breads',
       priceOptions: {
         size: {
@@ -2090,7 +2090,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/hot-and-sour-soup.jpg',
       category: 'Soups',
       priceOptions: {
         size: {
@@ -2105,7 +2105,7 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Main Course',
       priceOptions: {
         size: {
@@ -2120,7 +2120,7 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Others',
       priceOptions: {
         size: {
@@ -2136,7 +2136,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Snacks',
       priceOptions: {
         size: {
@@ -2151,7 +2151,7 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken-wings.avif',
       category: 'Starters',
       priceOptions: {
         size: {
@@ -2166,7 +2166,7 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/peri-peri-chicken-wings.avif',
       category: 'Starters',
       priceOptions: {
         size: {
@@ -2181,7 +2181,7 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/peri-peri-chicken-wings.avif',
       category: 'Starters',
       priceOptions: {
         size: {
@@ -2196,7 +2196,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Breads',
       priceOptions: {
         size: {
@@ -2211,7 +2211,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Breads',
       priceOptions: {
         size: {
@@ -2226,7 +2226,7 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Others',
       priceOptions: {
         size: {
@@ -2241,7 +2241,7 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Others',
       priceOptions: {
         size: {
@@ -2256,7 +2256,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Soups',
       priceOptions: {
         size: {
@@ -2271,7 +2271,7 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/goat-chilli-chicken-roll.avif',
       category: 'Starters',
       priceOptions: {
         size: {
@@ -2286,7 +2286,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/paneer-tikka.jpg',
+      image: '/imgs/food/starter/goat-chilli-paneer-roll.avif',
       category: 'Starters',
       priceOptions: {
         size: {
@@ -2301,7 +2301,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/goat-fried-rice.jpg',
       category: 'Rice',
       priceOptions: {
         size: {
@@ -2317,7 +2317,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Main Course',
       priceOptions: {
         size: {
@@ -2333,7 +2333,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Snacks',
       priceOptions: {
         size: {
@@ -2349,7 +2349,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Sides',
       priceOptions: {
         size: {
@@ -2364,7 +2364,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Sides',
       priceOptions: {
         size: {
@@ -2379,7 +2379,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Sides',
       priceOptions: {
         size: {
@@ -2394,7 +2394,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Snacks',
       priceOptions: {
         size: {
@@ -2410,7 +2410,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Breads',
       priceOptions: {
         size: {
@@ -2425,7 +2425,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/dishes/tandoori-chicken.jpg',
+      image: '/imgs/food/starter/tandoori-chicken.jpg',
       category: 'Breads',
       priceOptions: {
         size: {
