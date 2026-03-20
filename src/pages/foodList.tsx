@@ -8,9 +8,16 @@ import {
   Fab,
   Menu,
   MenuItem,
+  Button,
+  Avatar,
+  AvatarGroup,
 } from '@mui/material';
-import { List as ListIcon } from '@mui/icons-material';
+import {
+  List as ListIcon,
+  ChevronRight as ChevronRightIcon,
+} from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { RootState, AppDispatch, removeFromCart } from '../redux/store';
 import { fetchFoodItems } from '../redux/foodSlice';
 import { CartActions, FoodItem, ItemOptions } from '../types';
@@ -21,7 +28,9 @@ import VariantRemovalModal from '../components/variantRemovalModal';
 
 const FoodListPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
   const cartItems = useSelector((state: RootState) => state.cart.items);
+  const totalItems = useSelector((state: RootState) => state.cart.totalItems);
 
   const { items, status, error } = useSelector(
     (state: RootState) => state.food
@@ -190,13 +199,72 @@ const FoodListPage: React.FC = () => {
           }}
         />
       )}
+      {totalItems > 0 && (
+        <Button
+          variant="contained"
+          color="primary"
+          fullWidth
+          onClick={() => navigate('/cart')}
+          sx={{
+            position: 'fixed',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            zIndex: 999,
+            borderRadius: 0,
+            fontSize: '1rem',
+            fontWeight: 600,
+            padding: '16px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            textTransform: 'none',
+          }}
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+            <AvatarGroup
+              max={3}
+              sx={{
+                '& .MuiAvatar-root': {
+                  width: 40,
+                  height: 40,
+                  fontSize: '0.875rem',
+                  border: '3px solid rgba(255, 255, 255, 0.8)',
+                },
+                '& .MuiAvatarGroup-avatar': {
+                  marginLeft: '-12px',
+                },
+              }}
+            >
+              {cartItems.slice(0, 3).map((item) => (
+                <Avatar
+                  key={`${item.id}_${JSON.stringify(item.option)}`}
+                  alt={item.name}
+                  src={item.image}
+                  sx={{
+                    width: 40,
+                    height: 40,
+                  }}
+                />
+              ))}
+            </AvatarGroup>
+            <Typography sx={{ fontWeight: 500, color: 'white' }}>
+              {totalItems} Item{totalItems > 1 ? 's' : ''} Added
+            </Typography>
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+            View Cart
+            <ChevronRightIcon sx={{ fontSize: '1.25rem' }} />
+          </Box>
+        </Button>
+      )}
       <Fab
         color="primary"
         aria-label="categories"
         onClick={handleMenuOpen}
         sx={{
           position: 'fixed',
-          bottom: 16,
+          bottom: 80,
           right: 16,
           zIndex: 1000,
         }}
