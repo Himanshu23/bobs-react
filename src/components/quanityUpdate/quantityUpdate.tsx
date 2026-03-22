@@ -18,14 +18,14 @@ const QuantityUpdate = ({ open, onClose, itemID }: QuantityUpdateProps) => {
   const dispatch = useDispatch();
   const foodItem = useSelector(selectFoodItemById(itemID));
   const hasMultipleSizes =
-    foodItem?.priceOptions.size &&
-    Object.keys(foodItem.priceOptions.size).length > 1;
+    foodItem?.priceOptions.nowPrice.size &&
+    Object.keys(foodItem.priceOptions.nowPrice.size).length > 1;
   const hasMultipleBases =
-    foodItem?.priceOptions.base &&
-    Object.keys(foodItem.priceOptions.base).length > 1;
+    foodItem?.priceOptions.nowPrice.base &&
+    Object.keys(foodItem.priceOptions.nowPrice.base).length > 1;
   const hasMultipleStyles =
-    foodItem?.priceOptions.type &&
-    Object.keys(foodItem.priceOptions.type).length > 1;
+    foodItem?.priceOptions.nowPrice.type &&
+    Object.keys(foodItem.priceOptions.nowPrice.type).length > 1;
   const showCustomizeOption =
     hasMultipleSizes || hasMultipleBases || hasMultipleStyles;
   const allCartItems = useSelector((state: RootState) => state.cart.items);

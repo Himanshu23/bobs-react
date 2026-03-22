@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   Box,
   Typography,
@@ -11,10 +11,16 @@ import {
   Button,
   Avatar,
   AvatarGroup,
+  TextField,
+  InputAdornment,
+  Container,
 } from '@mui/material';
 import {
   List as ListIcon,
   ChevronRight as ChevronRightIcon,
+  Search as SearchIconMUI,
+  ExpandMore as ExpandMoreIcon,
+  ExpandLess as ExpandLessIcon,
 } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -45,12 +51,37 @@ const FoodListPage: React.FC = () => {
   const [variantRemovalItemID, setVariantRemovalItemID] = useState<
     string | null
   >(null);
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
+  const [scrollToItemId, setScrollToItemId] = useState<string | null>(null);
+  const itemsContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (status === 'idle') {
       dispatch(fetchFoodItems());
     }
   }, [status, dispatch]);
+
+  // Filter items based on search query and selected category
+  const filteredItems = items.filter(
+    (item) =>
+      item.category === selectedCategory &&
+      item.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  useEffect(() => {
+    if (scrollToItemId && itemsContainerRef.current) {
+      const element = itemsContainerRef.current.querySelector(
+        `[data-item-id="${scrollToItemId}"]`
+      );
+      if (element) {
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          setScrollToItemId(null);
+        }, 100);
+      }
+    }
+  }, [scrollToItemId]);
 
   const handleCart = (
     id: string,
@@ -105,6 +136,21 @@ const FoodListPage: React.FC = () => {
 
   const handleCategorySelect = (category: string) => {
     setSelectedCategory(category);
+    setExpandedCategory(null);
+    handleMenuClose();
+  };
+
+  const toggleCategoryExpand = (category: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setExpandedCategory(expandedCategory === category ? null : category);
+  };
+
+  const handleItemSelect = (category: string, itemId?: string) => {
+    setSelectedCategory(category);
+    if (itemId) {
+      setScrollToItemId(itemId);
+    }
+    setExpandedCategory(null);
     handleMenuClose();
   };
 
@@ -112,14 +158,14 @@ const FoodListPage: React.FC = () => {
   const categories = Array.from(new Set(items.map((item) => item.category)));
 
   // Group items by category
-  const groupedItems = items.reduce(
-    (acc, item) => {
-      if (!acc[item.category]) acc[item.category] = [];
-      acc[item.category].push(item);
-      return acc;
-    },
-    {} as Record<string, FoodItem[]>
-  );
+  // const groupedItems = items.reduce(
+  //   (acc, item) => {
+  //     if (!acc[item.category]) acc[item.category] = [];
+  //     acc[item.category].push(item);
+  //     return acc;
+  //   },
+  //   {} as Record<string, FoodItem[]>
+  // );
 
   if (status === 'loading') {
     return <CircularProgress />;
@@ -131,49 +177,107 @@ const FoodListPage: React.FC = () => {
 
   return (
     <>
-      <Box sx={{ width: '100%', bgcolor: 'background.paper' }}>
-        <Tabs
-          value={selectedCategory}
-          onChange={(_, newValue) => setSelectedCategory(newValue)}
-          variant="scrollable"
-          scrollButtons="auto"
-          allowScrollButtonsMobile
-          sx={{
-            '& .MuiTabs-indicator': {
-              backgroundColor: 'primary.main',
-            },
-            '& .MuiTab-root': {
-              minWidth: 120,
-              fontSize: '0.875rem',
-            },
-          }}
-        >
-          {categories.map((category) => (
-            <Tab key={category} label={category} value={category} />
-          ))}
-        </Tabs>
-      </Box>
-      <Box sx={{ marginTop: 2 }}>
-        {groupedItems[selectedCategory] && (
+      <Container maxWidth="lg">
+        {/* Search Bar and Category Tabs */}
+        <Box sx={{ pt: 2, pb: 1 }}>
+          <TextField
+            fullWidth
+            placeholder="Search dishes..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            variant="outlined"
+            size="small"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIconMUI sx={{ color: '#999' }} />
+                </InputAdornment>
+              ),
+              endAdornment: searchQuery && (
+                <InputAdornment position="end">
+                  <Button
+                    size="small"
+                    onClick={() => setSearchQuery('')}
+                    sx={{ textTransform: 'none', mr: -1 }}
+                  >
+                    Clear
+                  </Button>
+                </InputAdornment>
+              ),
+            }}
+            sx={{
+              mb: 1.5,
+              '& .MuiOutlinedInput-root': {
+                borderRadius: '24px',
+                backgroundColor: '#f5f5f5',
+                '&:hover fieldset': {
+                  borderColor: 'primary.main',
+                },
+              },
+            }}
+          />
+
+          <Tabs
+            value={selectedCategory}
+            onChange={(_, newValue) => setSelectedCategory(newValue)}
+            variant="scrollable"
+            scrollButtons="auto"
+            allowScrollButtonsMobile
+            sx={{
+              '& .MuiTabs-indicator': {
+                backgroundColor: 'primary.main',
+              },
+              '& .MuiTab-root': {
+                minWidth: 120,
+                fontSize: '0.875rem',
+                py: 1,
+              },
+            }}
+          >
+            {categories.map((category) => (
+              <Tab key={category} label={category} value={category} />
+            ))}
+          </Tabs>
+        </Box>
+
+        {/* Search Results or Items */}
+        {filteredItems.length > 0 ? (
           <Box
+            ref={itemsContainerRef}
             sx={{
               display: 'flex',
               flexWrap: 'wrap',
               gap: 2,
               justifyContent: 'center',
-              padding: 3,
+              padding: 1,
             }}
           >
-            {groupedItems[selectedCategory].map((food: FoodItem) => (
-              <FoodItemCard
-                key={`list_${food.id}`}
-                item={food}
-                handleCart={handleCart}
-              />
+            {filteredItems.map((food: FoodItem) => (
+              <Box key={`list_${food.id}`} data-item-id={food.id}>
+                <FoodItemCard item={food} handleCart={handleCart} />
+              </Box>
             ))}
           </Box>
+        ) : (
+          <Box sx={{ textAlign: 'center', py: 6 }}>
+            <Typography variant="h6" color="textSecondary" sx={{ mb: 1 }}>
+              {searchQuery
+                ? 'No items found matching your search'
+                : 'No items in this category'}
+            </Typography>
+            {searchQuery && (
+              <Button
+                variant="text"
+                onClick={() => setSearchQuery('')}
+                sx={{ mt: 2 }}
+              >
+                Clear Search
+              </Button>
+            )}
+          </Box>
         )}
-      </Box>
+      </Container>
+
       {productDetailModal && product && (
         <ProductDetailModal
           open={productDetailModal}
@@ -284,14 +388,110 @@ const FoodListPage: React.FC = () => {
           horizontal: 'right',
         }}
       >
-        {categories.map((category) => (
-          <MenuItem
-            key={category}
-            onClick={() => handleCategorySelect(category)}
-          >
-            {category}
-          </MenuItem>
-        ))}
+        {categories.map((category) => {
+          const categoryItems = items.filter(
+            (item) => item.category === category
+          );
+          const isExpanded = expandedCategory === category;
+          return (
+            <Box key={category}>
+              <MenuItem
+                onClick={() => handleCategorySelect(category)}
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  pr: 1,
+                }}
+              >
+                <Typography sx={{ flex: 1 }}>{category}</Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      backgroundColor: '#f0f0f0',
+                      px: 1,
+                      py: 0.5,
+                      borderRadius: '12px',
+                      fontWeight: 600,
+                      color: 'primary.main',
+                    }}
+                  >
+                    {categoryItems.length}
+                  </Typography>
+                  <Box
+                    onClick={(e) => toggleCategoryExpand(category, e)}
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      cursor: 'pointer',
+                      color: 'primary.main',
+                      '&:hover': {
+                        opacity: 0.8,
+                      },
+                    }}
+                  >
+                    {isExpanded ? (
+                      <ExpandLessIcon sx={{ fontSize: '1.25rem' }} />
+                    ) : (
+                      <ExpandMoreIcon sx={{ fontSize: '1.25rem' }} />
+                    )}
+                  </Box>
+                </Box>
+              </MenuItem>
+              {isExpanded && (
+                <Box
+                  sx={{
+                    backgroundColor: '#fafafa',
+                    borderLeft: '3px solid',
+                    borderLeftColor: 'primary.main',
+                    maxHeight: '300px',
+                    overflow: 'auto',
+                  }}
+                >
+                  {categoryItems.map((item) => (
+                    <MenuItem
+                      key={item.id}
+                      onClick={() => handleItemSelect(category, item.id)}
+                      sx={{
+                        pl: 4,
+                        fontSize: '0.875rem',
+                        color: 'textSecondary',
+                        '&:hover': {
+                          backgroundColor: '#f0f0f0',
+                        },
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 1,
+                          width: '100%',
+                        }}
+                      >
+                        <Box
+                          component="img"
+                          src={item.image}
+                          alt={item.name}
+                          sx={{
+                            width: 32,
+                            height: 32,
+                            borderRadius: '4px',
+                            objectFit: 'cover',
+                          }}
+                        />
+                        <Typography sx={{ fontSize: '0.875rem', flex: 1 }}>
+                          {item.name}
+                        </Typography>
+                      </Box>
+                    </MenuItem>
+                  ))}
+                </Box>
+              )}
+            </Box>
+          );
+        })}
       </Menu>
     </>
   );

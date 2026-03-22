@@ -99,15 +99,9 @@ const cartSlice = createSlice({
       const itemIndex = findItemIndex(state.items, action.payload);
       if (itemIndex !== -1) {
         const item = state.items[itemIndex];
-        if (item.quantity === 1) {
-          // Remove item completely if quantity is 1
-          state.totalItems -= 1;
-          state.items.splice(itemIndex, 1);
-        } else {
-          // Decrement quantity by 1
-          item.quantity -= 1;
-          state.totalItems -= 1;
-        }
+        // Remove entire item completely regardless of quantity
+        state.totalItems -= item.quantity;
+        state.items.splice(itemIndex, 1);
         // Save to localStorage
         saveCartToLocalStorage(state.items);
       }

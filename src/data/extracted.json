@@ -1,0 +1,1607 @@
+[
+  {
+    "name": "Name",
+    "priceOptions": {
+      "size": {
+        "Full": "M.R.P."
+      }
+    }
+  },
+  {
+    "name": "ACHARI PANEER TIKKA",
+    "priceOptions": {
+      "size": {
+        "Full": 199
+      }
+    }
+  },
+  {
+    "name": "ADD ON EGG",
+    "priceOptions": {
+      "size": {
+        "Full": 25
+      }
+    }
+  },
+  {
+    "name": "AFGHANI CHAAP",
+    "priceOptions": {
+      "size": {
+        "Full": 179,
+        "Half": 119
+      }
+    }
+  },
+  {
+    "name": "AFGHANI CHICKEN",
+    "priceOptions": {
+      "size": {
+        "Full": 399,
+        "Half": 249
+      }
+    }
+  },
+  {
+    "name": "AJWAIN PARATHA",
+    "priceOptions": {
+      "size": {
+        "Full": 40
+      }
+    }
+  },
+  {
+    "name": "ALOO NAAN",
+    "priceOptions": {
+      "size": {
+        "Full": 60
+      }
+    }
+  },
+  {
+    "name": "Achari Chap Full",
+    "priceOptions": {
+      "size": {
+        "Full": 159
+      }
+    }
+  },
+  {
+    "name": "Achari Chap Half",
+    "priceOptions": {
+      "size": {
+        "Half": 99
+      }
+    }
+  },
+  {
+    "name": "Afghani Chicken",
+    "priceOptions": {
+      "size": {
+        "Full": 149
+      }
+    }
+  },
+  {
+    "name": "Afghani Momos",
+    "priceOptions": {
+      "size": {
+        "Full": 149
+      }
+    }
+  },
+  {
+    "name": "BOB'S SPECIAL KEBAB",
+    "priceOptions": {
+      "size": {
+        "Full": 189
+      }
+    }
+  },
+  {
+    "name": "BOB's SPECIAL CHICKEN GRAVY",
+    "priceOptions": {
+      "size": {
+        "Full": 549,
+        "Half": 399
+      }
+    }
+  },
+  {
+    "name": "BOB's SPECIAL CHICKEN KABAB",
+    "priceOptions": {
+      "size": {
+        "Full": 189
+      }
+    }
+  },
+  {
+    "name": "BOB's SPECIAL CHICKEN KEEMA NAAN",
+    "priceOptions": {
+      "size": {
+        "Full": 149
+      }
+    }
+  },
+  {
+    "name": "BOB's SPECIAL GRILLED CHICKEN",
+    "priceOptions": {
+      "size": {
+        "Full": 369,
+        "Half": 199
+      }
+    }
+  },
+  {
+    "name": "BOB's SPECIAL MUTTON KABAB",
+    "priceOptions": {
+      "size": {
+        "Full": 229
+      }
+    }
+  },
+  {
+    "name": "BOB's SPECIAL MUTTON KEEMA NAAN",
+    "priceOptions": {
+      "size": {
+        "Full": 199
+      }
+    }
+  },
+  {
+    "name": "BOB's SPECIAL PANEER GRAVY",
+    "priceOptions": {
+      "size": {
+        "Full": 299,
+        "Half": 199
+      }
+    }
+  },
+  {
+    "name": "BOB's SPECIAL PERI PERI CHICKEN",
+    "priceOptions": {
+      "size": {
+        "Full": 369,
+        "Half": 199
+      }
+    }
+  },
+  {
+    "name": "BOB's SPECIAL PIZZA NAAN",
+    "priceOptions": {
+      "size": {
+        "Full": 149
+      }
+    }
+  },
+  {
+    "name": "BUTTER NAAN",
+    "priceOptions": {
+      "size": {
+        "Full": 40
+      }
+    }
+  },
+  {
+    "name": "Butter Chicken",
+    "priceOptions": {
+      "size": {
+        "Full": 549,
+        "Half": 399
+      }
+    }
+  },
+  {
+    "name": "CHAAP KADHAI - Full",
+    "priceOptions": {
+      "size": {
+        "Full": 239
+      }
+    }
+  },
+  {
+    "name": "CHAAP KADHAI - Half",
+    "priceOptions": {
+      "size": {
+        "Half": 169
+      }
+    }
+  },
+  {
+    "name": "CHAP KALI MIRCH(GRAVY) - Full",
+    "priceOptions": {
+      "size": {
+        "Full": 269
+      }
+    }
+  },
+  {
+    "name": "CHAP KALI MIRCH(GRAVY) - Half",
+    "priceOptions": {
+      "size": {
+        "Half": 189
+      }
+    }
+  },
+  {
+    "name": "CHEESE GARLIC NAAN",
+    "priceOptions": {
+      "size": {
+        "Full": 90
+      }
+    }
+  },
+  {
+    "name": "CHEESE MOMOS @99",
+    "priceOptions": {
+      "size": {
+        "Full": 99
+      }
+    }
+  },
+  {
+    "name": "CHESE BURGER - CHICKEN",
+    "priceOptions": {
+      "size": {
+        "Full": 119
+      }
+    }
+  },
+  {
+    "name": "CHESSE BURGER",
+    "priceOptions": {
+      "size": {
+        "Full": 79
+      }
+    }
+  },
+  {
+    "name": "CHICKEN 65",
+    "priceOptions": {
+      "size": {
+        "Full": 199
+      }
+    }
+  },
+  {
+    "name": "CHICKEN BHUNA",
+    "priceOptions": {
+      "size": {
+        "Full": 199,
+        "Half": 349
+      }
+    }
+  },
+  {
+    "name": "CHICKEN BUTTER MASALA",
+    "priceOptions": {
+      "size": {
+        "Full": 199,
+        "Half": 349
+      }
+    }
+  },
+  {
+    "name": "CHICKEN CURRY",
+    "priceOptions": {
+      "size": {
+        "Full": 199,
+        "Half": 349
+      }
+    }
+  },
+  {
+    "name": "CHICKEN KADHAI",
+    "priceOptions": {
+      "size": {
+        "Full": 199
+      }
+    }
+  },
+  {
+    "name": "CHICKEN KALI MIRCH",
+    "priceOptions": {
+      "size": {
+        "Full": 549,
+        "Half": 399
+      }
+    }
+  },
+  {
+    "name": "CHICKEN KEBAB",
+    "priceOptions": {
+      "size": {
+        "Full": 199
+      }
+    }
+  },
+  {
+    "name": "CHICKEN KHADAI",
+    "priceOptions": {
+      "size": {
+        "Full": 499,
+        "Half": 349
+      }
+    }
+  },
+  {
+    "name": "CHICKEN LABABDAR",
+    "priceOptions": {
+      "size": {
+        "Full": 199,
+        "Half": 349
+      }
+    }
+  },
+  {
+    "name": "CHICKEN LOLLYPOP (5 PC)",
+    "priceOptions": {
+      "size": {
+        "Full": 249
+      }
+    }
+  },
+  {
+    "name": "CHICKEN MALAI TIKKA",
+    "priceOptions": {
+      "size": {
+        "Full": 219
+      }
+    }
+  },
+  {
+    "name": "CHICKEN MOMOS",
+    "priceOptions": {
+      "size": {
+        "Full": 99
+      }
+    }
+  },
+  {
+    "name": "CHICKEN MOMOS - FRIED",
+    "priceOptions": {
+      "size": {
+        "Full": 119
+      }
+    }
+  },
+  {
+    "name": "CHICKEN PUNJABI",
+    "priceOptions": {
+      "size": {
+        "Full": 199,
+        "Half": 349
+      }
+    }
+  },
+  {
+    "name": "CHICKEN RARA",
+    "priceOptions": {
+      "size": {
+        "Full": 549,
+        "Half": 399
+      }
+    }
+  },
+  {
+    "name": "CHICKEN SEEKH",
+    "priceOptions": {
+      "size": {
+        "Full": 149
+      }
+    }
+  },
+  {
+    "name": "CHICKEN SHAMI",
+    "priceOptions": {
+      "size": {
+        "Full": 149
+      }
+    }
+  },
+  {
+    "name": "CHICKEN TANGADI (2 PC)",
+    "priceOptions": {
+      "size": {
+        "Full": 159
+      }
+    }
+  },
+  {
+    "name": "CHICKEN TANGADI (4 PC)",
+    "priceOptions": {
+      "size": {
+        "Full": 259
+      }
+    }
+  },
+  {
+    "name": "CHICKEN TIKKA",
+    "priceOptions": {
+      "size": {
+        "Full": 199
+      }
+    }
+  },
+  {
+    "name": "CHICKEN TIKKA MASALA",
+    "priceOptions": {
+      "size": {
+        "Full": 199,
+        "Half": 349
+      }
+    }
+  },
+  {
+    "name": "CHILLI MUSHROOM(DRY)",
+    "priceOptions": {
+      "size": {
+        "Full": 219
+      }
+    }
+  },
+  {
+    "name": "CHILLY CHICKEN(WITH BONE)",
+    "priceOptions": {
+      "size": {
+        "Full": 250
+      }
+    }
+  },
+  {
+    "name": "CRISPY CORN",
+    "priceOptions": {
+      "size": {
+        "Full": 219
+      }
+    }
+  },
+  {
+    "name": "Chap Butter Masala",
+    "priceOptions": {
+      "size": {
+        "Full": 239,
+        "Half": 169
+      }
+    }
+  },
+  {
+    "name": "Chicken Afghani Momos",
+    "priceOptions": {
+      "size": {
+        "Full": 169
+      }
+    }
+  },
+  {
+    "name": "Chicken Chowmein",
+    "priceOptions": {
+      "size": {
+        "Full": 199,
+        "Half": 149
+      }
+    }
+  },
+  {
+    "name": "Chicken Fried Rice",
+    "priceOptions": {
+      "size": {
+        "Full": 199,
+        "Half": 149
+      }
+    }
+  },
+  {
+    "name": "Chicken Kurkure Momos",
+    "priceOptions": {
+      "size": {
+        "Full": 149
+      }
+    }
+  },
+  {
+    "name": "Chicken Manchurian",
+    "priceOptions": {
+      "size": {},
+      "type": {
+        "Gravy": 189,
+        "Dry": 169
+      }
+    }
+  },
+  {
+    "name": "Chicken Tandoori Momos",
+    "priceOptions": {
+      "size": {
+        "Full": 149
+      }
+    }
+  },
+  {
+    "name": "Chicken Tawa Pulao",
+    "priceOptions": {
+      "size": {
+        "Full": 199
+      }
+    }
+  },
+  {
+    "name": "Chilli Chicken",
+    "priceOptions": {
+      "size": {},
+      "type": {
+        "Gravy": 189,
+        "Dry": 169
+      }
+    }
+  },
+  {
+    "name": "Chilli Garlic Fried Rice - Chicken",
+    "priceOptions": {
+      "size": {
+        "Full": 199,
+        "Half": 149
+      }
+    }
+  },
+  {
+    "name": "Chilli Garlic Fried Rice - Egg",
+    "priceOptions": {
+      "size": {
+        "Full": 174,
+        "Half": 124
+      }
+    }
+  },
+  {
+    "name": "Chilli Garlic Fried Rice - Veg",
+    "priceOptions": {
+      "size": {
+        "Full": 149,
+        "Half": 99
+      }
+    }
+  },
+  {
+    "name": "Chilli Garlic Noodles - Chicken",
+    "priceOptions": {
+      "size": {
+        "Full": 199,
+        "Half": 149
+      }
+    }
+  },
+  {
+    "name": "Chilli Garlic Noodles - Egg",
+    "priceOptions": {
+      "size": {
+        "Full": 174,
+        "Half": 124
+      }
+    }
+  },
+  {
+    "name": "Chilli Garlic Noodles - Veg",
+    "priceOptions": {
+      "size": {
+        "Full": 149,
+        "Half": 99
+      }
+    }
+  },
+  {
+    "name": "Chilli Paneer",
+    "priceOptions": {
+      "size": {},
+      "type": {
+        "Gravy": 179,
+        "Dry": 159
+      }
+    }
+  },
+  {
+    "name": "Chilli Potato",
+    "priceOptions": {
+      "size": {
+        "Full": 149,
+        "Half": 99
+      }
+    }
+  },
+  {
+    "name": "Chilly Potato",
+    "priceOptions": {
+      "size": {
+        "Full": 99
+      }
+    }
+  },
+  {
+    "name": "DAL BUKHARA",
+    "priceOptions": {
+      "size": {
+        "Full": 199,
+        "Half": 149
+      }
+    }
+  },
+  {
+    "name": "DAL MAKHANI",
+    "priceOptions": {
+      "size": {
+        "Full": 199,
+        "Half": 149
+      }
+    }
+  },
+  {
+    "name": "DOUBLE EGG CHICKEN TIKKA ROLL",
+    "priceOptions": {
+      "size": {
+        "Full": 174
+      }
+    }
+  },
+  {
+    "name": "DOUBLE EGG ROLL",
+    "priceOptions": {
+      "size": {
+        "Full": 79
+      }
+    }
+  },
+  {
+    "name": "DRAGON CHICKEN (8PC)",
+    "priceOptions": {
+      "size": {
+        "Full": 229
+      }
+    }
+  },
+  {
+    "name": "Egg Chowmein",
+    "priceOptions": {
+      "size": {
+        "Full": 174,
+        "Half": 124
+      }
+    }
+  },
+  {
+    "name": "Egg Fried Rice",
+    "priceOptions": {
+      "size": {
+        "Full": 174,
+        "Half": 124
+      }
+    }
+  },
+  {
+    "name": "FRIED CHICKEN",
+    "priceOptions": {
+      "size": {
+        "Full": 369
+      }
+    }
+  },
+  {
+    "name": "Fish Tikka",
+    "priceOptions": {
+      "size": {
+        "Full": 279
+      }
+    }
+  },
+  {
+    "name": "French Fries",
+    "priceOptions": {
+      "size": {
+        "Full": 79
+      }
+    }
+  },
+  {
+    "name": "GARLIC BUTTER ROTI",
+    "priceOptions": {
+      "size": {
+        "Full": 25
+      }
+    }
+  },
+  {
+    "name": "GARLIC NAAN",
+    "priceOptions": {
+      "size": {
+        "Full": 50
+      }
+    }
+  },
+  {
+    "name": "Gravy@149",
+    "priceOptions": {
+      "size": {},
+      "type": {
+        "Gravy": 149,
+        "Dry": 0
+      }
+    }
+  },
+  {
+    "name": "Gravy@99",
+    "priceOptions": {
+      "size": {},
+      "type": {
+        "Gravy": 99,
+        "Dry": 0
+      }
+    }
+  },
+  {
+    "name": "HARI MIRCH PARATHA",
+    "priceOptions": {
+      "size": {
+        "Full": 40
+      }
+    }
+  },
+  {
+    "name": "HARYALI CHAAP",
+    "priceOptions": {
+      "size": {
+        "Full": 99
+      }
+    }
+  },
+  {
+    "name": "HARYALI TIKKA",
+    "priceOptions": {
+      "size": {
+        "Full": 199
+      }
+    }
+  },
+  {
+    "name": "HONEY CHILLI POTATO",
+    "priceOptions": {
+      "size": {
+        "Full": 169
+      }
+    }
+  },
+  {
+    "name": "HONEY CHILLY POTATO",
+    "priceOptions": {
+      "size": {
+        "Half": 119
+      }
+    }
+  },
+  {
+    "name": "Hakka Noodles - Chicken",
+    "priceOptions": {
+      "size": {
+        "Full": 199,
+        "Half": 149
+      }
+    }
+  },
+  {
+    "name": "Hakka Noodles - Egg",
+    "priceOptions": {
+      "size": {
+        "Full": 174,
+        "Half": 124
+      }
+    }
+  },
+  {
+    "name": "Hakka Noodles - Veg",
+    "priceOptions": {
+      "size": {
+        "Full": 149,
+        "Half": 99
+      }
+    }
+  },
+  {
+    "name": "JEERA RICE",
+    "priceOptions": {
+      "size": {
+        "Full": 99
+      }
+    }
+  },
+  {
+    "name": "KALI MIRCH CHAAP",
+    "priceOptions": {
+      "size": {
+        "Full": 179,
+        "Half": 119
+      }
+    }
+  },
+  {
+    "name": "KALI MIRCH TIKKA",
+    "priceOptions": {
+      "size": {
+        "Full": 219
+      }
+    }
+  },
+  {
+    "name": "Kurkure Momos",
+    "priceOptions": {
+      "size": {
+        "Full": 119
+      }
+    }
+  },
+  {
+    "name": "LACCHA PARATHA",
+    "priceOptions": {
+      "size": {
+        "Full": 30
+      }
+    }
+  },
+  {
+    "name": "MALABAR PARANTHA",
+    "priceOptions": {
+      "size": {
+        "Full": 40
+      }
+    }
+  },
+  {
+    "name": "MALAI CHAAP",
+    "priceOptions": {
+      "size": {
+        "Half": 119
+      }
+    }
+  },
+  {
+    "name": "MALAI CHAP FULL",
+    "priceOptions": {
+      "size": {
+        "Full": 179
+      }
+    }
+  },
+  {
+    "name": "MALAI KOFTA",
+    "priceOptions": {
+      "size": {
+        "Full": 299,
+        "Half": 199
+      }
+    }
+  },
+  {
+    "name": "MALAI TANGDI (1 PC)",
+    "priceOptions": {
+      "size": {
+        "Full": 89
+      }
+    }
+  },
+  {
+    "name": "MALAI TANGDI (2 PC)",
+    "priceOptions": {
+      "size": {
+        "Full": 179
+      }
+    }
+  },
+  {
+    "name": "MALAI TANGDI (4 PC)",
+    "priceOptions": {
+      "size": {
+        "Full": 279
+      }
+    }
+  },
+  {
+    "name": "MASHROOM TIKKA",
+    "priceOptions": {
+      "size": {
+        "Full": 169,
+        "Half": 99
+      }
+    }
+  },
+  {
+    "name": "METHI PARATHA",
+    "priceOptions": {
+      "size": {
+        "Full": 40
+      }
+    }
+  },
+  {
+    "name": "MISSI ROTI",
+    "priceOptions": {
+      "size": {
+        "Full": 40
+      }
+    }
+  },
+  {
+    "name": "MIX VEG",
+    "priceOptions": {
+      "size": {
+        "Full": 179,
+        "Half": 119
+      }
+    }
+  },
+  {
+    "name": "MUSHROOM KADHAI",
+    "priceOptions": {
+      "size": {
+        "Full": 229,
+        "Half": 169
+      }
+    }
+  },
+  {
+    "name": "MUSHROOM MASALA",
+    "priceOptions": {
+      "size": {
+        "Full": 229,
+        "Half": 169
+      }
+    }
+  },
+  {
+    "name": "MUSHROOM MATAR",
+    "priceOptions": {
+      "size": {
+        "Full": 229,
+        "Half": 169
+      }
+    }
+  },
+  {
+    "name": "MUTTON SEEKH",
+    "priceOptions": {
+      "size": {
+        "Full": 199
+      }
+    }
+  },
+  {
+    "name": "Momo@60",
+    "priceOptions": {
+      "size": {
+        "Full": 60
+      }
+    }
+  },
+  {
+    "name": "Mutton Curry",
+    "priceOptions": {
+      "size": {
+        "Full": 499
+      }
+    }
+  },
+  {
+    "name": "NAVRATAN KORMA",
+    "priceOptions": {
+      "size": {
+        "Full": 179,
+        "Half": 119
+      }
+    }
+  },
+  {
+    "name": "NON VEG ROLLS@ 149",
+    "priceOptions": {
+      "size": {
+        "Full": 149
+      }
+    }
+  },
+  {
+    "name": "Non Veg Gravy@149",
+    "priceOptions": {
+      "size": {},
+      "type": {
+        "Gravy": 149,
+        "Dry": 0
+      }
+    }
+  },
+  {
+    "name": "ONION MISSI ROTI",
+    "priceOptions": {
+      "size": {
+        "Full": 50
+      }
+    }
+  },
+  {
+    "name": "ORANGE CHICKEN (8PC)",
+    "priceOptions": {
+      "size": {
+        "Full": 229
+      }
+    }
+  },
+  {
+    "name": "Onion Butter Roti",
+    "priceOptions": {
+      "size": {
+        "Full": 25
+      }
+    }
+  },
+  {
+    "name": "PANEER 65",
+    "priceOptions": {
+      "size": {
+        "Full": 169
+      }
+    }
+  },
+  {
+    "name": "PANEER BUTTER MASALA",
+    "priceOptions": {
+      "size": {
+        "Full": 299,
+        "Half": 199
+      }
+    }
+  },
+  {
+    "name": "PANEER KALI MIRCH",
+    "priceOptions": {
+      "size": {
+        "Full": 299,
+        "Half": 199
+      }
+    }
+  },
+  {
+    "name": "PANEER KHADAI",
+    "priceOptions": {
+      "size": {
+        "Full": 249,
+        "Half": 179
+      }
+    }
+  },
+  {
+    "name": "PANEER LABABDAR",
+    "priceOptions": {
+      "size": {
+        "Full": 249,
+        "Half": 179
+      }
+    }
+  },
+  {
+    "name": "PANEER MALAI TIKKA",
+    "priceOptions": {
+      "size": {
+        "Full": 219
+      }
+    }
+  },
+  {
+    "name": "PANEER MATAR",
+    "priceOptions": {
+      "size": {
+        "Full": 249,
+        "Half": 179
+      }
+    }
+  },
+  {
+    "name": "PANEER MOMOS",
+    "priceOptions": {
+      "size": {
+        "Full": 99
+      }
+    }
+  },
+  {
+    "name": "PANEER MOMOS - FRIED",
+    "priceOptions": {
+      "size": {
+        "Full": 119
+      }
+    }
+  },
+  {
+    "name": "PANEER NAAN",
+    "priceOptions": {
+      "size": {
+        "Full": 80
+      }
+    }
+  },
+  {
+    "name": "PANEER PALAK - Full",
+    "priceOptions": {
+      "size": {
+        "Full": 299
+      }
+    }
+  },
+  {
+    "name": "PANEER PALAK - Half",
+    "priceOptions": {
+      "size": {
+        "Half": 199
+      }
+    }
+  },
+  {
+    "name": "PANEER ROLL",
+    "priceOptions": {
+      "size": {
+        "Full": 129
+      }
+    }
+  },
+  {
+    "name": "PANEER SHAHI (Spl) - Full",
+    "priceOptions": {
+      "size": {
+        "Full": 299
+      }
+    }
+  },
+  {
+    "name": "PANEER SHAHI (Spl) - Half",
+    "priceOptions": {
+      "size": {
+        "Half": 199
+      }
+    }
+  },
+  {
+    "name": "PANEER TAWA",
+    "priceOptions": {
+      "size": {
+        "Full": 249,
+        "Half": 179
+      }
+    }
+  },
+  {
+    "name": "PANEER TIKKA",
+    "priceOptions": {
+      "size": {
+        "Full": 199
+      }
+    }
+  },
+  {
+    "name": "PEPPER CHICKEN",
+    "priceOptions": {
+      "size": {
+        "Full": 199
+      }
+    }
+  },
+  {
+    "name": "PERI PERI/ HERBED RICE",
+    "priceOptions": {
+      "size": {
+        "Full": 149
+      }
+    }
+  },
+  {
+    "name": "PINK SAUCE PASTA",
+    "priceOptions": {
+      "size": {
+        "Full": 139
+      }
+    }
+  },
+  {
+    "name": "PLAIN NAAN",
+    "priceOptions": {
+      "size": {
+        "Full": 30
+      }
+    }
+  },
+  {
+    "name": "Paneer Afghani Momos",
+    "priceOptions": {
+      "size": {
+        "Full": 169
+      }
+    }
+  },
+  {
+    "name": "Paneer Kurkure Momos",
+    "priceOptions": {
+      "size": {
+        "Full": 149
+      }
+    }
+  },
+  {
+    "name": "Paneer Noodles",
+    "priceOptions": {
+      "size": {
+        "Full": 179
+      }
+    }
+  },
+  {
+    "name": "Peri Peri Chicken Wings",
+    "priceOptions": {
+      "size": {
+        "Full": 169
+      }
+    }
+  },
+  {
+    "name": "RAITA@79",
+    "priceOptions": {
+      "size": {
+        "Full": 79
+      }
+    }
+  },
+  {
+    "name": "RED SAUCE PASTA",
+    "priceOptions": {
+      "size": {
+        "Full": 119
+      }
+    }
+  },
+  {
+    "name": "ROOMALi ROTI",
+    "priceOptions": {
+      "size": {
+        "Full": 20
+      }
+    }
+  },
+  {
+    "name": "SPRING ROLL",
+    "priceOptions": {
+      "size": {
+        "Full": 139
+      }
+    }
+  },
+  {
+    "name": "STUFFED MUSHROOM",
+    "priceOptions": {
+      "size": {
+        "Full": 169,
+        "Half": 99
+      }
+    }
+  },
+  {
+    "name": "Schezwan Fried Rice - Chicken",
+    "priceOptions": {
+      "size": {
+        "Full": 199,
+        "Half": 149
+      }
+    }
+  },
+  {
+    "name": "Schezwan Fried Rice - Egg",
+    "priceOptions": {
+      "size": {
+        "Full": 174,
+        "Half": 124
+      }
+    }
+  },
+  {
+    "name": "Schezwan Fried Rice - Veg",
+    "priceOptions": {
+      "size": {
+        "Full": 149,
+        "Half": 99
+      }
+    }
+  },
+  {
+    "name": "Schezwan Noodles - Chicken",
+    "priceOptions": {
+      "size": {
+        "Full": 199,
+        "Half": 149
+      }
+    }
+  },
+  {
+    "name": "Schezwan Noodles - Egg",
+    "priceOptions": {
+      "size": {
+        "Full": 174,
+        "Half": 124
+      }
+    }
+  },
+  {
+    "name": "Schezwan Noodles - Veg",
+    "priceOptions": {
+      "size": {
+        "Full": 149,
+        "Half": 99
+      }
+    }
+  },
+  {
+    "name": "Singapuri Noodles - Chicken",
+    "priceOptions": {
+      "size": {
+        "Full": 199,
+        "Half": 149
+      }
+    }
+  },
+  {
+    "name": "Singapuri Noodles - Egg",
+    "priceOptions": {
+      "size": {
+        "Full": 174,
+        "Half": 124
+      }
+    }
+  },
+  {
+    "name": "Singapuri Noodles - Veg",
+    "priceOptions": {
+      "size": {
+        "Full": 149,
+        "Half": 99
+      }
+    }
+  },
+  {
+    "name": "Starter@99",
+    "priceOptions": {
+      "size": {
+        "Full": 99
+      }
+    }
+  },
+  {
+    "name": "Steamed Rice",
+    "priceOptions": {
+      "size": {
+        "Full": 89
+      }
+    }
+  },
+  {
+    "name": "TANDOORI ALOO PARATHA",
+    "priceOptions": {
+      "size": {
+        "Full": 50
+      }
+    }
+  },
+  {
+    "name": "TANDOORI BUTTER ROTI",
+    "priceOptions": {
+      "size": {
+        "Full": 15
+      }
+    }
+  },
+  {
+    "name": "TANDOORI CHAAP",
+    "priceOptions": {
+      "size": {
+        "Full": 159,
+        "Half": 99
+      }
+    }
+  },
+  {
+    "name": "TANDOORI CHICKEN",
+    "priceOptions": {
+      "size": {
+        "Full": 349,
+        "Half": 199,
+        "Quarter": 149
+      }
+    }
+  },
+  {
+    "name": "TANDOORI CHICKEN MOMO",
+    "priceOptions": {
+      "size": {
+        "Full": 149
+      }
+    }
+  },
+  {
+    "name": "TANDOORI MOMO",
+    "priceOptions": {
+      "size": {
+        "Full": 129
+      }
+    }
+  },
+  {
+    "name": "TANDOORI PANEER MOMOS",
+    "priceOptions": {
+      "size": {
+        "Full": 149
+      }
+    }
+  },
+  {
+    "name": "TANDOORI PANEER PARATHA",
+    "priceOptions": {
+      "size": {
+        "Full": 70
+      }
+    }
+  },
+  {
+    "name": "TANDOORI ROTI",
+    "priceOptions": {
+      "size": {
+        "Full": 10
+      }
+    }
+  },
+  {
+    "name": "TANDOORI WINGS",
+    "priceOptions": {
+      "size": {
+        "Full": 199
+      }
+    }
+  },
+  {
+    "name": "TANGADI (1pc)",
+    "priceOptions": {
+      "size": {
+        "Full": 79
+      }
+    }
+  },
+  {
+    "name": "TAWA CHAAP",
+    "priceOptions": {
+      "size": {
+        "Full": 169
+      }
+    }
+  },
+  {
+    "name": "Tandoori Chicken Wings",
+    "priceOptions": {
+      "size": {
+        "Full": 169
+      }
+    }
+  },
+  {
+    "name": "Tandoori Momo 99",
+    "priceOptions": {
+      "size": {
+        "Full": 99
+      }
+    }
+  },
+  {
+    "name": "Thali@149",
+    "priceOptions": {
+      "size": {
+        "Full": 149
+      }
+    }
+  },
+  {
+    "name": "Thali@199",
+    "priceOptions": {
+      "size": {
+        "Full": 199
+      }
+    }
+  },
+  {
+    "name": "Thali@99",
+    "priceOptions": {
+      "size": {
+        "Full": 99
+      }
+    }
+  },
+  {
+    "name": "VEG KOLHAPURI",
+    "priceOptions": {
+      "size": {
+        "Full": 179,
+        "Half": 119
+      }
+    }
+  },
+  {
+    "name": "VEG ROLLS @ 99",
+    "priceOptions": {
+      "size": {
+        "Full": 99
+      }
+    }
+  },
+  {
+    "name": "Veg Chowmein",
+    "priceOptions": {
+      "size": {
+        "Full": 149,
+        "Half": 99
+      }
+    }
+  },
+  {
+    "name": "Veg Fried Rice",
+    "priceOptions": {
+      "size": {
+        "Full": 149,
+        "Half": 99
+      }
+    }
+  },
+  {
+    "name": "Veg Manchurian",
+    "priceOptions": {
+      "size": {},
+      "type": {
+        "Gravy": 159,
+        "Dry": 139
+      }
+    }
+  },
+  {
+    "name": "Veg Momos",
+    "priceOptions": {
+      "size": {
+        "Full": 79
+      }
+    }
+  },
+  {
+    "name": "Veg Momos - Fried",
+    "priceOptions": {
+      "size": {
+        "Full": 99
+      }
+    }
+  },
+  {
+    "name": "Veg Munchow Soup",
+    "priceOptions": {
+      "size": {
+        "Full": 99
+      }
+    }
+  },
+  {
+    "name": "WHITE SAUCE PASTA",
+    "priceOptions": {
+      "size": {
+        "Full": 139
+      }
+    }
+  },
+  {
+    "name": "Water Bottle",
+    "priceOptions": {
+      "size": {
+        "Full": 20
+      }
+    }
+  }
+]

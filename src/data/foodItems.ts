@@ -6,14 +6,12 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/paneer-tikka.jpg',
+      image: '/imgs/food/downloads/starter-paneer-tikka.jpeg',
       category: 'Starters',
       priceOptions: {
-        size: {
-          Full: 313.95,
-        },
+        wasPrice: { size: { Full: 313.95 } },
+        nowPrice: { size: { Full: 199 } },
       },
-      nowPrice: 313.95,
     },
     {
       id: '2',
@@ -21,15 +19,12 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/chilli-fried-rice.avif',
-      category: 'Rice',
+      image: '/imgs/food/downloads/chinese-rice-veg.jpeg',
+      category: 'Chinese Rice',
       priceOptions: {
-        size: {
-          Full: 313.95,
-          Half: 156.45,
-        },
+        wasPrice: { size: { Full: 313.95, Half: 156.45 } },
+        nowPrice: { size: { Full: 99, Half: 149 } },
       },
-      nowPrice: 156.45,
     },
     {
       id: '3',
@@ -37,14 +32,12 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/bread-cheese-garlic.jpeg',
       category: 'Breads',
       priceOptions: {
-        size: {
-          Full: 126,
-        },
+        wasPrice: { size: { Full: 126.0 } },
+        nowPrice: { size: { Full: 90 } },
       },
-      nowPrice: 126,
     },
     {
       id: '4',
@@ -52,15 +45,12 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/main-paneer-butter-masala.jpeg',
       category: 'Main Course',
       priceOptions: {
-        size: {
-          Full: 387.45,
-          Half: 271.95,
-        },
+        wasPrice: { size: { Full: 387.45, Half: 271.95 } },
+        nowPrice: { size: { Full: 299, Half: 199 } },
       },
-      nowPrice: 271.95,
     },
     {
       id: '5',
@@ -68,16 +58,12 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Starters',
+      image: '/imgs/food/downloads/main-chicken-tikka-masala.jpeg',
+      category: 'Main Course',
       priceOptions: {
-        size: {
-          Full: 754.95,
-          Half: 481.95,
-          Quarter: 313.95,
-        },
+        wasPrice: { size: { Full: 754.95, Half: 481.95, Quarter: 313.95 } },
+        nowPrice: { size: { Full: 499, Half: 349, Quarter: 199 } },
       },
-      nowPrice: 754.95,
     },
     {
       id: '6',
@@ -85,14 +71,12 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/bread-paratha-laccha.jpeg',
       category: 'Breads',
       priceOptions: {
-        size: {
-          Full: 52.5,
-        },
+        wasPrice: { size: { Full: 52.5 } },
+        nowPrice: { size: { Full: 30 } },
       },
-      nowPrice: 52.5,
     },
     {
       id: '7',
@@ -100,60 +84,52 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Others',
+      image: '/imgs/food/downloads/main-mushroom-matar.jpeg',
+      category: 'Main Course',
       priceOptions: {
-        size: {
-          Full: 366.45,
-          Half: 229.95,
-        },
+        wasPrice: { size: { Full: 366.45, Half: 229.95 } },
+        nowPrice: { size: { Full: 169, Half: 239 } },
       },
-      nowPrice: 229.95,
     },
     {
       id: '8',
       name: 'Rumali Roti',
+
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/bread-roomali-roti.jpeg',
       category: 'Breads',
       priceOptions: {
-        size: {
-          Full: 26.25,
-        },
+        wasPrice: { size: { Full: 26.25 } },
+        nowPrice: { size: { Full: 20 } },
       },
-      nowPrice: 26.25,
     },
-    {
-      id: '9',
-      name: 'Pasta',
-      description: '',
-      veg: true,
-      rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Pasta',
-      priceOptions: {
-        size: {
-          Full: 261.45,
-        },
-      },
-      nowPrice: 261.45,
-    },
+    // {
+    //   id: '9',
+    //   name: 'Pasta',
+    //   description: '',
+    //   veg: true,
+    //   rating: 4,
+    //   image: '/imgs/food/starter/tandoori-chicken.jpg',
+    //   category: 'Pasta',
+    //   priceOptions: {
+    //     wasPrice: { size: { Full: 261.45 } },
+    //     nowPrice: { size: { Full: 139 } },
+    //   },
+    // },
     {
       id: '10',
       name: 'Hariyali Paneer Tikka Roll',
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/paneer-haryali-tikka.jpg',
+      image: '/imgs/food/downloads/roll-paneer-haryali-tikka.jpeg',
       category: 'Starters',
       priceOptions: {
-        size: {
-          Full: 208.95,
-        },
+        wasPrice: { size: { Full: 208.95 } },
+        nowPrice: { size: { Full: 129 } },
       },
-      nowPrice: 208.95,
     },
     {
       id: '11',
@@ -161,14 +137,12 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/paneer-tikka.jpg',
+      image: '/imgs/food/downloads/roll-cheese.jpeg',
       category: 'Starters',
       priceOptions: {
-        size: {
-          Full: 156.45,
-        },
+        wasPrice: { size: { Full: 156.45 } },
+        nowPrice: { size: { Full: 150 } },
       },
-      nowPrice: 156.45,
     },
     {
       id: '12',
@@ -176,32 +150,26 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Others',
+      image: '/imgs/food/downloads/starter-chicken-tandoori.jpeg',
+      category: 'Starters',
       priceOptions: {
-        size: {
-          Full: 681.45,
-          Half: 366.45,
-        },
+        wasPrice: { size: { Full: 681.45, Half: 366.45 } },
+        nowPrice: { size: { Full: 199, Half: 350 } },
       },
-      nowPrice: 366.45,
     },
     {
       id: '13',
       name: 'Chicken Punjabi',
+
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Others',
+      image: '/imgs/food/downloads/main-chicken-punjabi.jpeg',
+      category: 'Main Course',
       priceOptions: {
-        size: {
-          Full: 754.95,
-          Half: 481.95,
-          Quarter: 313.95,
-        },
+        wasPrice: { size: { Full: 754.95, Half: 481.95, Quarter: 313.95 } },
+        nowPrice: { size: { Full: 499, Half: 349, Quarter: 199 } },
       },
-      nowPrice: 481.95,
     },
     {
       id: '14',
@@ -209,14 +177,12 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/bread-naan-butter.jpeg',
       category: 'Breads',
       priceOptions: {
-        size: {
-          Full: 68.25,
-        },
+        wasPrice: { size: { Full: 68.25 } },
+        nowPrice: { size: { Full: 40 } },
       },
-      nowPrice: 68.25,
     },
     {
       id: '15',
@@ -224,15 +190,12 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Others',
+      image: '/imgs/food/downloads/mail-daal-bukhara.jpeg',
+      category: 'Main Course',
       priceOptions: {
-        size: {
-          Full: 345.45,
-          Half: 208.95,
-        },
+        wasPrice: { size: { Full: 345.45, Half: 208.95 } },
+        nowPrice: { size: { Full: 149, Half: 179 } },
       },
-      nowPrice: 208.95,
     },
     {
       id: '16',
@@ -240,14 +203,12 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/chicken-haryali-tikka.jpg',
+      image: '/imgs/food/downloads/roll-chicken-haryali-tikka.jpeg',
       category: 'Starters',
       priceOptions: {
-        size: {
-          Full: 240.45,
-        },
+        wasPrice: { size: { Full: 240.45 } },
+        nowPrice: { size: { Full: 149 } },
       },
-      nowPrice: 240.45,
     },
     {
       id: '17',
@@ -255,14 +216,12 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/raita-plain-curd.jpeg',
       category: 'Sides',
       priceOptions: {
-        size: {
-          Full: 84,
-        },
+        wasPrice: { size: { Full: 84.0 } },
+        nowPrice: { size: { Full: 79 } },
       },
-      nowPrice: 84,
     },
     {
       id: '18',
@@ -270,46 +229,40 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/bread-keema-naan.jpeg',
       category: 'Breads',
       priceOptions: {
-        size: {
-          Full: 261.45,
-        },
+        wasPrice: { size: { Full: 261.45 } },
+        nowPrice: { size: { Full: 199 } },
       },
-      nowPrice: 261.45,
     },
     {
       id: '19',
       name: 'Schezwan Noodles',
+
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/chinese-noodles-schezwan.jpeg',
       category: 'Noodles',
       priceOptions: {
-        size: {
-          Full: 334.95,
-          Half: 187.95,
-        },
+        wasPrice: { size: { Full: 334.95, Half: 187.95 } },
+        nowPrice: { size: { Full: 149, Half: 99 } },
       },
-      nowPrice: 187.95,
     },
     {
       id: '20',
       name: 'Dal Makhani',
+
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Others',
+      image: '/imgs/food/downloads/main-dal-makhani.jpeg',
+      category: 'Main Course',
       priceOptions: {
-        size: {
-          Full: 345.45,
-          Half: 208.95,
-        },
+        wasPrice: { size: { Full: 345.45, Half: 208.95 } },
+        nowPrice: { size: { Full: 149, Half: 199 } },
       },
-      nowPrice: 208.95,
     },
     {
       id: '21',
@@ -317,15 +270,12 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/main-mushroom-kadhai.jpeg',
       category: 'Main Course',
       priceOptions: {
-        size: {
-          Full: 366.45,
-          Half: 229.95,
-        },
+        wasPrice: { size: { Full: 366.45, Half: 229.95 } },
+        nowPrice: { size: { Full: 239, Half: 169 } },
       },
-      nowPrice: 229.95,
     },
     {
       id: '22',
@@ -333,15 +283,12 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/afgani-chicken.jpg',
-      category: 'Others',
+      image: '/imgs/food/downloads/starter-chicken-afgani.jpeg',
+      category: 'Starters',
       priceOptions: {
-        size: {
-          Full: 733.95,
-          Half: 418.95,
-        },
+        wasPrice: { size: { Full: 733.95, Half: 418.95 } },
+        nowPrice: { size: { Full: 399, Half: 249 } },
       },
-      nowPrice: 418.95,
     },
     {
       id: '23',
@@ -349,14 +296,12 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/boondi-raita.avif',
+      image: '/imgs/food/downloads/raita-boondi.jpeg',
       category: 'Sides',
       priceOptions: {
-        size: {
-          Full: 126,
-        },
+        wasPrice: { size: { Full: 126.0 } },
+        nowPrice: { size: { Full: 79 } },
       },
-      nowPrice: 126,
     },
     {
       id: '24',
@@ -364,14 +309,12 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/bread-roti-tandoori-butter.jpeg',
       category: 'Breads',
       priceOptions: {
-        size: {
-          Full: 36.75,
-        },
+        wasPrice: { size: { Full: 36.75 } },
+        nowPrice: { size: { Full: 15 } },
       },
-      nowPrice: 36.75,
     },
     {
       id: '25',
@@ -379,109 +322,96 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/paneer-malai-tikka.jpg',
+      image: '/imgs/food/downloads/starter-paneer-malai-tikka.jpeg',
       category: 'Starters',
       priceOptions: {
-        size: {
-          Full: 366.45,
-        },
+        wasPrice: { size: { Full: 366.45 } },
+        nowPrice: { size: { Full: 219 } },
       },
-      nowPrice: 366.45,
     },
     {
       id: '26',
       name: 'Paneer Tawa',
+
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Others',
+      image: '/imgs/food/downloads/main-paneer-tawa.jpeg',
+      category: 'Main Course',
       priceOptions: {
-        size: {
-          Full: 387.45,
-          Half: 271.95,
-        },
+        wasPrice: { size: { Full: 387.45 } },
+        nowPrice: { size: { Full: 199 } },
       },
-      nowPrice: 271.95,
     },
     {
       id: '27',
       name: 'Malai Kofta',
+
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Others',
+      image: '/imgs/food/downloads/main-malai-kofta.jpeg',
+      category: 'Main Course',
       priceOptions: {
-        size: {
-          Full: 408.45,
-          Half: 282.45,
-        },
+        wasPrice: { size: { Full: 408.45, Half: 282.45 } },
+        nowPrice: { size: { Full: 299, Half: 199 } },
       },
-      nowPrice: 282.45,
     },
     {
       id: '28',
       name: 'Garlic Naan',
+
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/bread-naan-garlic.jpeg',
       category: 'Breads',
       priceOptions: {
-        size: {
-          Full: 84,
-        },
+        wasPrice: { size: { Full: 84.0 } },
+        nowPrice: { size: { Full: 50 } },
       },
-      nowPrice: 84,
     },
     {
       id: '29',
       name: 'Malai Chicken Tikka Roll',
+
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/malai-chicken.jpg',
+      image: '/imgs/food/downloads/roll-chicken-malai-tikka.jpeg',
       category: 'Starters',
       priceOptions: {
-        size: {
-          Full: 240.45,
-        },
+        wasPrice: { size: { Full: 240.45 } },
+        nowPrice: { size: { Full: 149 } },
       },
-      nowPrice: 240.45,
     },
     {
       id: '30',
       name: 'Chicken Kali Mirch Gravy',
+
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/main-chicken-kali-mirch.jpeg',
       category: 'Main Course',
       priceOptions: {
-        size: {
-          Full: 838.95,
-          Half: 576.45,
-          Quarter: 366.45,
-        },
+        wasPrice: { size: { Full: 838.95, Half: 576.45 } },
+        nowPrice: { size: { Full: 399, Half: 549 } },
       },
-      nowPrice: 576.45,
     },
     {
       id: '31',
       name: 'Bobs Special Paneer Gravy',
+
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/main-bobs-special-paneer-gravy.jpeg',
       category: 'Main Course',
       priceOptions: {
-        size: {
-          Full: 450.45,
-          Half: 303.45,
-        },
+        wasPrice: { size: { Full: 450.45 } },
+        nowPrice: { size: { Full: 299 } },
       },
-      nowPrice: 303.45,
     },
     {
       id: '32',
@@ -489,32 +419,26 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Others',
+      image: '/imgs/food/downloads/main-paneer-matar.jpeg',
+      category: 'Main Course',
       priceOptions: {
-        size: {
-          Full: 387.45,
-          Half: 271.95,
-        },
+        wasPrice: { size: { Full: 387.45, Half: 271.95 } },
+        nowPrice: { size: { Full: 179, Half: 249 } },
       },
-      nowPrice: 271.95,
     },
     {
       id: '33',
       name: 'Chicken Rara',
+
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Others',
+      image: '/imgs/food/downloads/main-chicken-rara.jpeg',
+      category: 'Main Course',
       priceOptions: {
-        size: {
-          Full: 838.95,
-          Half: 576.45,
-          Quarter: 366.45,
-        },
+        wasPrice: { size: { Full: 838.95, Half: 576.45 } },
+        nowPrice: { size: { Full: 399, Half: 549 } },
       },
-      nowPrice: 838.95,
     },
     {
       id: '34',
@@ -522,92 +446,81 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/rice-steamed-rice.jpeg',
       category: 'Rice',
       priceOptions: {
-        size: {
-          Full: 126,
-        },
+        wasPrice: { size: { Full: 126.0 } },
+        nowPrice: { size: { Full: 89 } },
       },
-      nowPrice: 126,
     },
-    {
-      id: '35',
-      name: 'Gravy',
-      description: '',
-      veg: true,
-      rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Main Course',
-      priceOptions: {
-        size: {
-          Full: 20,
-        },
-      },
-      nowPrice: 20,
-    },
+    // {
+    //   id: '35',
+    //   name: 'Gravy',
+
+    //   description: '',
+    //   veg: true,
+    //   rating: 4,
+    //   image: '/imgs/food/downloads/chinese-chicken-chilli-gravy.jpeg',
+    //   category: 'Main Course',
+    //   priceOptions: {
+    //     wasPrice: { size: { Full: 20.0 } },
+    //     nowPrice: { size: { Full: 20.0 } },
+    //   },
+    // },
     {
       id: '36',
       name: 'Paneer Lababdar',
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Others',
+      image: '/imgs/food/downloads/main-paneer-lababdar.jpeg',
+      category: 'Main Course',
       priceOptions: {
-        size: {
-          Full: 387.45,
-          Half: 271.95,
-        },
+        wasPrice: { size: { Full: 387.45, Half: 271.95 } },
+        nowPrice: { size: { Full: 249, Half: 179 } },
       },
-      nowPrice: 271.95,
     },
     {
       id: '37',
       name: 'Chicken Curry',
+
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/main-chicken-curry.jpeg',
       category: 'Main Course',
       priceOptions: {
-        size: {
-          Full: 765.45,
-          Half: 492.45,
-          Quarter: 313.95,
-        },
+        wasPrice: { size: { Full: 765.45, Half: 492.45, Quarter: 313.95 } },
+        nowPrice: { size: { Full: 499, Half: 349, Quarter: 199 } },
       },
-      nowPrice: 492.45,
     },
     {
       id: '38',
       name: 'Methi Paratha',
+
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/bread-paratha-methi.jpeg',
       category: 'Breads',
       priceOptions: {
-        size: {
-          Full: 68.25,
-        },
+        wasPrice: { size: { Full: 68.25 } },
+        nowPrice: { size: { Full: 40 } },
       },
-      nowPrice: 68.25,
     },
     {
       id: '39',
       name: 'Chicken Kali Mirch Tikka [8 Pieces]',
+
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/starter-chicken-kali-mirch-tikka.jpeg',
       category: 'Starters',
       priceOptions: {
-        size: {
-          Full: 418.95,
-        },
+        wasPrice: { size: { Full: 418.95 } },
+        nowPrice: { size: { Full: 219 } },
       },
-      nowPrice: 418.95,
     },
     {
       id: '40',
@@ -615,14 +528,12 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/paneer-malai-tikka.jpg',
+      image: '/imgs/food/downloads/roll-malai-paneer-tikka.jpeg',
       category: 'Starters',
       priceOptions: {
-        size: {
-          Full: 208.95,
-        },
+        wasPrice: { size: { Full: 208.95 } },
+        nowPrice: { size: { Full: 129 } },
       },
-      nowPrice: 208.95,
     },
     {
       id: '41',
@@ -630,30 +541,26 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/roll-chicken-tikka.jpeg',
       category: 'Starters',
       priceOptions: {
-        size: {
-          Full: 208.95,
-        },
+        wasPrice: { size: { Full: 208.95 } },
+        nowPrice: { size: { Full: 149 } },
       },
-      nowPrice: 208.95,
     },
     {
       id: '42',
       name: 'Bobs Special Chicken Gravy',
+
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/main-bobs-special-chicken-gravy.jpeg',
       category: 'Main Course',
       priceOptions: {
-        size: {
-          Full: 880.95,
-          Half: 586.95,
-        },
+        wasPrice: { size: { Full: 880.95, Half: 586.95 } },
+        nowPrice: { size: { Full: 549, Half: 399 } },
       },
-      nowPrice: 586.95,
     },
     {
       id: '43',
@@ -661,14 +568,12 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/achari-paneer-tikka.jpg',
+      image: '/imgs/food/downloads/starter-paneer-achari-tikka.jpeg',
       category: 'Starters',
       priceOptions: {
-        size: {
-          Full: 334.95,
-        },
+        wasPrice: { size: { Full: 334.95 } },
+        nowPrice: { size: { Full: 199 } },
       },
-      nowPrice: 334.95,
     },
     {
       id: '44',
@@ -676,14 +581,12 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Others',
+      image: '/imgs/food/downloads/bread-paratha-malabar.jpeg',
+      category: 'Breads',
       priceOptions: {
-        size: {
-          Full: 57.75,
-        },
+        wasPrice: { size: { Full: 57.75 } },
+        nowPrice: { size: { Full: 45 } },
       },
-      nowPrice: 57.75,
     },
     {
       id: '45',
@@ -691,32 +594,26 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Others',
+      image: '/imgs/food/downloads/main-chicken-butter-special.jpeg',
+      category: 'Main Course',
       priceOptions: {
-        size: {
-          Full: 838.95,
-          Half: 576.45,
-          Quarter: 366.45,
-        },
+        wasPrice: { size: { Full: 838.95, Half: 576.45 } },
+        nowPrice: { size: { Full: 550, Half: 400 } },
       },
-      nowPrice: 576.45,
     },
     {
       id: '46',
       name: 'Hakka Noodles',
+
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/chinese-hakka-noodles.jpeg',
       category: 'Noodles',
       priceOptions: {
-        size: {
-          Full: 313.95,
-          Half: 166.95,
-        },
+        wasPrice: { size: { Full: 313.95, Half: 166.95 } },
+        nowPrice: { size: { Full: 149, Half: 99 } },
       },
-      nowPrice: 166.95,
     },
     {
       id: '47',
@@ -724,15 +621,12 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Rice',
+      image: '/imgs/food/downloads/chinese-rice-schezwan.jpeg',
+      category: 'Chinese Rice',
       priceOptions: {
-        size: {
-          Full: 313.95,
-          Half: 156.45,
-        },
+        wasPrice: { size: { Full: 313.95, Half: 156.45 } },
+        nowPrice: { size: { Full: 149, Half: 99 } },
       },
-      nowPrice: 156.45,
     },
     {
       id: '48',
@@ -740,45 +634,40 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/main-veg-kolhapuri.jpeg',
       category: 'Main Course',
       priceOptions: {
-        size: {
-          Full: 313.95,
-          Half: 177.45,
-        },
+        wasPrice: { size: { Full: 313.95, Half: 177.45 } },
+        nowPrice: { size: { Full: 179, Half: 119 } },
       },
-      nowPrice: 177.45,
     },
     {
       id: '49',
       name: 'Plain Naan',
+
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/bread-naan-plain.jpeg',
       category: 'Breads',
       priceOptions: {
-        size: {
-          Full: 52.5,
-        },
+        wasPrice: { size: { Full: 52.5 } },
+        nowPrice: { size: { Full: 30 } },
       },
-      nowPrice: 52.5,
     },
     {
       id: '50',
       name: 'Tandoori Aloo Paratha',
+
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/bread-paratha-aloo.jpeg',
       category: 'Breads',
       priceOptions: {
-        size: {
-          Full: 84,
-        },
+        wasPrice: { size: { Full: 84.0 } },
+        nowPrice: { size: { Full: 50 } },
       },
-      nowPrice: 84,
     },
     {
       id: '51',
@@ -786,30 +675,26 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Others',
+      image: '/imgs/food/downloads/chinese-paneer-chilli-gravy.jpeg',
+      category: 'Chinese',
       priceOptions: {
-        size: {
-          Full: 334.95,
-          Half: 229.95,
-        },
+        wasPrice: { size: { Full: 334.95, Half: 229.95 } },
+        nowPrice: { size: { Full: 219, Half: 159 } },
       },
-      nowPrice: 229.95,
     },
     {
       id: '52',
       name: 'Tandoori Paneer Tikka Roll',
+
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/paneer-tikka.jpg',
+      image: '/imgs/food/downloads/roll-paneer-tikka.jpeg',
       category: 'Starters',
       priceOptions: {
-        size: {
-          Full: 177.45,
-        },
+        wasPrice: { size: { Full: 177.45 } },
+        nowPrice: { size: { Full: 129 } },
       },
-      nowPrice: 177.45,
     },
     {
       id: '53',
@@ -817,14 +702,12 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-tangadi.jpg',
+      image: '/imgs/food/downloads/starter-seekh-kabab.jpeg',
       category: 'Starters',
       priceOptions: {
-        size: {
-          Full: 324.45,
-        },
+        wasPrice: { size: { Full: 324.45 } },
+        nowPrice: { size: { Full: 250 } },
       },
-      nowPrice: 324.45,
     },
     {
       id: '54',
@@ -832,138 +715,124 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/main-paneer-kali-mirch.jpeg',
       category: 'Main Course',
       priceOptions: {
-        size: {
-          Full: 418.95,
-          Half: 292.95,
-        },
+        wasPrice: { size: { Full: 418.95, Half: 292.95 } },
+        nowPrice: { size: { Full: 299, Half: 199 } },
       },
-      nowPrice: 292.95,
     },
     {
       id: '55',
       name: 'Tandoori Paneer Paratha',
+
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/breads-tandoori-paneer-paratha.jpeg',
       category: 'Breads',
       priceOptions: {
-        size: {
-          Full: 126,
-        },
+        wasPrice: { size: { Full: 126.0 } },
+        nowPrice: { size: { Full: 70 } },
       },
-      nowPrice: 126,
     },
     {
       id: '56',
       name: 'Jeera Rice',
+
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/rice-jeera-rice.jpeg',
       category: 'Rice',
       priceOptions: {
-        size: {
-          Full: 147,
-        },
+        wasPrice: { size: { Full: 147.0 } },
+        nowPrice: { size: { Full: 99 } },
       },
-      nowPrice: 147,
     },
     {
       id: '57',
       name: 'Chilli Potato',
+
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Snacks',
+      image: '/imgs/food/downloads/chinese-chilli-potato.jpeg',
+      category: 'Chinese',
       priceOptions: {
-        size: {
-          Full: 240.45,
-          Half: 177.45,
-        },
+        wasPrice: { size: { Full: 240.45, Half: 177.45 } },
+        nowPrice: { size: { Full: 99, Half: 149 } },
       },
-      nowPrice: 240.45,
     },
     {
       id: '58',
       name: 'Chili Chicken',
+
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Others',
+      image: '/imgs/food/downloads/chinese-chicken-chilli-gravy.jpeg',
+      category: 'Chinese',
       priceOptions: {
-        size: {
-          Full: 366.45,
-          Half: 271.95,
-        },
+        wasPrice: { size: { Full: 366.45, Half: 271.95 } },
+        nowPrice: { size: { Full: 229, Half: 169 } },
       },
-      nowPrice: 271.95,
     },
     {
       id: '59',
       name: 'Chicken Seekh [2 Seekh]',
+
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/starter-seekh-kabab.jpeg',
       category: 'Starters',
       priceOptions: {
-        size: {
-          Full: 271.95,
-        },
+        wasPrice: { size: { Full: 271.95 } },
+        nowPrice: { size: { Full: 149 } },
       },
-      nowPrice: 271.95,
     },
     {
       id: '60',
       name: 'Chicken Tikka [8 Pieces]',
+
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/starter-chicken-tikka.jpeg',
       category: 'Starters',
       priceOptions: {
-        size: {
-          Full: 397.95,
-        },
+        wasPrice: { size: { Full: 397.95 } },
+        nowPrice: { size: { Full: 199 } },
       },
-      nowPrice: 397.95,
     },
     {
       id: '61',
       name: 'Chilli Garlic Fried Rice',
+
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Rice',
+      image: '/imgs/food/downloads/chinese-rice-chilli-garlic.jpeg',
+      category: 'Chinese Rice',
       priceOptions: {
-        size: {
-          Full: 313.95,
-          Half: 156.45,
-        },
+        wasPrice: { size: { Full: 313.95, Half: 156.45 } },
+        nowPrice: { size: { Full: 149, Half: 99 } },
       },
-      nowPrice: 156.45,
     },
     {
       id: '62',
       name: 'Mix Veg Raita',
+
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/raita-mix-veg.jpeg',
       category: 'Sides',
       priceOptions: {
-        size: {
-          Full: 126,
-        },
+        wasPrice: { size: { Full: 126.0 } },
+        nowPrice: { size: { Full: 79 } },
       },
-      nowPrice: 126,
     },
     {
       id: '63',
@@ -971,14 +840,12 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/malai-chicken.jpg',
+      image: '/imgs/food/downloads/starter-chicken-malai-tikka.jpeg',
       category: 'Starters',
       priceOptions: {
-        size: {
-          Full: 418.95,
-        },
+        wasPrice: { size: { Full: 418.95 } },
+        nowPrice: { size: { Full: 219 } },
       },
-      nowPrice: 418.95,
     },
     {
       id: '64',
@@ -986,14 +853,12 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/bread-naan-aloo.jpeg',
       category: 'Breads',
       priceOptions: {
-        size: {
-          Full: 105,
-        },
+        wasPrice: { size: { Full: 105.0 } },
+        nowPrice: { size: { Full: 60 } },
       },
-      nowPrice: 105,
     },
     {
       id: '65',
@@ -1001,15 +866,12 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/chilli-garlic-noodles.avif',
+      image: '/imgs/food/downloads/chinese-noodles-chilli-garlic.jpeg',
       category: 'Noodles',
       priceOptions: {
-        size: {
-          Full: 334.95,
-          Half: 187.95,
-        },
+        wasPrice: { size: { Full: 334.95, Half: 187.95 } },
+        nowPrice: { size: { Full: 148, Half: 99 } },
       },
-      nowPrice: 187.95,
     },
     {
       id: '66',
@@ -1017,14 +879,12 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/burgers-veg-cheese-burger.jpeg',
       category: 'Burgers',
       priceOptions: {
-        size: {
-          Full: 103.95,
-        },
+        wasPrice: { size: { Full: 103.95 } },
+        nowPrice: { size: { Full: 79 } },
       },
-      nowPrice: 103.95,
     },
     {
       id: '67',
@@ -1032,14 +892,12 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chaap-updated.jpeg',
+      image: '/imgs/food/downloads/roll-chaap-malai.jpeg',
       category: 'Starters',
       priceOptions: {
-        size: {
-          Full: 177.45,
-        },
+        wasPrice: { size: { Full: 177.45 } },
+        nowPrice: { size: { Full: 99 } },
       },
-      nowPrice: 177.45,
     },
     {
       id: '68',
@@ -1047,46 +905,40 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/main-mushroom-masala.jpeg',
       category: 'Main Course',
       priceOptions: {
-        size: {
-          Full: 366.45,
-          Half: 229.95,
-        },
+        wasPrice: { size: { Full: 366.45, Half: 229.95 } },
+        nowPrice: { size: { Full: 229, Half: 169 } },
       },
-      nowPrice: 229.95,
     },
     {
       id: '69',
       name: 'Hari Mirch Paratha',
+
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/bread-paratha-hari-mirch.jpeg',
       category: 'Breads',
       priceOptions: {
-        size: {
-          Full: 63,
-        },
+        wasPrice: { size: { Full: 63.0 } },
+        nowPrice: { size: { Full: 40.0 } },
       },
-      nowPrice: 63,
     },
     {
       id: '70',
       name: 'Veg Manchurian',
+
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/paneer-tikka.jpg',
-      category: 'Starters',
+      image: '/imgs/food/downloads/chinese-veg-manchurian.jpeg',
+      category: 'Chinese',
       priceOptions: {
-        size: {
-          Full: 313.95,
-          Half: 208.95,
-        },
+        wasPrice: { size: { Full: 313.95, Half: 208.95 } },
+        nowPrice: { size: { Full: 139, Half: 199 } },
       },
-      nowPrice: 313.95,
     },
     {
       id: '71',
@@ -1094,94 +946,82 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/main-chicken-kadhai.jpeg',
       category: 'Main Course',
       priceOptions: {
-        size: {
-          Full: 754.95,
-          Half: 481.95,
-          Quarter: 313.95,
-        },
+        wasPrice: { size: { Full: 754.95, Half: 481.95, Quarter: 313.95 } },
+        nowPrice: { size: { Full: 499, Half: 349, Quarter: 199 } },
       },
-      nowPrice: 481.95,
     },
     {
       id: '72',
       name: 'Missi Roti',
+
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/bread-missi.jpeg',
       category: 'Breads',
       priceOptions: {
-        size: {
-          Full: 52.5,
-        },
+        wasPrice: { size: { Full: 52.5 } },
+        nowPrice: { size: { Full: 40 } },
       },
-      nowPrice: 52.5,
     },
     {
       id: '73',
       name: 'Chicken Cheese Burger',
+
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/burgers-chicken-cheese-burger.jpeg',
       category: 'Burgers',
       priceOptions: {
-        size: {
-          Full: 156.45,
-        },
+        wasPrice: { size: { Full: 156.45 } },
+        nowPrice: { size: { Full: 119 } },
       },
-      nowPrice: 156.45,
     },
     {
       id: '74',
       name: 'Chicken Lababdar',
+
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Others',
+      image: '/imgs/food/downloads/main-chicken-lababdar.jpeg',
+      category: 'Main Course',
       priceOptions: {
-        size: {
-          Full: 754.95,
-          Half: 481.95,
-          Quarter: 313.95,
-        },
+        wasPrice: { size: { Full: 754.95, Half: 481.95, Quarter: 313.95 } },
+        nowPrice: { size: { Full: 499, Half: 349, Quarter: 199 } },
       },
-      nowPrice: 481.95,
     },
     {
       id: '75',
       name: 'Tandoori Chaap',
+
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Others',
+      image: '/imgs/food/downloads/starter-chaap-tandoori.jpeg',
+      category: 'Starters',
       priceOptions: {
-        size: {
-          Full: 282.45,
-          Half: 177.45,
-        },
+        wasPrice: { size: { Full: 282.45, Half: 177.45 } },
+        nowPrice: { size: { Full: 159, Half: 99 } },
       },
-      nowPrice: 177.45,
     },
     {
       id: '76',
       name: 'Mushroom Tikka',
+
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/mushroom-tikka.jpg',
+      image: '/imgs/food/downloads/starter-mushroom-tikka.jpeg',
       category: 'Starters',
       priceOptions: {
-        size: {
-          Full: 271.95,
-        },
+        wasPrice: { size: { Full: 271.95 } },
+        nowPrice: { size: { Full: 169 } },
       },
-      nowPrice: 271.95,
     },
     {
       id: '77',
@@ -1189,14 +1029,12 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chaap-updated.jpeg',
+      image: '/imgs/food/downloads/roll-chaap-tandoori.jpeg',
       category: 'Starters',
       priceOptions: {
-        size: {
-          Full: 156.45,
-        },
+        wasPrice: { size: { Full: 156.45 } },
+        nowPrice: { size: { Full: 99 } },
       },
-      nowPrice: 156.45,
     },
     {
       id: '78',
@@ -1204,14 +1042,12 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/breads-chicken-keema-naan.jpeg',
       category: 'Breads',
       priceOptions: {
-        size: {
-          Full: 208.95,
-        },
+        wasPrice: { size: { Full: 208.95 } },
+        nowPrice: { size: { Full: 149 } },
       },
-      nowPrice: 208.95,
     },
     {
       id: '79',
@@ -1219,15 +1055,12 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Others',
+      image: '/imgs/food/downloads/main-mix-veg.jpeg',
+      category: 'Main Course',
       priceOptions: {
-        size: {
-          Full: 345.45,
-          Half: 208.95,
-        },
+        wasPrice: { size: { Full: 345.45, Half: 208.95 } },
+        nowPrice: { size: { Full: 179, Half: 119 } },
       },
-      nowPrice: 208.95,
     },
     {
       id: '80',
@@ -1235,15 +1068,12 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Others',
+      image: '/imgs/food/downloads/main-navratan-korma.jpeg',
+      category: 'Main Course',
       priceOptions: {
-        size: {
-          Full: 303.45,
-          Half: 219.45,
-        },
+        wasPrice: { size: { Full: 303.45, Half: 219.45 } },
+        nowPrice: { size: { Full: 179, Half: 119 } },
       },
-      nowPrice: 219.45,
     },
     {
       id: '81',
@@ -1251,15 +1081,12 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/main-paneer-kadhai.jpeg',
       category: 'Main Course',
       priceOptions: {
-        size: {
-          Full: 387.45,
-          Half: 271.95,
-        },
+        wasPrice: { size: { Full: 387.45, Half: 271.95 } },
+        nowPrice: { size: { Full: 179, Half: 249 } },
       },
-      nowPrice: 271.95,
     },
     {
       id: '82',
@@ -1267,14 +1094,12 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chaap-updated.jpeg',
+      image: '/imgs/food/downloads/roll-chaap-haryali.jpeg',
       category: 'Starters',
       priceOptions: {
-        size: {
-          Full: 177.45,
-        },
+        wasPrice: { size: { Full: 177.45 } },
+        nowPrice: { size: { Full: 99 } },
       },
-      nowPrice: 177.45,
     },
     {
       id: '83',
@@ -1282,15 +1107,12 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Others',
+      image: '/imgs/food/downloads/starter-chaap-tandoori.jpeg',
+      category: 'Starters',
       priceOptions: {
-        size: {
-          Full: 313.95,
-          Half: 208.95,
-        },
+        wasPrice: { size: { Full: 313.95, Half: 208.95 } },
+        nowPrice: { size: { Full: 119, Half: 179 } },
       },
-      nowPrice: 208.95,
     },
     {
       id: '84',
@@ -1298,30 +1120,26 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Others',
+      image: '/imgs/food/downloads/starter-chaap-kali-mirch.jpeg',
+      category: 'Starters',
       priceOptions: {
-        size: {
-          Full: 313.95,
-          Half: 208.95,
-        },
+        wasPrice: { size: { Full: 313.95, Half: 208.95 } },
+        nowPrice: { size: { Full: 119, Half: 179 } },
       },
-      nowPrice: 208.95,
     },
     {
       id: '85',
       name: 'Chicken Hariyali Tikka [8 Pieces]',
+
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/chicken-haryali-tikka.jpg',
+      image: '/imgs/food/downloads/starter-chicken-haryali-tikka.jpeg',
       category: 'Starters',
       priceOptions: {
-        size: {
-          Full: 397.95,
-        },
+        wasPrice: { size: { Full: 397.95 } },
+        nowPrice: { size: { Full: 199 } },
       },
-      nowPrice: 397.95,
     },
     {
       id: '86',
@@ -1329,218 +1147,193 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/bread-roti-tandoori.jpeg',
       category: 'Breads',
       priceOptions: {
-        size: {
-          Full: 26.25,
-        },
+        wasPrice: { size: { Full: 26.25 } },
+        nowPrice: { size: { Full: 15 } },
       },
-      nowPrice: 26.25,
     },
     {
       id: '87',
       name: 'Chicken Manchurian',
+
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Starters',
+      image: '/imgs/food/downloads/chinese-chicken-manchurian-gravy.jpeg',
+      category: 'Chinese',
       priceOptions: {
-        size: {
-          Full: 376.95,
-          Half: 271.95,
-        },
+        wasPrice: { size: { Full: 376.95, Half: 271.95 } },
+        nowPrice: { size: { Full: 229, Half: 169 } },
       },
-      nowPrice: 376.95,
     },
     {
       id: '88',
       name: 'Paneer Naan',
+
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/bread-naan-paneer.jpeg',
       category: 'Breads',
       priceOptions: {
-        size: {
-          Full: 147,
-        },
+        wasPrice: { size: { Full: 147.0 } },
+        nowPrice: { size: { Full: 80 } },
       },
-      nowPrice: 147,
     },
     {
       id: '89',
       name: 'Burani Raita',
+
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/raita-boondi.jpeg',
       category: 'Sides',
       priceOptions: {
-        size: {
-          Full: 126,
-        },
+        wasPrice: { size: { Full: 126.0 } },
+        nowPrice: { size: { Full: 79 } },
       },
-      nowPrice: 126,
     },
     {
       id: '90',
       name: 'Paneer Shahi',
+
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Others',
+      image: '/imgs/food/downloads/main-paneer-shahi.jpeg',
+      category: 'Main Course',
       priceOptions: {
-        size: {
-          Full: 387.45,
-          Half: 271.95,
-        },
+        wasPrice: { size: { Full: 387.45, Half: 271.95 } },
+        nowPrice: { size: { Full: 299, Half: 199 } },
       },
-      nowPrice: 271.95,
     },
     {
       id: '91',
       name: 'Paneer Palak',
+
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Others',
+      image: '/imgs/food/downloads/main-paneer-palak.jpeg',
+      category: 'Main Course',
       priceOptions: {
-        size: {
-          Full: 387.45,
-          Half: 271.95,
-        },
+        wasPrice: { size: { Full: 387.45, Half: 271.95 } },
+        nowPrice: { size: { Full: 299, Half: 199 } },
       },
-      nowPrice: 271.95,
     },
     {
       id: '92',
       name: 'Tawa Chaap',
+
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Others',
+      image: '/imgs/food/downloads/main-chaap-tawa.jpeg',
+      category: 'Main Course',
       priceOptions: {
-        size: {
-          Full: 366.45,
-          Half: 229.95,
-        },
+        wasPrice: { size: { Full: 366.45, Half: 229.95 } },
+        nowPrice: { size: { Full: 229, Half: 169 } },
       },
-      nowPrice: 229.95,
     },
     {
       id: '93',
       name: 'Chaap Butter Masala',
+
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/main-chaap-butter-masala.jpeg',
       category: 'Main Course',
       priceOptions: {
-        size: {
-          Full: 366.45,
-          Half: 229.95,
-        },
+        wasPrice: { size: { Full: 366.45, Half: 229.95 } },
+        nowPrice: { size: { Full: 239, Half: 169 } },
       },
-      nowPrice: 229.95,
     },
     {
       id: '94',
       name: 'Kadhai Chaap',
+
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/main-chaap-kadhai.jpeg',
       category: 'Main Course',
       priceOptions: {
-        size: {
-          Full: 366.45,
-          Half: 229.95,
-        },
+        wasPrice: { size: { Full: 366.45, Half: 229.95 } },
+        nowPrice: { size: { Full: 239, Half: 169 } },
       },
-      nowPrice: 229.95,
     },
     {
       id: '95',
       name: 'Chicken Butter Masala',
+
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/main-chicken-butter-masala.jpeg',
       category: 'Main Course',
       priceOptions: {
-        size: {
-          Full: 754.95,
-          Half: 481.95,
-          Quarter: 313.95,
-        },
+        wasPrice: { size: { Full: 754.95, Half: 481.95, Quarter: 313.95 } },
+        nowPrice: { size: { Full: 499, Half: 349, Quarter: 199 } },
       },
-      nowPrice: 313.95,
     },
     {
       id: '96',
       name: 'Achaari Chaap',
+
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Others',
+      image: '/imgs/food/downloads/starter-chaap-achaari.jpeg',
+      category: 'Starters',
       priceOptions: {
-        size: {
-          Full: 282.45,
-          Half: 177.45,
-        },
+        wasPrice: { size: { Full: 282.45, Half: 177.45 } },
+        nowPrice: { size: { Full: 99, Half: 159 } },
       },
-      nowPrice: 177.45,
     },
     {
       id: '97',
       name: 'Paneer Hariyali Tikka [6 Pieces]',
+
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/paneer-haryali-tikka.jpg',
+      image: '/imgs/food/downloads/starter-paneer-haryali-tikka.jpeg',
       category: 'Starters',
       priceOptions: {
-        size: {
-          Full: 334.95,
-        },
+        wasPrice: { size: { Full: 334.95 } },
+        nowPrice: { size: { Full: 199 } },
       },
-      nowPrice: 334.95,
     },
     {
       id: '98',
-      name: 'Tandoori Tangdi',
+      name: 'Tandoori Tangdi [2/4 Pieces]',
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Others',
+      image: '/imgs/food/downloads/starter-tangdi.jpeg',
+      category: 'Starters',
       priceOptions: {
-        size: {
-          Full: 313.95,
-        },
+        wasPrice: { size: { Full: 313.95 } },
+        nowPrice: { size: { Full: 259, Half: 159 } },
       },
-      nowPrice: 313.95,
     },
     {
       id: '99',
       name: 'Malai Tangdi',
+
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Others',
+      image: '/imgs/food/downloads/starter-malai-tangdi.jpeg',
+      category: 'Starters',
       priceOptions: {
-        size: {
-          Full: 366.45,
-        },
+        wasPrice: { size: { Full: 366.45 } },
+        nowPrice: { size: { Full: 279, Half: 179 } },
       },
-      nowPrice: 366.45,
     },
     {
       id: '100',
@@ -1548,15 +1341,12 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Rice',
+      image: '/imgs/food/downloads/chinese-rice-chicken.jpeg',
+      category: 'Chinese Rice',
       priceOptions: {
-        size: {
-          Full: 366.45,
-          Half: 208.95,
-        },
+        wasPrice: { size: { Full: 366.45, Half: 208.95 } },
+        nowPrice: { size: { Full: 199, Half: 149 } },
       },
-      nowPrice: 208.95,
     },
     {
       id: '101',
@@ -1564,47 +1354,40 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Rice',
+      image: '/imgs/food/downloads/chinese-rice-chicken-chilli-garlic.jpeg',
+      category: 'Chinese Rice',
       priceOptions: {
-        size: {
-          Full: 366.45,
-          Half: 208.95,
-        },
+        wasPrice: { size: { Full: 366.45, Half: 208.95 } },
+        nowPrice: { size: { Full: 199, Half: 149 } },
       },
-      nowPrice: 208.95,
     },
     {
       id: '102',
       name: 'Chicken Schezwan Fried Rice',
+
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Rice',
+      image: '/imgs/food/downloads/chinese-rice-egg-chilli.jpeg',
+      category: 'Chinese Rice',
       priceOptions: {
-        size: {
-          Full: 366.45,
-          Half: 208.95,
-        },
+        wasPrice: { size: { Full: 366.45, Half: 208.95 } },
+        nowPrice: { size: { Full: 199, Half: 149 } },
       },
-      nowPrice: 208.95,
     },
     {
       id: '103',
       name: 'Egg Fried Rice',
+
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Rice',
+      image: '/imgs/food/downloads/chinese-rice-egg.jpeg',
+      category: 'Chinese Rice',
       priceOptions: {
-        size: {
-          Full: 334.95,
-          Half: 177.45,
-        },
+        wasPrice: { size: { Full: 334.95, Half: 177.45 } },
+        nowPrice: { size: { Full: 174, Half: 124 } },
       },
-      nowPrice: 177.45,
     },
     {
       id: '104',
@@ -1612,127 +1395,110 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Rice',
+      image: '/imgs/food/downloads/chinese-rice-egg-chilli-garlic.jpeg',
+      category: 'Chinese Rice',
       priceOptions: {
-        size: {
-          Full: 334.95,
-          Quarter: 177.45,
-        },
+        wasPrice: { size: { Full: 334.95, Quarter: 177.45 } },
+        nowPrice: { size: { Full: 174, Quarter: 124 } },
       },
-      nowPrice: 177.45,
     },
     {
       id: '105',
       name: 'Egg Schezwan Fried Rice',
+
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Rice',
+      image: '/imgs/food/downloads/chinese-rice-egg-schezwan.jpeg',
+      category: 'Chinese Rice',
       priceOptions: {
-        size: {
-          Full: 334.95,
-          Half: 177.45,
-        },
+        wasPrice: { size: { Full: 334.95, Half: 177.45 } },
+        nowPrice: { size: { Full: 174, Half: 124 } },
       },
-      nowPrice: 177.45,
     },
     {
       id: '106',
       name: 'Chicken Hakka Noodles',
+
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/chinese-noodles-chicken-hakka.jpeg',
       category: 'Noodles',
       priceOptions: {
-        size: {
-          Full: 366.45,
-          Half: 219.45,
-        },
+        wasPrice: { size: { Full: 366.45, Half: 219.45 } },
+        nowPrice: { size: { Full: 149, Half: 199 } },
       },
-      nowPrice: 219.45,
     },
     {
       id: '107',
       name: 'Chicken Chilli Garlic Noodles',
+
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/chinese-noodles-chilli-garlic.jpeg',
       category: 'Noodles',
       priceOptions: {
-        size: {
-          Full: 366.45,
-          Half: 229.95,
-        },
+        wasPrice: { size: { Full: 366.45, Half: 229.95 } },
+        nowPrice: { size: { Full: 199, Half: 149 } },
       },
-      nowPrice: 229.95,
     },
     {
       id: '108',
       name: 'Chicken Schezwan Noodles',
+
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/chinese-noodels-chicken-schezwan.jpeg',
       category: 'Noodles',
       priceOptions: {
-        size: {
-          Full: 366.45,
-          Half: 229.95,
-        },
+        wasPrice: { size: { Full: 366.45, Half: 229.95 } },
+        nowPrice: { size: { Full: 169, Half: 119 } },
       },
-      nowPrice: 229.95,
     },
     {
       id: '109',
       name: 'Egg Hakka Noodles',
+
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/chinese-noodles-egg-hakka.jpeg',
       category: 'Noodles',
       priceOptions: {
-        size: {
-          Full: 334.95,
-          Half: 177.45,
-        },
+        wasPrice: { size: { Full: 334.95, Half: 177.45 } },
+        nowPrice: { size: { Full: 169, Half: 119 } },
       },
-      nowPrice: 177.45,
     },
     {
       id: '110',
       name: 'Egg Chilli Garlic Noodles',
+
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/chinese-noodles-egg-chilli-garlic.jpeg',
       category: 'Noodles',
       priceOptions: {
-        size: {
-          Full: 334.95,
-          Quarter: 187.95,
-        },
+        wasPrice: { size: { Full: 334.95, Quarter: 187.95 } },
+        nowPrice: { size: { Full: 169, Quarter: 119 } },
       },
-      nowPrice: 187.95,
     },
     {
       id: '111',
       name: 'Egg Schezwan Noodles',
+
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/chinese-noodles-egg-schezwan.jpeg',
       category: 'Noodles',
       priceOptions: {
-        size: {
-          Full: 334.95,
-          Quarter: 187.95,
-        },
+        wasPrice: { size: { Full: 334.95, Quarter: 187.95 } },
+        nowPrice: { size: { Full: 169, Quarter: 119 } },
       },
-      nowPrice: 187.95,
     },
     {
       id: '112',
@@ -1740,15 +1506,12 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Main Course',
+      image: '/imgs/food/downloads/chinese-manchurian-veg-gravy.jpeg',
+      category: 'Chinese',
       priceOptions: {
-        size: {
-          Full: 345.45,
-          Half: 240.45,
-        },
+        wasPrice: { size: { Full: 345.45, Half: 240.45 } },
+        nowPrice: { size: { Full: 199, Half: 139 } },
       },
-      nowPrice: 240.45,
     },
     {
       id: '113',
@@ -1756,62 +1519,54 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Main Course',
+      image: '/imgs/food/downloads/chinese-manchurian-chicken-gravy.jpeg',
+      category: 'Chinese',
       priceOptions: {
-        size: {
-          Full: 397.95,
-          Half: 292.95,
-        },
+        wasPrice: { size: { Full: 397.95, Half: 292.95 } },
+        nowPrice: { size: { Full: 249, Half: 189 } },
       },
-      nowPrice: 292.95,
     },
     {
       id: '114',
       name: 'Chilli Paneer Gravy',
+
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Main Course',
+      image: '/imgs/food/downloads/chinese-paneer-chilli-gravy.jpeg',
+      category: 'Chinese',
       priceOptions: {
-        size: {
-          Full: 366.45,
-          Half: 261.45,
-        },
+        wasPrice: { size: { Full: 366.45, Half: 261.45 } },
+        nowPrice: { size: { Full: 261.45, Half: 186.54 } },
       },
-      nowPrice: 261.45,
     },
     {
       id: '115',
       name: 'Chilli Chicken Gravy',
+
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Main Course',
+      image: '/imgs/food/downloads/chinese-chicken-chilli-gravy.jpeg',
+      category: 'Chinese',
       priceOptions: {
-        size: {
-          Full: 397.95,
-          Half: 303.45,
-        },
+        wasPrice: { size: { Full: 397.95, Half: 303.45 } },
+        nowPrice: { size: { Full: 239, Half: 179 } },
       },
-      nowPrice: 303.45,
     },
     {
       id: '116',
       name: 'Spring Roll [2 Pieces]',
+
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/spring-roll.avif',
-      category: 'Starters',
+      image: '/imgs/food/downloads/chinese-spring-roll.jpeg',
+      category: 'Chinese',
       priceOptions: {
-        size: {
-          Full: 240.45,
-        },
+        wasPrice: { size: { Full: 240.45 } },
+        nowPrice: { size: { Full: 139 } },
       },
-      nowPrice: 240.45,
     },
     {
       id: '117',
@@ -1819,74 +1574,68 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/mushroom-tikka.jpg',
-      category: 'Starters',
+      image: '/imgs/food/downloads/momo-veg.jpeg',
+      category: 'Momos',
       priceOptions: {
-        size: {
-          Full: 103.95,
-        },
+        wasPrice: { size: { Full: 103.95 } },
+        nowPrice: { size: { Full: 79 } },
       },
-      nowPrice: 103.95,
     },
     {
       id: '118',
       name: 'Chicken Momos [6 Pieces]',
+
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Starters',
+      image: '/imgs/food/downloads/momo-chicken.jpeg',
+      category: 'Momos',
       priceOptions: {
-        size: {
-          Full: 156.45,
-        },
+        wasPrice: { size: { Full: 156.45 } },
+        nowPrice: { size: { Full: 99 } },
       },
-      nowPrice: 156.45,
     },
     {
       id: '119',
       name: 'Paneer Momos [6 Pieces]',
+
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/paneer-tikka.jpg',
-      category: 'Starters',
+      image: '/imgs/food/downloads/momo-paneer.jpeg',
+      category: 'Momos',
       priceOptions: {
-        size: {
-          Full: 156.45,
-        },
+        wasPrice: { size: { Full: 156.45 } },
+        nowPrice: { size: { Full: 99 } },
       },
-      nowPrice: 156.45,
     },
     {
       id: '120',
       name: 'Veg Fried Momos [6 Pieces]',
+
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/mushroom-tikka.jpg',
-      category: 'Starters',
+      image: '/imgs/food/downloads/momo-veg-fried.jpeg',
+      category: 'Momos',
       priceOptions: {
-        size: {
-          Full: 124.95,
-        },
+        wasPrice: { size: { Full: 124.95 } },
+        nowPrice: { size: { Full: 99 } },
       },
-      nowPrice: 124.95,
     },
     {
       id: '121',
       name: 'Chicken Fried Momos [6 Pieces]',
+
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Starters',
+      image: '/imgs/food/downloads/momo-chicken-fried.jpeg',
+      category: 'Momos',
       priceOptions: {
-        size: {
-          Full: 177.45,
-        },
+        wasPrice: { size: { Full: 177.45 } },
+        nowPrice: { size: { Full: 119 } },
       },
-      nowPrice: 177.45,
     },
     {
       id: '122',
@@ -1894,44 +1643,40 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/paneer-tikka.jpg',
-      category: 'Starters',
+      image: '/imgs/food/downloads/momo-paneer-fried.jpeg',
+      category: 'Momos',
       priceOptions: {
-        size: {
-          Full: 177.45,
-        },
+        wasPrice: { size: { Full: 177.45 } },
+        nowPrice: { size: { Full: 119 } },
       },
-      nowPrice: 177.45,
     },
     {
       id: '123',
       name: 'Veg Tandoori Momos [6 Pieces]',
+
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/mushroom-tikka.jpg',
-      category: 'Starters',
+      image: '/imgs/food/downloads/momo-veg-tandoori.jpeg',
+      category: 'Momos',
       priceOptions: {
-        size: {
-          Full: 208.95,
-        },
+        wasPrice: { size: { Full: 208.95 } },
+        nowPrice: { size: { Full: 129 } },
       },
-      nowPrice: 208.95,
     },
     {
       id: '124',
       name: 'Paneer Tandoori Momos [6 Pieces]',
+
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/paneer-tikka.jpg',
-      category: 'Starters',
+      image: '/imgs/food/downloads/momo-paneer-tandoori.jpeg',
+      category: 'Momos',
       priceOptions: {
-        size: {
-          Full: 261.45,
-        },
+        wasPrice: { size: { Full: 261.45 } },
+        nowPrice: { size: { Full: 149 } },
       },
-      nowPrice: 261.45,
     },
     {
       id: '125',
@@ -1939,75 +1684,68 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Starters',
+      image: '/imgs/food/downloads/momo-chicken-tandoori.jpeg',
+      category: 'Momos',
       priceOptions: {
-        size: {
-          Full: 261.45,
-        },
+        wasPrice: { size: { Full: 261.45 } },
+        nowPrice: { size: { Full: 149 } },
       },
-      nowPrice: 261.45,
     },
     {
       id: '126',
       name: 'Malai Chicken',
+
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/malai-chicken.jpg',
-      category: 'Others',
+      image: '/imgs/food/downloads/starter-malai-chicken.jpeg',
+      category: 'Starters',
       priceOptions: {
-        size: {
-          Full: 733.95,
-          Half: 418.95,
-        },
+        wasPrice: { size: { Full: 399 } },
+        nowPrice: { size: { Full: 219 } },
       },
-      nowPrice: 418.95,
     },
     {
       id: '127',
       name: 'Veg Kurkure Momos [6 Pieces]',
+
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/mushroom-tikka.jpg',
-      category: 'Starters',
+      image: '/imgs/food/downloads/momo-veg-kurkure.jpeg',
+      category: 'Momos',
       priceOptions: {
-        size: {
-          Full: 208.95,
-        },
+        wasPrice: { size: { Full: 208.95 } },
+        nowPrice: { size: { Full: 119 } },
       },
-      nowPrice: 208.95,
     },
     {
       id: '128',
       name: 'Paneer Kurkure Momos [6 Pieces]',
+
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/paneer-tikka.jpg',
-      category: 'Starters',
+      image: '/imgs/food/downloads/momo-paneer-kurkure.jpeg',
+      category: 'Momos',
       priceOptions: {
-        size: {
-          Full: 261.45,
-        },
+        wasPrice: { size: { Full: 261.45 } },
+        nowPrice: { size: { Full: 149 } },
       },
-      nowPrice: 261.45,
     },
     {
       id: '129',
       name: 'Chicken Kurkure Momos [6 Pieces]',
+
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Starters',
+      image: '/imgs/food/downloads/momo-chicken-kurkure.jpeg',
+      category: 'Momos',
       priceOptions: {
-        size: {
-          Full: 261.45,
-        },
+        wasPrice: { size: { Full: 261.45 } },
+        nowPrice: { size: { Full: 149 } },
       },
-      nowPrice: 261.45,
     },
     {
       id: '130',
@@ -2015,120 +1753,107 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/paneer-tikka.jpg',
-      category: 'Starters',
+      image: '/imgs/food/downloads/momo-veg-afghani.jpeg',
+      category: 'Momos',
       priceOptions: {
-        size: {
-          Full: 208.95,
-        },
+        wasPrice: { size: { Full: 208.95 } },
+        nowPrice: { size: { Full: 149 } },
       },
-      nowPrice: 208.95,
     },
     {
       id: '131',
       name: 'Chicken Lollipop [5 Pieces]',
+
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Starters',
+      image: '/imgs/food/downloads/chinese-chicken-lollipop.jpeg',
+      category: 'Chinese',
       priceOptions: {
-        size: {
-          Full: 261.45,
-        },
+        wasPrice: { size: { Full: 261.45 } },
+        nowPrice: { size: { Full: 249 } },
       },
-      nowPrice: 261.45,
     },
-    {
-      id: '132',
-      name: 'Paratha',
-      description: '',
-      veg: true,
-      rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Breads',
-      priceOptions: {
-        size: {
-          Full: 0,
-        },
-      },
-      nowPrice: 0,
-    },
+    // {
+    //   id: '132',
+    //   name: 'Paratha',
+    //   description: '',
+    //   veg: true,
+    //   rating: 4,
+    //   image: '/imgs/food/downloads/bread-paratha-aloo.jpeg',
+    //   category: 'Breads',
+    //   priceOptions: {
+    //     wasPrice: { size: {} },
+    //     nowPrice: { size: { Full: 0.0 } },
+    //   },
+    // },
     {
       id: '133',
       name: 'Paneer Afghani Momos [6 Pieces]',
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/paneer-tikka.jpg',
-      category: 'Starters',
+      image: '/imgs/food/downloads/momo-paneer-afghani.jpeg',
+      category: 'Momos',
       priceOptions: {
-        size: {
-          Full: 261.45,
-        },
+        wasPrice: { size: { Full: 261.45 } },
+        nowPrice: { size: { Full: 169 } },
       },
-      nowPrice: 261.45,
     },
     {
       id: '134',
       name: 'Chicken Afghani Momos [6 Pieces]',
+
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/afgani-chicken.jpg',
-      category: 'Starters',
+      image: '/imgs/food/downloads/chicken-afghani-momos.jpeg',
+      category: 'Momos',
       priceOptions: {
-        size: {
-          Full: 282.45,
-        },
+        wasPrice: { size: { Full: 282.45 } },
+        nowPrice: { size: { Full: 169 } },
       },
-      nowPrice: 282.45,
     },
     {
       id: '135',
       name: 'Hot and Sour Soup',
+
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/hot-and-sour-soup.jpg',
+      image: '/imgs/food/downloads/soup-hot-and-sour.jpeg',
       category: 'Soups',
       priceOptions: {
-        size: {
-          Full: 126,
-        },
+        wasPrice: { size: { Full: 126.0 } },
+        nowPrice: { size: { Full: 99 } },
       },
-      nowPrice: 126,
     },
-    {
-      id: '136',
-      name: 'Mutton Rogan Josh [5 Pieces]',
-      description: '',
-      veg: false,
-      rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Main Course',
-      priceOptions: {
-        size: {
-          Full: 523.95,
-        },
-      },
-      nowPrice: 523.95,
-    },
+    // {
+    //   id: '136',
+    //   name: 'Mutton Rogan Josh [5 Pieces]',
+
+    //   description: '',
+    //   veg: false,
+    //   rating: 4,
+    //   image: '/imgs/food/starter/tandoori-chicken.jpg',
+    //   category: 'Main Course',
+    //   priceOptions: {
+    //     wasPrice: { size: { Full: 523.95 } },
+    //     nowPrice: { size: { Full: 523.95 } },
+    //   },
+    // },
     {
       id: '137',
       name: "Bob's Special Peri Peri Fried Chicken",
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Others',
+      image: '/imgs/food/starter/peri-peri-chicken.jpg',
+      category: 'Starters',
       priceOptions: {
-        size: {
-          Full: 733.95,
-          Half: 418.95,
-        },
+        wasPrice: { size: { Full: 733.95, Half: 418.95 } },
+        nowPrice: { size: { Full: 418.95, Half: 239.14 } },
       },
-      nowPrice: 418.95,
     },
     {
       id: '138',
@@ -2136,288 +1861,262 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Snacks',
+      image: '/imgs/food/starter/french-fries.jpg',
+      category: 'Starters',
       priceOptions: {
-        size: {
-          Full: 124.95,
-        },
+        wasPrice: { size: { Full: 124.95 } },
+        nowPrice: { size: { Full: 79 } },
       },
-      nowPrice: 124.95,
     },
     {
       id: '139',
       name: 'Tandoori Chicken Wings [5 Pieces]',
+
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken-wings.avif',
+      image: '/imgs/food/downloads/starter-chicken-tandoori-wings.jpeg',
       category: 'Starters',
       priceOptions: {
-        size: {
-          Full: 366.45,
-        },
+        wasPrice: { size: { Full: 366.45 } },
+        nowPrice: { size: { Full: 200 } },
       },
-      nowPrice: 366.45,
     },
     {
       id: '140',
       name: 'Peri Peri Chicken Wings [5 Pieces]',
+
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/peri-peri-chicken-wings.avif',
+      image: '/imgs/food/downloads/starter-chicken-peri-peri-fried.jpeg',
       category: 'Starters',
       priceOptions: {
-        size: {
-          Full: 387.45,
-        },
+        wasPrice: { size: { Full: 387.45 } },
+        nowPrice: { size: { Full: 200 } },
       },
-      nowPrice: 387.45,
     },
     {
       id: '141',
       name: 'Peri Peri Chicken Tikka [8 Pieces]',
+
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/peri-peri-chicken-wings.avif',
+      image: '/imgs/food/downloads/starter-chicken-peri-peri-tikka.jpg',
       category: 'Starters',
       priceOptions: {
-        size: {
-          Full: 376.95,
-        },
+        wasPrice: { size: { Full: 376.95 } },
+        nowPrice: { size: { Full: 219 } },
       },
-      nowPrice: 376.95,
     },
     {
       id: '142',
       name: 'Onion Missi Roti',
+
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/bread-missi.jpeg',
       category: 'Breads',
       priceOptions: {
-        size: {
-          Full: 63,
-        },
+        wasPrice: { size: { Full: 30 } },
+        nowPrice: { size: { Full: 30 } },
       },
-      nowPrice: 63,
     },
     {
       id: '143',
       name: 'Tandoori Onion Roti',
+
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/bread-roti-tandoori-onion.jpeg',
       category: 'Breads',
       priceOptions: {
-        size: {
-          Full: 42,
-        },
+        wasPrice: { size: { Full: 42.0 } },
+        nowPrice: { size: { Full: 25 } },
       },
-      nowPrice: 42,
     },
-    {
-      id: '144',
-      name: 'Egg',
-      description: '',
-      veg: false,
-      rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Others',
-      priceOptions: {
-        size: {
-          Full: 20,
-        },
-      },
-      nowPrice: 20,
-    },
-    {
-      id: '145',
-      name: 'Chicken',
-      description: '',
-      veg: false,
-      rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Others',
-      priceOptions: {
-        size: {
-          Full: 50,
-        },
-      },
-      nowPrice: 50,
-    },
+    // {
+    //   id: '144',
+    //   name: 'Egg',
+
+    //   description: '',
+    //   veg: false,
+    //   rating: 4,
+    //   image: '/imgs/food/downloads/chinese-noodels-schezwan-egg.jpeg',
+    //   category: 'Others',
+    //   priceOptions: {
+    //     wasPrice: { size: { Full: 20.0 } },
+    //     nowPrice: { size: { Full: 20.0 } },
+    //   },
+    // },
+    // {
+    //   id: '145',
+    //   name: 'Chicken',
+
+    //   description: '',
+    //   veg: false,
+    //   rating: 4,
+    //   image: '/imgs/food/downloads/chinese-chicken-chilli-gravy.jpeg',
+    //   category: 'Others',
+    //   priceOptions: {
+    //     wasPrice: { size: { Full: 50.0 } },
+    //     nowPrice: { size: { Full: 50.0 } },
+    //   },
+    // },
     {
       id: '146',
       name: 'Veg Manchow Soup',
+
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/soup-mancho.jpeg',
       category: 'Soups',
       priceOptions: {
-        size: {
-          Full: 126,
-        },
+        wasPrice: { size: { Full: 126.0 } },
+        nowPrice: { size: { Full: 99.0 } },
       },
-      nowPrice: 126,
     },
     {
       id: '147',
-      name: 'GOAT Chilli Chicken Roll',
+      name: 'Chilli Chicken Roll',
+
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/goat-chilli-chicken-roll.avif',
+      image: '/imgs/food/downloads/roll-chilli-chicken.jpeg',
       category: 'Starters',
       priceOptions: {
-        size: {
-          Full: 366.45,
-        },
+        wasPrice: { size: { Full: 366.45 } },
+        nowPrice: { size: { Full: 149.0 } },
       },
-      nowPrice: 366.45,
     },
-    {
-      id: '148',
-      name: 'GOAT Chilli Paneer Roll',
-      description: '',
-      veg: true,
-      rating: 4,
-      image: '/imgs/food/starter/goat-chilli-paneer-roll.avif',
-      category: 'Starters',
-      priceOptions: {
-        size: {
-          Full: 366.45,
-        },
-      },
-      nowPrice: 366.45,
-    },
-    {
-      id: '149',
-      name: 'GOAT Fried Rice',
-      description: '',
-      veg: true,
-      rating: 4,
-      image: '/imgs/food/starter/goat-fried-rice.jpg',
-      category: 'Rice',
-      priceOptions: {
-        size: {
-          Full: 471.45,
-          Half: 261.45,
-        },
-      },
-      nowPrice: 261.45,
-    },
-    {
-      id: '150',
-      name: 'GOAT Kadhai Chaap',
-      description: '',
-      veg: true,
-      rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Main Course',
-      priceOptions: {
-        size: {
-          Full: 471.45,
-          Half: 313.95,
-        },
-      },
-      nowPrice: 313.95,
-    },
+    // {
+    //   id: '148',
+    //   name: 'GOAT Chilli Paneer Roll',
+
+    //   description: '',
+    //   veg: true,
+    //   rating: 4,
+    //   image: '/imgs/food/downloads/roll-chilli-paneer.jpeg',
+    //   category: 'Starters',
+    //   priceOptions: {
+    //     wasPrice: { size: { Full: 366.45 } },
+    //     nowPrice: { size: { Full: 129 } },
+    //   },
+    // },
+    // {
+    //   id: '149',
+    //   name: 'GOAT Fried Rice',
+
+    //   description: '',
+    //   veg: true,
+    //   rating: 4,
+    //   image: '/imgs/food/downloads/chinese-rice-chicken-chilli-garlic.jpeg',
+    //   category: 'Rice',
+    //   priceOptions: {
+    //     wasPrice: { size: { Full: 471.45, Half: 261.45 } },
+    //     nowPrice: { size: { Full: 261.45, Half: 144.99 } },
+    //   },
+    // },
+    // {
+    //   id: '150',
+    //   name: 'GOAT Kadhai Chaap',
+
+    //   description: '',
+    //   veg: true,
+    //   rating: 4,
+    //   image: '/imgs/food/downloads/main-chaap-kadhai.jpeg',
+    //   category: 'Main Course',
+    //   priceOptions: {
+    //     wasPrice: { size: { Full: 471.45, Half: 313.95 } },
+    //     nowPrice: { size: { Full: 313.95, Half: 209.07 } },
+    //   },
+    // },
     {
       id: '151',
       name: 'Crispy Corn',
+
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Snacks',
+      image: '/imgs/food/downloads/starter-crispy-corn.jpeg',
+      category: 'Starters',
       priceOptions: {
-        size: {
-          Full: 292.95,
-          Half: 208.95,
-        },
+        wasPrice: { size: { Full: 292.95 } },
+        nowPrice: { size: { Full: 200 } },
       },
-      nowPrice: 208.95,
     },
-    {
-      id: '152',
-      name: 'Chutney [30 ml]',
-      description: '',
-      veg: true,
-      rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Sides',
-      priceOptions: {
-        size: {
-          Full: 15,
-        },
-      },
-      nowPrice: 15,
-    },
-    {
-      id: '153',
-      name: 'Sirka Onion [1 Packet]',
-      description: '',
-      veg: true,
-      rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Sides',
-      priceOptions: {
-        size: {
-          Full: 15,
-        },
-      },
-      nowPrice: 15,
-    },
-    {
-      id: '154',
-      name: 'Red Chutney [30 ml]',
-      description: '',
-      veg: true,
-      rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Sides',
-      priceOptions: {
-        size: {
-          Full: 15,
-        },
-      },
-      nowPrice: 15,
-    },
-    {
-      id: '155',
-      name: 'Honey Chilli Potato',
-      description: '',
-      veg: true,
-      rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
-      category: 'Snacks',
-      priceOptions: {
-        size: {
-          Full: 282.45,
-          Half: 208.95,
-        },
-      },
-      nowPrice: 208.95,
-    },
+    // {
+    //   id: '152',
+    //   name: 'Chutney [30 ml]',
+
+    //   description: '',
+    //   veg: true,
+    //   rating: 4,
+    //   image: '/imgs/food/starter/tandoori-chicken.jpg',
+    //   category: 'Sides',
+    //   priceOptions: {
+    //     wasPrice: { size: { Full: 15.0 } },
+    //     nowPrice: { size: { Full: 15.0 } },
+    //   },
+    // },
+    // {
+    //   id: '153',
+    //   name: 'Sirka Onion [1 Packet]',
+
+    //   description: '',
+    //   veg: true,
+    //   rating: 4,
+    //   image: '/imgs/food/starter/tandoori-chicken.jpg',
+    //   category: 'Sides',
+    //   priceOptions: {
+    //     wasPrice: { size: { Full: 15.0 } },
+    //     nowPrice: { size: { Full: 15.0 } },
+    //   },
+    // },
+    // {
+    //   id: '154',
+    //   name: 'Red Chutney [30 ml]',
+    //   description: '',
+    //   veg: true,
+    //   rating: 4,
+    //   image: '/imgs/food/starter/tandoori-chicken.jpg',
+    //   category: 'Sides',
+    //   priceOptions: {
+    //     wasPrice: { size: { Full: 15.0 } },
+    //     nowPrice: { size: { Full: 15.0 } },
+    //   },
+    // },
+    // {
+    //   id: '155',
+    //   name: 'Honey Chilli Potato',
+
+    //   description: '',
+    //   veg: true,
+    //   rating: 4,
+    //   image: '/imgs/food/downloads/chinese-chilli-potato.jpeg',
+    //   category: 'Snacks',
+    //   priceOptions: {
+    //     wasPrice: { size: { Full: 282.45, Half: 208.95 } },
+    //     nowPrice: { size: { Full: 208.95, Half: 154.58 } },
+    //   },
+    // },
     {
       id: '156',
       name: 'Tawa Roti',
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/bread-roti-tawa.jpeg',
       category: 'Breads',
       priceOptions: {
-        size: {
-          Full: 15.75,
-        },
+        wasPrice: { size: { Full: 15 } },
+        nowPrice: { size: { Full: 15 } },
       },
-      nowPrice: 15.75,
     },
     {
       id: '157',
@@ -2425,14 +2124,12 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/starter/tandoori-chicken.jpg',
+      image: '/imgs/food/downloads/bread-roti-tawa-butter.jpeg',
       category: 'Breads',
       priceOptions: {
-        size: {
-          Full: 26.25,
-        },
+        wasPrice: { size: { Full: 26.25 } },
+        nowPrice: { size: { Full: 25 } },
       },
-      nowPrice: 26.25,
     },
   ],
 };

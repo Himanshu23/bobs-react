@@ -8,9 +8,15 @@ export const createCartItem = (
   selectedBase?: ItemOptions['base']
 ): CartItem => {
   const price =
-    (selectedSize ? product.priceOptions.size?.[selectedSize] || 0 : 0) +
-    (selectedType ? product.priceOptions.type?.[selectedType] || 0 : 0) +
-    (selectedBase ? product.priceOptions.base?.[selectedBase] || 0 : 0);
+    (selectedSize
+      ? product.priceOptions.nowPrice.size?.[selectedSize] || 0
+      : 0) +
+    (selectedType
+      ? product.priceOptions.nowPrice.type?.[selectedType] || 0
+      : 0) +
+    (selectedBase
+      ? product.priceOptions.nowPrice.base?.[selectedBase] || 0
+      : 0);
 
   return {
     id: product.id,

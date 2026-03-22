@@ -20,6 +20,11 @@ import {
   ListItem,
   ListItemText,
   Alert,
+  FormControlLabel,
+  RadioGroup,
+  Radio,
+  AppBar,
+  Toolbar,
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
@@ -47,8 +52,12 @@ const CheckoutPage: React.FC = () => {
   const dispatch = useDispatch();
   const cartItems = useSelector((state: RootState) => state.cart.items);
 
+  const [deliveryMethod, setDeliveryMethod] = useState<string>('delivery');
   const [habitat, setHabitat] = useState<string>('');
   const [tower, setTower] = useState<string>('');
+  const [flatNumber, setFlatNumber] = useState<string>('');
+  const [addressType] = useState<string>('habitat');
+  const [customAddress, setCustomAddress] = useState<string>('');
   const [customerName, setCustomerName] = useState<string>('');
   const [customerInstructions, setCustomerInstructions] = useState<string>('');
   const [isProcessing, setIsProcessing] = useState(false);
@@ -71,14 +80,33 @@ const CheckoutPage: React.FC = () => {
   const availableTowers = habitat ? HABITAT_TOWERS[habitat] || [] : [];
 
   const handleProceedToCheckout = async () => {
-    if (!habitat || !tower) {
-      alert('Please select Habitat and Tower');
-      return;
+    // Validation based on delivery method
+    if (deliveryMethod === 'delivery') {
+      if (addressType === 'habitat') {
+        if (!habitat || !tower || !flatNumber || flatNumber.trim() === '') {
+          alert('Please select Habitat, Tower and enter Flat Number');
+          return;
+        }
+      } else if (addressType === 'custom') {
+        if (!customAddress || customAddress.trim() === '') {
+          alert('Please enter your delivery address');
+          return;
+        }
+      }
     }
 
     setIsProcessing(true);
 
     try {
+      let deliveryAddress = '';
+      if (deliveryMethod === 'delivery') {
+        if (addressType === 'habitat') {
+          deliveryAddress = `${habitat} - Tower ${tower}, Flat ${flatNumber}`;
+        } else {
+          deliveryAddress = customAddress;
+        }
+      }
+
       // Format the order
       const orderMessage: OrderMessage = {
         items: cartItems.map((item) => ({
@@ -88,11 +116,17 @@ const CheckoutPage: React.FC = () => {
           size: item.option?.size,
         })),
         total: finalTotal,
-        habitat,
-        tower,
+        habitat: deliveryMethod === 'delivery' ? deliveryAddress : 'Pickup',
+        tower:
+          deliveryMethod === 'delivery'
+            ? addressType === 'habitat'
+              ? tower
+              : 'Custom'
+            : 'N/A',
         customerName: customerName || 'Guest',
         phoneNumber: WHATSAPP_PHONE,
         instructions: customerInstructions,
+        deliveryMethod: deliveryMethod as 'pickup' | 'delivery',
       };
 
       // Format and send WhatsApp message
@@ -130,240 +164,448 @@ const CheckoutPage: React.FC = () => {
   }
 
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
-      {/* Header */}
-      <Box sx={{ mb: 4 }}>
-        <Button
-          startIcon={<ArrowBackIcon />}
-          onClick={() => navigate('/cart')}
-          sx={{ mb: 2 }}
-        >
-          Back to Cart
-        </Button>
-        <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
-          Checkout
-        </Typography>
-      </Box>
+    <>
+      {/* App Bar - Consistent with theme */}
+      <AppBar position="sticky" sx={{ mb: 2 }}>
+        <Toolbar>
+          <Button
+            color="inherit"
+            startIcon={<ArrowBackIcon />}
+            onClick={() => navigate('/cart')}
+            sx={{
+              textTransform: 'none',
+              fontSize: '1rem',
+              fontWeight: 600,
+              mr: 2,
+            }}
+          >
+            Cart
+          </Button>
+          <Typography
+            variant="h6"
+            sx={{
+              flexGrow: 1,
+              textAlign: 'center',
+              fontWeight: 700,
+            }}
+          >
+            Checkout
+          </Typography>
+          {/* Empty box for alignment symmetry */}
+          <Box sx={{ width: '80px' }} />
+        </Toolbar>
+      </AppBar>
 
-      <Grid container spacing={3}>
-        {/* Delivery Details Section */}
-        <Grid item xs={12} md={8}>
-          <Card sx={{ mb: 3 }}>
-            <CardContent>
-              <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 3 }}>
-                📍 Delivery Address
-              </Typography>
-
-              {/* Customer Name */}
-              <TextField
-                fullWidth
-                label="Your Name (Optional)"
-                placeholder="Enter your name"
-                value={customerName}
-                onChange={(e) => setCustomerName(e.target.value)}
-                sx={{ mb: 3 }}
-              />
-
-              {/* Habitat Selection */}
-              <FormControl fullWidth sx={{ mb: 3 }}>
-                <InputLabel>Select Habitat</InputLabel>
-                <Select
-                  value={habitat}
-                  label="Select Habitat"
-                  onChange={handleHabitatChange}
-                >
-                  <MenuItem value="">-- Choose Habitat --</MenuItem>
-                  {Object.keys(HABITAT_TOWERS).map((h) => (
-                    <MenuItem key={h} value={h}>
-                      {h}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-
-              {/* Tower Selection */}
-              <FormControl fullWidth disabled={!habitat}>
-                <InputLabel>Select Tower</InputLabel>
-                <Select
-                  value={tower}
-                  label="Select Tower"
-                  onChange={(e) => setTower(e.target.value)}
-                >
-                  <MenuItem value="">-- Choose Tower --</MenuItem>
-                  {availableTowers.map((t) => (
-                    <MenuItem key={t} value={t}>
-                      Tower {t}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-
-              {/* Address Summary */}
-              {habitat && tower && (
-                <Alert severity="success" sx={{ mt: 3 }}>
-                  📦 Delivering to:{' '}
-                  <strong>
-                    {habitat} - Tower {tower}
-                  </strong>
-                </Alert>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Customer Instructions */}
-          <Card sx={{ mb: 3 }}>
-            <CardContent>
-              <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 3 }}>
-                📝 Special Instructions
-              </Typography>
-              <TextField
-                fullWidth
-                multiline
-                rows={4}
-                label="Any special requests? (Optional)"
-                placeholder="e.g., Extra spicy, No onions, Extra sauce, etc."
-                value={customerInstructions}
-                onChange={(e) => setCustomerInstructions(e.target.value)}
-                variant="outlined"
-              />
-              <Typography
-                variant="caption"
-                color="textSecondary"
-                sx={{ mt: 1, display: 'block' }}
-              >
-                💡 Add any special instructions or dietary preferences here
-              </Typography>
-            </CardContent>
-          </Card>
-
-          {/* Order Items Summary */}
-          <Card>
-            <CardContent>
-              <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2 }}>
-                📋 Order Summary
-              </Typography>
-              <List sx={{ maxHeight: 300, overflow: 'auto' }}>
-                {cartItems.map((item, idx) => (
-                  <React.Fragment key={idx}>
-                    <ListItem sx={{ py: 1 }}>
-                      <ListItemText
-                        primary={`${item.name} ${
-                          item.option?.size ? `(${item.option.size})` : ''
-                        }`}
-                        secondary={`Qty: ${item.quantity} × ₹${item.price.toFixed(
-                          2
-                        )}`}
-                      />
-                      <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-                        ₹{(item.quantity * item.price).toFixed(2)}
-                      </Typography>
-                    </ListItem>
-                    {idx < cartItems.length - 1 && <Divider />}
-                  </React.Fragment>
-                ))}
-              </List>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        {/* Price Summary Section */}
-        <Grid item xs={12} md={4}>
-          <Card sx={{ position: 'sticky', top: 20 }}>
-            <CardContent>
-              <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2 }}>
-                💰 Price Summary
-              </Typography>
-              <Divider sx={{ my: 2 }} />
-
-              <Box sx={{ mb: 2 }}>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    mb: 1,
-                  }}
-                >
-                  <Typography color="textSecondary">Subtotal:</Typography>
-                  <Typography>₹{totalPrice.toFixed(2)}</Typography>
-                </Box>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    mb: 1,
-                  }}
-                >
-                  <Typography color="textSecondary">Delivery:</Typography>
-                  <Typography color="#4CAF50">Free</Typography>
-                </Box>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    mb: 1,
-                  }}
-                >
-                  <Typography color="textSecondary">Tax (5%):</Typography>
-                  <Typography>₹{tax.toFixed(2)}</Typography>
-                </Box>
-              </Box>
-
-              <Divider sx={{ my: 2 }} />
-
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  mb: 3,
-                }}
-              >
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-                  Total:
+      <Container maxWidth="lg" sx={{ py: 3, pb: 12 }}>
+        <Grid container spacing={3}>
+          {/* Delivery Details Section */}
+          <Grid item xs={12} md={8}>
+            <Card sx={{ mb: 3 }}>
+              <CardContent>
+                <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 3 }}>
+                  � Delivery Method
                 </Typography>
+
+                {/* Pickup vs Delivery Radio Buttons */}
+                <FormControl component="fieldset" sx={{ mb: 3 }}>
+                  <RadioGroup
+                    row
+                    value={deliveryMethod}
+                    onChange={(e) => setDeliveryMethod(e.target.value)}
+                  >
+                    <FormControlLabel
+                      value="delivery"
+                      control={<Radio />}
+                      label="Delivery"
+                    />
+                    <FormControlLabel
+                      value="pickup"
+                      control={<Radio />}
+                      label="Pickup"
+                    />
+                  </RadioGroup>
+                </FormControl>
+
+                {/* Address fields - Only show for delivery */}
+                {deliveryMethod === 'delivery' && (
+                  <>
+                    <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 3 }}>
+                      📍 Delivery Address
+                    </Typography>
+
+                    {/* Customer Name */}
+                    <TextField
+                      fullWidth
+                      label="Your Name (Optional)"
+                      placeholder="Enter your name"
+                      value={customerName}
+                      onChange={(e) => setCustomerName(e.target.value)}
+                      sx={{ mb: 3 }}
+                    />
+
+                    {/* Habitat Selection */}
+                    <FormControl fullWidth sx={{ mb: 3 }}>
+                      <InputLabel>Select Habitat</InputLabel>
+                      <Select
+                        value={habitat}
+                        label="Select Habitat"
+                        onChange={handleHabitatChange}
+                      >
+                        <MenuItem value="">-- Choose Habitat --</MenuItem>
+                        {Object.keys(HABITAT_TOWERS).map((h) => (
+                          <MenuItem key={h} value={h}>
+                            {h}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+
+                    {/* Two Options Side by Side */}
+                    <Grid container spacing={2} sx={{ mb: 3 }}>
+                      {/* Option 1: Tower + Flat Number */}
+                      <Grid item xs={12} md={5}>
+                        <Box
+                          sx={{
+                            border: '2px solid #e0e0e0',
+                            borderRadius: '12px',
+                            padding: 3,
+                            backgroundColor: '#fafafa',
+                          }}
+                        >
+                          <Typography
+                            variant="subtitle2"
+                            sx={{
+                              fontWeight: 'bold',
+                              mb: 2,
+                              color: '#333',
+                            }}
+                          >
+                            🏢 Tower & Flat
+                          </Typography>
+
+                          {/* Tower and Flat - Side by Side */}
+                          <Grid container spacing={2}>
+                            <Grid item xs={6}>
+                              <FormControl
+                                fullWidth
+                                size="small"
+                                disabled={!habitat}
+                              >
+                                <InputLabel>Tower</InputLabel>
+                                <Select
+                                  value={tower}
+                                  label="Tower"
+                                  onChange={(e) => setTower(e.target.value)}
+                                >
+                                  <MenuItem value="">Select</MenuItem>
+                                  {availableTowers.map((t) => (
+                                    <MenuItem key={t} value={t}>
+                                      {t}
+                                    </MenuItem>
+                                  ))}
+                                </Select>
+                              </FormControl>
+                            </Grid>
+                            <Grid item xs={6}>
+                              <TextField
+                                fullWidth
+                                size="small"
+                                label="Flat No."
+                                placeholder="e.g., 502"
+                                value={flatNumber}
+                                onChange={(e) => setFlatNumber(e.target.value)}
+                              />
+                            </Grid>
+                          </Grid>
+
+                          {/* Address Preview */}
+                          {tower && flatNumber && (
+                            <Alert severity="success" sx={{ mt: 2 }}>
+                              <Typography variant="caption">
+                                📦 {habitat} - Tower {tower}, Flat {flatNumber}
+                              </Typography>
+                            </Alert>
+                          )}
+                        </Box>
+                      </Grid>
+
+                      {/* OR Divider */}
+                      <Grid item xs={12} md={2}>
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            height: '100%',
+                            minHeight: '10px',
+                          }}
+                        >
+                          <Box sx={{ textAlign: 'center' }}>
+                            <Typography
+                              variant="h6"
+                              sx={{
+                                fontWeight: 'bold',
+                                color: '#999',
+                                fontSize: '1.1rem',
+                              }}
+                            >
+                              OR
+                            </Typography>
+                          </Box>
+                        </Box>
+                      </Grid>
+
+                      {/* Option 2: Free Text Address */}
+                      <Grid item xs={12} md={5}>
+                        <Box
+                          sx={{
+                            border: '2px solid #e0e0e0',
+                            borderRadius: '12px',
+                            padding: 3,
+                            backgroundColor: '#fafafa',
+                          }}
+                        >
+                          <Typography
+                            variant="subtitle2"
+                            sx={{
+                              fontWeight: 'bold',
+                              mb: 2,
+                              color: '#333',
+                            }}
+                          >
+                            📍 Other Address
+                          </Typography>
+
+                          <TextField
+                            fullWidth
+                            label="Enter Your Address"
+                            placeholder="e.g., 123 Main Street, Apartment 4B"
+                            value={customAddress}
+                            onChange={(e) => setCustomAddress(e.target.value)}
+                            multiline
+                            rows={3}
+                            size="small"
+                          />
+
+                          {/* Address Preview */}
+                          {customAddress && (
+                            <Alert severity="success" sx={{ mt: 2 }}>
+                              <Typography variant="caption">
+                                📦 {customAddress}
+                              </Typography>
+                            </Alert>
+                          )}
+                        </Box>
+                      </Grid>
+                    </Grid>
+                  </>
+                )}
+
+                {/* Pickup confirmation */}
+                {deliveryMethod === 'pickup' && (
+                  <Alert severity="info">
+                    🎉 You selected <strong>Pickup</strong>. Your order will be
+                    ready for pickup at Bob&apos;s kitchen.
+                  </Alert>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Customer Name for Pickup */}
+            {deliveryMethod === 'pickup' && (
+              <Card sx={{ mb: 3 }}>
+                <CardContent>
+                  <TextField
+                    fullWidth
+                    label="Your Name (Optional)"
+                    placeholder="Enter your name for identification"
+                    value={customerName}
+                    onChange={(e) => setCustomerName(e.target.value)}
+                  />
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Customer Instructions */}
+            <Card sx={{ mb: 3 }}>
+              <CardContent>
+                <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 3 }}>
+                  📝 Special Instructions
+                </Typography>
+                <TextField
+                  fullWidth
+                  multiline
+                  rows={4}
+                  label="Any special requests? (Optional)"
+                  placeholder="e.g., Extra spicy, No onions, Extra sauce, etc."
+                  value={customerInstructions}
+                  onChange={(e) => setCustomerInstructions(e.target.value)}
+                  variant="outlined"
+                />
                 <Typography
-                  variant="h6"
-                  sx={{ fontWeight: 'bold', color: '#ff6b6b' }}
+                  variant="caption"
+                  color="textSecondary"
+                  sx={{ mt: 1, display: 'block' }}
                 >
-                  ₹{finalTotal.toFixed(2)}
+                  💡 Add any special instructions or dietary preferences here
                 </Typography>
-              </Box>
+              </CardContent>
+            </Card>
 
-              <Button
-                variant="contained"
-                fullWidth
-                size="large"
-                startIcon={<WhatsAppIcon />}
-                onClick={handleProceedToCheckout}
-                disabled={!habitat || !tower || isProcessing}
-                sx={{
-                  background:
-                    'linear-gradient(135deg, #25D366 0%, #128C7E 100%)',
-                  textTransform: 'none',
-                  fontSize: '1rem',
-                  mb: 1,
-                }}
-              >
-                {isProcessing ? 'Processing...' : 'Order via WhatsApp'}
-              </Button>
+            {/* Order Items Summary */}
+            <Card>
+              <CardContent>
+                <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2 }}>
+                  📋 Order Summary
+                </Typography>
+                <List sx={{ maxHeight: 300, overflow: 'auto' }}>
+                  {cartItems.map((item, idx) => (
+                    <React.Fragment key={idx}>
+                      <ListItem sx={{ py: 1 }}>
+                        <ListItemText
+                          primary={`${item.name} ${
+                            item.option?.size ? `(${item.option.size})` : ''
+                          }`}
+                          secondary={`Qty: ${item.quantity} × ₹${item.price.toFixed(
+                            2
+                          )}`}
+                        />
+                        <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+                          ₹{(item.quantity * item.price).toFixed(2)}
+                        </Typography>
+                      </ListItem>
+                      {idx < cartItems.length - 1 && <Divider />}
+                    </React.Fragment>
+                  ))}
+                </List>
+              </CardContent>
+            </Card>
+          </Grid>
 
-              <Button
-                variant="outlined"
-                fullWidth
-                onClick={() => navigate('/cart')}
-              >
-                Back to Cart
-              </Button>
+          {/* Price Summary Section */}
+          <Grid item xs={12} md={4}>
+            <Card sx={{ position: 'sticky', top: 20 }}>
+              <CardContent>
+                <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2 }}>
+                  💰 Price Summary
+                </Typography>
+                <Divider sx={{ my: 2 }} />
 
-              {!habitat || !tower ? (
-                <Alert severity="info" sx={{ mt: 2 }}>
-                  Select habitat and tower to proceed
-                </Alert>
-              ) : null}
-            </CardContent>
-          </Card>
+                <Box sx={{ mb: 2 }}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      mb: 1,
+                    }}
+                  >
+                    <Typography color="textSecondary">Subtotal:</Typography>
+                    <Typography>₹{totalPrice.toFixed(2)}</Typography>
+                  </Box>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      mb: 1,
+                    }}
+                  >
+                    <Typography color="textSecondary">Delivery:</Typography>
+                    <Typography color="#4CAF50">Free</Typography>
+                  </Box>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      mb: 1,
+                    }}
+                  >
+                    <Typography color="textSecondary">Tax (5%):</Typography>
+                    <Typography>₹{tax.toFixed(2)}</Typography>
+                  </Box>
+                </Box>
+
+                <Divider sx={{ my: 2 }} />
+
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    mb: 3,
+                  }}
+                >
+                  <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+                    Total:
+                  </Typography>
+                  <Typography
+                    variant="h6"
+                    sx={{ fontWeight: 'bold', color: '#ff6b6b' }}
+                  >
+                    ₹{finalTotal.toFixed(2)}
+                  </Typography>
+                </Box>
+
+                <Button
+                  variant="contained"
+                  fullWidth
+                  size="large"
+                  startIcon={<WhatsAppIcon />}
+                  onClick={handleProceedToCheckout}
+                  disabled={
+                    deliveryMethod === 'delivery'
+                      ? (tower && flatNumber && flatNumber.trim() !== '') ||
+                        (customAddress && customAddress.trim() !== '')
+                        ? false
+                        : true
+                      : isProcessing
+                  }
+                  sx={{
+                    background:
+                      'linear-gradient(135deg, #25D366 0%, #128C7E 100%)',
+                    textTransform: 'none',
+                    fontSize: '1rem',
+                    mb: 1,
+                  }}
+                >
+                  {isProcessing ? 'Processing...' : 'Order via WhatsApp'}
+                </Button>
+
+                <Button
+                  variant="outlined"
+                  fullWidth
+                  onClick={() => navigate('/cart')}
+                >
+                  Back to Cart
+                </Button>
+
+                {deliveryMethod === 'delivery' &&
+                !tower &&
+                !flatNumber &&
+                !customAddress ? (
+                  <Alert severity="info" sx={{ mt: 2 }}>
+                    Select Tower & Flat OR enter your address to proceed
+                  </Alert>
+                ) : null}
+              </CardContent>
+            </Card>
+          </Grid>
         </Grid>
-      </Grid>
-    </Container>
+      </Container>
+
+      {/* Fixed Footer with Action Buttons */}
+      <Box
+        sx={{
+          position: 'fixed',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+          borderTop: '2px solid #25D366',
+          boxShadow: '0 -4px 20px rgba(0, 0, 0, 0.15)',
+          zIndex: 1000,
+          backdropFilter: 'blur(10px)',
+        }}
+      ></Box>
+    </>
   );
 };
 

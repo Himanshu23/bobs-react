@@ -23,7 +23,7 @@ function App() {
       <Routes>
         <Route path="/bobs/landing" element={<StaticLanding />} />
         <Route path="/bobs/foodList" element={<FoodList />} />
-        <Route path="/" element={<StaticLanding />} />
+        <Route path="/" element={<FoodList />} />
         <Route path="/bobs/menu" element={<MenuPage />} />
         <Route path="/cart" element={<CartPage />} />
         <Route path="/checkout" element={<CheckoutPage />} />

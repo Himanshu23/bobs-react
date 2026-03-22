@@ -10,12 +10,19 @@ export interface FoodItem {
   image: string;
   category: string;
   priceOptions: {
-    size: Partial<Record<ItemOptions['size'], number>>;
-    type?: Record<TypeKey, number>;
-    base?: Record<BaseKey, number>;
+    wasPrice: {
+      size: Partial<Record<ItemOptions['size'], number>>;
+      type?: Record<TypeKey, number>;
+      base?: Record<BaseKey, number>;
+    };
+    nowPrice: {
+      size: Partial<Record<ItemOptions['size'], number>>;
+      type?: Record<TypeKey, number>;
+      base?: Record<BaseKey, number>;
+    };
   };
-  wasPrice?: number;
-  nowPrice?: number;
+  // wasPrice?: number;
+  // nowPrice?: number;
 }
 
 export interface ItemOptions {

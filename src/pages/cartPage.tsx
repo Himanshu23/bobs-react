@@ -37,6 +37,9 @@ const CartPage: React.FC = () => {
   ) => {
     if (newQuantity > 0) {
       dispatch(updateQuantity({ id, option, quantity: newQuantity }));
+    } else if (newQuantity === 0) {
+      // Remove item when quantity reaches 0
+      dispatch(removeFromCart({ id, option }));
     }
   };
 
@@ -59,9 +62,9 @@ const CartPage: React.FC = () => {
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
-      <Typography variant="h4" sx={{ mb: 4, fontWeight: 'bold' }}>
-        🛒 Your Cart
-      </Typography>
+      {/* <Typography variant="h6" sx={{ mb: 4, fontWeight: 'bold' }}>
+        Your Cart
+      </Typography> */}
 
       {cartItems.length === 0 ? (
         <Card sx={{ p: 4, textAlign: 'center' }}>
@@ -191,13 +194,13 @@ const CartPage: React.FC = () => {
                       </IconButton>
                     </Box>
 
-                    {/* Remove Button */}
+                    {/* Delete Button - Removes entire item */}
                     <IconButton
                       color="error"
                       onClick={() =>
                         handleRemove(item.id, item.option as ItemOptions)
                       }
-                      title="Remove from cart"
+                      title="Delete entire item from cart"
                     >
                       <DeleteIcon />
                     </IconButton>

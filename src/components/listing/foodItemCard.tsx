@@ -1,4 +1,4 @@
-import { Box, Typography, Button, Rating, Badge } from '@mui/material';
+import { Box, Typography, Button, Badge } from '@mui/material';
 import { CircleSharp } from '@mui/icons-material'; // Veg & Non-Veg Icons
 import { CartActions, FoodItem, ItemOptions } from '../../types';
 import { useSelector } from 'react-redux';
@@ -16,36 +16,46 @@ const FoodItemCard = ({ item, handleCart }: FoodItemCardProps) => {
     <Box
       sx={{
         display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        width: '100%',
-        maxWidth: 400,
+        alignItems: 'stretch',
+        gap: 2,
+        width: 380,
         padding: 2,
         borderRadius: 2,
         boxShadow: 3,
         backgroundColor: 'white',
+        flexShrink: 0,
       }}
     >
-      <Box sx={{ flex: 1 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+        <Box
+          sx={{ display: 'flex', alignItems: 'center', gap: 1, minHeight: 28 }}
+        >
           {item.veg ? (
-            <CircleSharp sx={{ color: 'green' }} />
+            <CircleSharp sx={{ color: 'green', fontSize: 20, flexShrink: 0 }} />
           ) : (
-            <CircleSharp sx={{ color: 'red' }} />
+            <CircleSharp sx={{ color: 'red', fontSize: 20, flexShrink: 0 }} />
           )}
-          <Typography variant="body1" fontWeight="bold">
+          <Typography
+            variant="body1"
+            fontWeight="bold"
+            sx={{ wordBreak: 'break-word' }}
+          >
             {item.name}
           </Typography>
         </Box>
 
-        <Rating value={item.rating} precision={0.5} readOnly sx={{ my: 1 }} />
+        {/* <Rating value={item.rating} precision={0.5} readOnly sx={{ my: 1 }} /> */}
 
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{ mb: 1, flex: 1 }}
+        >
           {item.description}
         </Typography>
 
         {/* Was Now Price */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        {/* <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           {item.wasPrice && (
             <Typography
               variant="body2"
@@ -62,7 +72,7 @@ const FoodItemCard = ({ item, handleCart }: FoodItemCardProps) => {
               ₹{item.nowPrice}
             </Typography>
           )}
-        </Box>
+        </Box> */}
 
         {totalQuantity > 0 ? (
           <Badge
@@ -79,7 +89,7 @@ const FoodItemCard = ({ item, handleCart }: FoodItemCardProps) => {
             <Button
               variant="contained"
               color="primary"
-              sx={{ mt: 2, textTransform: 'none' }}
+              sx={{ mt: 1, textTransform: 'none', alignSelf: 'flex-start' }}
               onClick={() => handleCart(item.id, 'Add')}
             >
               View Cart Items
@@ -89,7 +99,7 @@ const FoodItemCard = ({ item, handleCart }: FoodItemCardProps) => {
           <Button
             variant="contained"
             color="primary"
-            sx={{ mt: 2 }}
+            sx={{ mt: 1, alignSelf: 'flex-start' }}
             onClick={() => handleCart(item.id, 'Add')}
           >
             Add to Cart
@@ -102,10 +112,11 @@ const FoodItemCard = ({ item, handleCart }: FoodItemCardProps) => {
         src={item.image}
         alt={item.name}
         sx={{
-          width: 100,
-          height: 100,
+          width: 110,
+          height: 110,
           borderRadius: 1,
           objectFit: 'cover',
+          flexShrink: 0,
         }}
       />
     </Box>

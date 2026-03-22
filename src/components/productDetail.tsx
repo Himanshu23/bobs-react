@@ -63,12 +63,14 @@ const ProductDetailModal = ({
 
   const total = useMemo(
     () =>
-      (selectedSize ? (product.priceOptions.size?.[selectedSize] ?? 0) : 0) +
-      (selectedType && product.priceOptions?.type?.[selectedType]
-        ? product.priceOptions?.type?.[selectedType]
+      (selectedSize
+        ? (product.priceOptions.nowPrice.size?.[selectedSize] ?? 0)
         : 0) +
-      (selectedBase && product.priceOptions?.base?.[selectedBase]
-        ? product.priceOptions?.base?.[selectedBase]
+      (selectedType && product.priceOptions.nowPrice.type?.[selectedType]
+        ? product.priceOptions.nowPrice.type?.[selectedType]
+        : 0) +
+      (selectedBase && product.priceOptions.nowPrice.base?.[selectedBase]
+        ? product.priceOptions.nowPrice.base?.[selectedBase]
         : 0),
     [product, selectedType, selectedSize, selectedBase]
   );
@@ -203,7 +205,7 @@ const ProductDetailModal = ({
           }}
         >
           {/* Size Options */}
-          {product.priceOptions.size && (
+          {product.priceOptions.nowPrice.size && (
             <Card>
               <CardContent>
                 <Typography variant="h6">Select Size</Typography>
@@ -214,7 +216,7 @@ const ProductDetailModal = ({
                       setSelectedSize(e.target.value as ItemOptions['size'])
                     }
                   >
-                    {Object.entries(product.priceOptions.size).map(
+                    {Object.entries(product.priceOptions.nowPrice.size).map(
                       ([size, price]) => (
                         <FormControlLabel
                           key={size}
@@ -231,7 +233,7 @@ const ProductDetailModal = ({
           )}
 
           {/* Type Options */}
-          {product.priceOptions.type && (
+          {product.priceOptions.nowPrice.type && (
             <Card>
               <CardContent>
                 <Typography variant="h6">Select Type</Typography>
@@ -242,7 +244,7 @@ const ProductDetailModal = ({
                   }
                   fullWidth
                 >
-                  {Object.entries(product.priceOptions.type).map(
+                  {Object.entries(product.priceOptions.nowPrice.type).map(
                     ([type, price]) => (
                       <MenuItem key={type} value={type}>
                         {`${type} - ₹${price}`}
@@ -255,7 +257,7 @@ const ProductDetailModal = ({
           )}
 
           {/* Base Options */}
-          {product.priceOptions.base && (
+          {product.priceOptions.nowPrice.base && (
             <Card>
               <CardContent>
                 <Typography variant="h6">Select Base</Typography>
@@ -266,7 +268,7 @@ const ProductDetailModal = ({
                       setSelectedBase(e.target.value as ItemOptions['base'])
                     }
                   >
-                    {Object.entries(product.priceOptions.base).map(
+                    {Object.entries(product.priceOptions.nowPrice.base).map(
                       ([base, price]) => (
                         <FormControlLabel
                           key={base}
@@ -347,9 +349,9 @@ const ProductDetailModal = ({
               onClick={handleAddToCart}
               sx={{ width: '75%', height: '48px' }}
               disabled={
-                (product.priceOptions.size && !selectedSize) ||
-                (product.priceOptions.type && !selectedType) ||
-                (product.priceOptions.base && !selectedBase)
+                (product.priceOptions.nowPrice.size && !selectedSize) ||
+                (product.priceOptions.nowPrice.type && !selectedType) ||
+                (product.priceOptions.nowPrice.base && !selectedBase)
               }
             >
               Add Item &#8377;{total * quantity}

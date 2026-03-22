@@ -20,7 +20,7 @@ const Header: React.FC = () => {
         <Typography
           variant="h6"
           sx={{ flexGrow: 1 }}
-          onClick={() => navigate('/')}
+          onClick={() => navigate('/bobs/foodList')}
           style={{ cursor: 'pointer' }}
         >
           Bob&#39;s

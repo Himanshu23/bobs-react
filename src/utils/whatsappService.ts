@@ -16,6 +16,7 @@ export interface OrderMessage {
   customerName?: string;
   phoneNumber?: string;
   instructions?: string;
+  deliveryMethod?: 'pickup' | 'delivery';
 }
 
 /**
@@ -32,10 +33,21 @@ export const formatOrderMessage = (order: OrderMessage): string => {
   let message = `🍕 *Order from Bob's Restaurant*
 
 *Items:*
-${itemsList}
+${itemsList}`;
+
+  if (order.deliveryMethod === 'pickup') {
+    message += `
+
+*Order Type:* Pickup 🎉
+*Location:* Bob's Kitchen`;
+  } else {
+    message += `
 
 *Delivery Address:*
-${order.habitat} - Tower ${order.tower}
+${order.habitat} - Tower ${order.tower}`;
+  }
+
+  message += `
 
 *Total: ₹${order.total.toFixed(2)}*`;
 
