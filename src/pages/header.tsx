@@ -21,7 +21,12 @@ const Header: React.FC = () => {
           variant="h6"
           sx={{ flexGrow: 1 }}
           onClick={() => navigate('/bobs/foodList')}
-          style={{ cursor: 'pointer' }}
+          style={{
+            cursor: 'pointer',
+            fontWeight: '500',
+            fontSize: '1.25rem',
+            color: '#fff',
+          }}
         >
           Bob&#39;s
         </Typography>

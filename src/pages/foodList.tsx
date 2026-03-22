@@ -21,6 +21,7 @@ import {
   Search as SearchIconMUI,
   ExpandMore as ExpandMoreIcon,
   ExpandLess as ExpandLessIcon,
+  EnergySavingsLeaf as LeafIcon,
 } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -54,6 +55,7 @@ const FoodListPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
   const [scrollToItemId, setScrollToItemId] = useState<string | null>(null);
+  const [vegOnly, setVegOnly] = useState<boolean>(false);
   const itemsContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -62,11 +64,12 @@ const FoodListPage: React.FC = () => {
     }
   }, [status, dispatch]);
 
-  // Filter items based on search query and selected category
+  // Filter items based on search query, selected category, and veg filter
   const filteredItems = items.filter(
     (item) =>
       item.category === selectedCategory &&
-      item.name.toLowerCase().includes(searchQuery.toLowerCase())
+      item.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
+      (!vegOnly || item.veg === true)
   );
 
   useEffect(() => {
@@ -180,42 +183,63 @@ const FoodListPage: React.FC = () => {
       <Container maxWidth="lg">
         {/* Search Bar and Category Tabs */}
         <Box sx={{ pt: 2, pb: 1 }}>
-          <TextField
-            fullWidth
-            placeholder="Search dishes..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            variant="outlined"
-            size="small"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIconMUI sx={{ color: '#999' }} />
-                </InputAdornment>
-              ),
-              endAdornment: searchQuery && (
-                <InputAdornment position="end">
-                  <Button
-                    size="small"
-                    onClick={() => setSearchQuery('')}
-                    sx={{ textTransform: 'none', mr: -1 }}
-                  >
-                    Clear
-                  </Button>
-                </InputAdornment>
-              ),
-            }}
-            sx={{
-              mb: 1.5,
-              '& .MuiOutlinedInput-root': {
-                borderRadius: '24px',
-                backgroundColor: '#f5f5f5',
-                '&:hover fieldset': {
-                  borderColor: 'primary.main',
+          <Box sx={{ display: 'flex', gap: 1, mb: 1.5, alignItems: 'center' }}>
+            <TextField
+              fullWidth
+              placeholder="Search dishes..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              variant="outlined"
+              size="small"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIconMUI sx={{ color: '#999' }} />
+                  </InputAdornment>
+                ),
+                endAdornment: searchQuery && (
+                  <InputAdornment position="end">
+                    <Button
+                      size="small"
+                      onClick={() => setSearchQuery('')}
+                      sx={{ textTransform: 'none', mr: -1 }}
+                    >
+                      Clear
+                    </Button>
+                  </InputAdornment>
+                ),
+              }}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: '24px',
+                  backgroundColor: '#f5f5f5',
+                  '&:hover fieldset': {
+                    borderColor: 'primary.main',
+                  },
                 },
-              },
-            }}
-          />
+              }}
+            />
+            <Button
+              variant={vegOnly ? 'contained' : 'outlined'}
+              color="success"
+              startIcon={<LeafIcon />}
+              onClick={() => setVegOnly(!vegOnly)}
+              sx={{
+                whiteSpace: 'nowrap',
+                fontWeight: 600,
+                animation: !vegOnly ? 'blink 1.5s infinite' : 'none',
+                '@keyframes blink': {
+                  '0%, 49%, 100%': { opacity: 1 },
+                  '50%, 99%': { opacity: 0.5 },
+                },
+                '&:hover': {
+                  animation: 'none',
+                },
+              }}
+            >
+              Veg Only
+            </Button>
+          </Box>
 
           <Tabs
             value={selectedCategory}
