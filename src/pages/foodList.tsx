@@ -65,12 +65,22 @@ const FoodListPage: React.FC = () => {
   }, [status, dispatch]);
 
   // Filter items based on search query, selected category, and veg filter
-  const filteredItems = items.filter(
-    (item) =>
-      item.category === selectedCategory &&
-      item.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
-      (!vegOnly || item.veg === true)
-  );
+  // If searching, show results from ALL categories; otherwise use selected category
+  const filteredItems = items.filter((item) => {
+    const matchesSearch =
+      searchQuery === '' ||
+      item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (item.description &&
+        item.description.toLowerCase().includes(searchQuery.toLowerCase()));
+
+    const matchesCategory =
+      searchQuery === '' ? item.category === selectedCategory : true;
+
+    const matchesVegFilter = !vegOnly || item.veg === true;
+
+    return matchesSearch && matchesCategory && matchesVegFilter;
+  });
 
   useEffect(() => {
     if (scrollToItemId && itemsContainerRef.current) {
@@ -242,7 +252,7 @@ const FoodListPage: React.FC = () => {
           </Box>
 
           <Tabs
-            value={selectedCategory}
+            value={searchQuery ? false : selectedCategory}
             onChange={(_, newValue) => setSelectedCategory(newValue)}
             variant="scrollable"
             scrollButtons="auto"
@@ -255,6 +265,7 @@ const FoodListPage: React.FC = () => {
                 minWidth: 120,
                 fontSize: '0.875rem',
                 py: 1,
+                opacity: searchQuery ? 0.5 : 1,
               },
             }}
           >
@@ -264,7 +275,18 @@ const FoodListPage: React.FC = () => {
           </Tabs>
         </Box>
 
-        {/* Search Results or Items */}
+        {searchQuery && (
+          <Box
+            sx={{ mb: 2, p: 1.5, backgroundColor: '#f5f5f5', borderRadius: 1 }}
+          >
+            <Typography variant="body2" color="textSecondary">
+              🔍 Searching across all items... Found{' '}
+              <strong>{filteredItems.length}</strong> result
+              {filteredItems.length !== 1 ? 's' : ''}
+            </Typography>
+          </Box>
+        )}
+
         {filteredItems.length > 0 ? (
           <Box
             ref={itemsContainerRef}
@@ -277,7 +299,31 @@ const FoodListPage: React.FC = () => {
             }}
           >
             {filteredItems.map((food: FoodItem) => (
-              <Box key={`list_${food.id}`} data-item-id={food.id}>
+              <Box
+                key={`list_${food.id}`}
+                data-item-id={food.id}
+                sx={{ position: 'relative' }}
+              >
+                {searchQuery && (
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      position: 'absolute',
+                      top: 8,
+                      right: 8,
+                      backgroundColor: '#e3f2fd',
+                      color: '#1976d2',
+                      px: 1,
+                      py: 0.5,
+                      borderRadius: '4px',
+                      fontSize: '10px',
+                      fontWeight: 600,
+                      zIndex: 10,
+                    }}
+                  >
+                    {food.category}
+                  </Typography>
+                )}
                 <FoodItemCard item={food} handleCart={handleCart} />
               </Box>
             ))}
