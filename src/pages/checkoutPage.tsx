@@ -35,6 +35,7 @@ import {
   openWhatsApp,
   OrderMessage,
 } from '../utils/whatsappService';
+import { DISCOUNTS, calculateDiscountAmount } from '../data/discounts';
 
 const WHATSAPP_PHONE = '9643310092'; // Replace with your number
 
@@ -61,6 +62,7 @@ const CheckoutPage: React.FC = () => {
   const [customerName, setCustomerName] = useState<string>('');
   const [customerInstructions, setCustomerInstructions] = useState<string>('');
   const [isProcessing, setIsProcessing] = useState(false);
+  const [selectedDiscountId, setSelectedDiscountId] = useState<string>('');
 
   // Reset tower when habitat changes
   const handleHabitatChange = (event: SelectChangeEvent<string>) => {
@@ -74,24 +76,30 @@ const CheckoutPage: React.FC = () => {
     0
   );
 
-  const tax = totalPrice * 0.05;
-  const finalTotal = totalPrice + tax;
+  // Calculate discount
+  const selectedDiscount = selectedDiscountId
+    ? DISCOUNTS.find((d) => d.id === selectedDiscountId)
+    : null;
+  const discountAmount = selectedDiscount
+    ? calculateDiscountAmount(selectedDiscount, totalPrice)
+    : 0;
+
+  // Calculate total after discount
+  const totalAfterDiscount = totalPrice - discountAmount;
+  const tax = totalAfterDiscount * 0.05;
+  const finalTotal = totalAfterDiscount + tax;
 
   const availableTowers = habitat ? HABITAT_TOWERS[habitat] || [] : [];
 
   const handleProceedToCheckout = async () => {
     // Validation based on delivery method
     if (deliveryMethod === 'delivery') {
-      if (addressType === 'habitat') {
-        if (!habitat || !tower || !flatNumber || flatNumber.trim() === '') {
-          alert('Please select Habitat, Tower and enter Flat Number');
-          return;
-        }
-      } else if (addressType === 'custom') {
-        if (!customAddress || customAddress.trim() === '') {
-          alert('Please enter your delivery address');
-          return;
-        }
+      if (
+        (!tower || !flatNumber || flatNumber.trim() === '') &&
+        (!customAddress || customAddress.trim() === '')
+      ) {
+        alert('Please select Habitat, Tower and enter Flat Number');
+        return;
       }
     }
 
@@ -482,6 +490,64 @@ const CheckoutPage: React.FC = () => {
             </Card>
           </Grid>
 
+          {/* Discount Section */}
+          <Grid item xs={12} md={4}>
+            <Card sx={{ mb: 2 }}>
+              <CardContent>
+                <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2 }}>
+                  🎁 Apply Discount
+                </Typography>
+                <FormControl fullWidth sx={{ mb: 2 }}>
+                  <InputLabel>Select Discount</InputLabel>
+                  <Select
+                    value={selectedDiscountId}
+                    label="Select Discount"
+                    onChange={(e) => setSelectedDiscountId(e.target.value)}
+                  >
+                    <MenuItem value="">No Discount</MenuItem>
+                    {DISCOUNTS.filter((d) => d.active).map((discount) => (
+                      <MenuItem key={discount.id} value={discount.id}>
+                        {discount.name} -{' '}
+                        {discount.percent > 0
+                          ? `${discount.percent}%`
+                          : `₹${discount.fixedValue}`}
+                        {discount.code && ` (${discount.code})`}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                {selectedDiscount && (
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      color:
+                        totalPrice < selectedDiscount.minValue
+                          ? '#ff0000'
+                          : 'textSecondary',
+                      fontWeight:
+                        totalPrice < selectedDiscount.minValue
+                          ? 'bold'
+                          : 'normal',
+                    }}
+                  >
+                    {totalPrice < selectedDiscount.minValue ? '⚠️ ' : '📌 '}
+                    {selectedDiscount.description}
+                    <br />
+                    Min: ₹{selectedDiscount.minValue} | Max Cap: ₹
+                    {selectedDiscount.maxCap}
+                    {totalPrice < selectedDiscount.minValue && (
+                      <>
+                        <br />❌ Not applicable - Add ₹
+                        {(selectedDiscount.minValue - totalPrice).toFixed(2)}{' '}
+                        more to unlock this discount
+                      </>
+                    )}
+                  </Typography>
+                )}
+              </CardContent>
+            </Card>
+          </Grid>
+
           {/* Price Summary Section */}
           <Grid item xs={12} md={4}>
             <Card sx={{ position: 'sticky', top: 20 }}>
@@ -512,15 +578,42 @@ const CheckoutPage: React.FC = () => {
                     <Typography color="textSecondary">Delivery:</Typography>
                     <Typography color="#4CAF50">Free</Typography>
                   </Box>
+                  {discountAmount > 0 && (
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        mb: 1,
+                      }}
+                    >
+                      <Typography
+                        color="textSecondary"
+                        sx={{ textDecoration: 'none' }}
+                      >
+                        Discount:
+                      </Typography>
+                      <Typography sx={{ fontWeight: 'bold', color: '#4CAF50' }}>
+                        -₹{discountAmount.toFixed(2)}
+                      </Typography>
+                    </Box>
+                  )}
                   <Box
                     sx={{
                       display: 'flex',
                       justifyContent: 'space-between',
                       mb: 1,
+                      opacity: 0.7,
                     }}
                   >
-                    <Typography color="textSecondary">Tax (5%):</Typography>
-                    <Typography>₹{tax.toFixed(2)}</Typography>
+                    <Typography
+                      color="textSecondary"
+                      sx={{ fontSize: '0.9rem' }}
+                    >
+                      Tax (5%):
+                    </Typography>
+                    <Typography sx={{ fontSize: '0.9rem' }}>
+                      ₹{tax.toFixed(2)}
+                    </Typography>
                   </Box>
                 </Box>
 
