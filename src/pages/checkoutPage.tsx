@@ -44,7 +44,7 @@ interface HabitatTowers {
 
 const HABITAT_TOWERS: HabitatTowers = {
   'Habitat Old': ['A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'B1', 'B2', 'C'],
-  'Habitat New': ['D1', 'D2', 'D3', 'D4', 'D5', 'D6', 'D7'],
+  'Habitat New': ['D1', 'D2', 'D3', 'D4', 'D5', 'D6', 'D7', 'E'],
 };
 
 const CheckoutPage: React.FC = () => {

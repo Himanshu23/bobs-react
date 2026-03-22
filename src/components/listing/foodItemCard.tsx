@@ -1,8 +1,9 @@
 import { Box, Typography, Button, Badge } from '@mui/material';
-import { CircleSharp } from '@mui/icons-material'; // Veg & Non-Veg Icons
+import { CircleSharp, ImageNotSupported } from '@mui/icons-material'; // Veg & Non-Veg Icons
 import { CartActions, FoodItem, ItemOptions } from '../../types';
 import { useSelector } from 'react-redux';
 import { selectProductTotalQuantity } from '../../redux/selectors';
+import { useState } from 'react';
 
 interface FoodItemCardProps {
   item: FoodItem;
@@ -11,6 +12,11 @@ interface FoodItemCardProps {
 
 const FoodItemCard = ({ item, handleCart }: FoodItemCardProps) => {
   const totalQuantity = useSelector(selectProductTotalQuantity(item.id));
+  const [imageError, setImageError] = useState(false);
+
+  const handleImageError = () => {
+    setImageError(true);
+  };
 
   return (
     <Box
@@ -31,9 +37,9 @@ const FoodItemCard = ({ item, handleCart }: FoodItemCardProps) => {
           sx={{ display: 'flex', alignItems: 'center', gap: 1, minHeight: 28 }}
         >
           {item.veg ? (
-            <CircleSharp sx={{ color: 'green', fontSize: 20, flexShrink: 0 }} />
+            <CircleSharp sx={{ color: 'green', fontSize: 14, flexShrink: 0 }} />
           ) : (
-            <CircleSharp sx={{ color: 'red', fontSize: 20, flexShrink: 0 }} />
+            <CircleSharp sx={{ color: 'red', fontSize: 14, flexShrink: 0 }} />
           )}
           <Typography
             variant="body1"
@@ -107,18 +113,37 @@ const FoodItemCard = ({ item, handleCart }: FoodItemCardProps) => {
         )}
       </Box>
 
-      <Box
-        component="img"
-        src={item.image}
-        alt={item.name}
-        sx={{
-          width: 110,
-          height: 110,
-          borderRadius: 1,
-          objectFit: 'cover',
-          flexShrink: 0,
-        }}
-      />
+      {imageError ? (
+        <Box
+          sx={{
+            width: 110,
+            height: 110,
+            borderRadius: 1,
+            backgroundColor: '#f5f5f5',
+            border: '2px dashed #ccc',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexShrink: 0,
+          }}
+        >
+          <ImageNotSupported sx={{ color: '#999', fontSize: 40 }} />
+        </Box>
+      ) : (
+        <Box
+          component="img"
+          src={item.image}
+          alt={item.name}
+          onError={handleImageError}
+          sx={{
+            width: 110,
+            height: 110,
+            borderRadius: 1,
+            objectFit: 'cover',
+            flexShrink: 0,
+          }}
+        />
+      )}
     </Box>
   );
 };

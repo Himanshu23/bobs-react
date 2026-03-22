@@ -6,7 +6,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/starter-paneer-tikka.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/starter-paneer-tikka.jpeg',
       category: 'Starters',
       priceOptions: {
         wasPrice: { size: { Full: 313.95 } },
@@ -19,7 +20,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/chinese-rice-veg.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/chinese-rice-veg.jpeg',
       category: 'Chinese Rice',
       priceOptions: {
         wasPrice: { size: { Full: 313.95, Half: 156.45 } },
@@ -32,7 +34,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/bread-cheese-garlic.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/bread-cheese-garlic.jpeg',
       category: 'Breads',
       priceOptions: {
         wasPrice: { size: { Full: 126.0 } },
@@ -45,7 +48,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/main-paneer-butter-masala.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/main-paneer-butter-masala.jpeg',
       category: 'Main Course',
       priceOptions: {
         wasPrice: { size: { Full: 387.45, Half: 271.95 } },
@@ -58,7 +62,8 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/main-chicken-tikka-masala.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/main-chicken-tikka-masala.jpeg',
       category: 'Main Course',
       priceOptions: {
         wasPrice: { size: { Full: 754.95, Half: 481.95, Quarter: 313.95 } },
@@ -71,7 +76,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/bread-paratha-laccha.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/bread-paratha-laccha.jpeg',
       category: 'Breads',
       priceOptions: {
         wasPrice: { size: { Full: 52.5 } },
@@ -84,7 +90,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/main-mushroom-matar.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/main-mushroom-matar.jpeg',
       category: 'Main Course',
       priceOptions: {
         wasPrice: { size: { Full: 366.45, Half: 229.95 } },
@@ -98,7 +105,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/bread-roomali-roti.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/bread-roomali-roti.jpeg',
       category: 'Breads',
       priceOptions: {
         wasPrice: { size: { Full: 26.25 } },
@@ -124,7 +132,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/roll-paneer-haryali-tikka.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/roll-paneer-haryali-tikka.jpeg',
       category: 'Starters',
       priceOptions: {
         wasPrice: { size: { Full: 208.95 } },
@@ -137,7 +146,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/roll-cheese.jpeg',
+      image: 'https://bobsimages.blob.core.windows.net/dishesh/no-image.jpeg',
       category: 'Starters',
       priceOptions: {
         wasPrice: { size: { Full: 156.45 } },
@@ -150,7 +159,8 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/starter-chicken-tandoori.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/starter-chicken-tandoori.jpeg',
       category: 'Starters',
       priceOptions: {
         wasPrice: { size: { Full: 681.45, Half: 366.45 } },
@@ -164,7 +174,8 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/main-chicken-punjabi.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/main-chicken-punjabi.jpeg',
       category: 'Main Course',
       priceOptions: {
         wasPrice: { size: { Full: 754.95, Half: 481.95, Quarter: 313.95 } },
@@ -177,7 +188,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/bread-naan-butter.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/bread-naan-butter.jpeg',
       category: 'Breads',
       priceOptions: {
         wasPrice: { size: { Full: 68.25 } },
@@ -190,7 +202,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/mail-daal-bukhara.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/mail-daal-bukhara.jpeg',
       category: 'Main Course',
       priceOptions: {
         wasPrice: { size: { Full: 345.45, Half: 208.95 } },
@@ -203,7 +216,8 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/roll-chicken-haryali-tikka.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/roll-chicken-haryali-tikka.jpeg',
       category: 'Starters',
       priceOptions: {
         wasPrice: { size: { Full: 240.45 } },
@@ -216,7 +230,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/raita-plain-curd.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/raita-plain-curd.jpeg',
       category: 'Sides',
       priceOptions: {
         wasPrice: { size: { Full: 84.0 } },
@@ -229,7 +244,8 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/bread-keema-naan.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/bread-keema-naan.jpeg',
       category: 'Breads',
       priceOptions: {
         wasPrice: { size: { Full: 261.45 } },
@@ -243,7 +259,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/chinese-noodles-schezwan.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/chinese-noodles-schezwan.jpeg',
       category: 'Noodles',
       priceOptions: {
         wasPrice: { size: { Full: 334.95, Half: 187.95 } },
@@ -257,7 +274,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/main-dal-makhani.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/main-dal-makhani.jpeg',
       category: 'Main Course',
       priceOptions: {
         wasPrice: { size: { Full: 345.45, Half: 208.95 } },
@@ -270,7 +288,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/main-mushroom-kadhai.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/main-mushroom-kadhai.jpeg',
       category: 'Main Course',
       priceOptions: {
         wasPrice: { size: { Full: 366.45, Half: 229.95 } },
@@ -283,7 +302,8 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/starter-chicken-afgani.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/starter-chicken-afgani.jpeg',
       category: 'Starters',
       priceOptions: {
         wasPrice: { size: { Full: 733.95, Half: 418.95 } },
@@ -296,7 +316,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/raita-boondi.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/raita-boondi.jpeg',
       category: 'Sides',
       priceOptions: {
         wasPrice: { size: { Full: 126.0 } },
@@ -309,7 +330,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/bread-roti-tandoori-butter.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/bread-roti-tandoori-butter.jpeg',
       category: 'Breads',
       priceOptions: {
         wasPrice: { size: { Full: 36.75 } },
@@ -322,7 +344,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/starter-paneer-malai-tikka.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/starter-paneer-malai-tikka.jpeg',
       category: 'Starters',
       priceOptions: {
         wasPrice: { size: { Full: 366.45 } },
@@ -336,7 +359,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/main-paneer-tawa.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/main-paneer-tawa.jpeg',
       category: 'Main Course',
       priceOptions: {
         wasPrice: { size: { Full: 387.45 } },
@@ -350,7 +374,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/main-malai-kofta.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/main-malai-kofta.jpeg',
       category: 'Main Course',
       priceOptions: {
         wasPrice: { size: { Full: 408.45, Half: 282.45 } },
@@ -364,7 +389,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/bread-naan-garlic.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/bread-naan-garlic.jpeg',
       category: 'Breads',
       priceOptions: {
         wasPrice: { size: { Full: 84.0 } },
@@ -378,7 +404,8 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/roll-chicken-malai-tikka.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/roll-chicken-malai-tikka.jpeg',
       category: 'Starters',
       priceOptions: {
         wasPrice: { size: { Full: 240.45 } },
@@ -392,7 +419,8 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/main-chicken-kali-mirch.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/main-chicken-kali-mirch.jpeg',
       category: 'Main Course',
       priceOptions: {
         wasPrice: { size: { Full: 838.95, Half: 576.45 } },
@@ -406,7 +434,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/main-bobs-special-paneer-gravy.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/main-bobs-special-paneer-gravy.jpeg',
       category: 'Main Course',
       priceOptions: {
         wasPrice: { size: { Full: 450.45 } },
@@ -419,7 +448,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/main-paneer-matar.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/main-paneer-matar.jpeg',
       category: 'Main Course',
       priceOptions: {
         wasPrice: { size: { Full: 387.45, Half: 271.95 } },
@@ -433,7 +463,8 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/main-chicken-rara.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/main-chicken-rara.jpeg',
       category: 'Main Course',
       priceOptions: {
         wasPrice: { size: { Full: 838.95, Half: 576.45 } },
@@ -446,7 +477,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/rice-steamed-rice.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/rice-steamed.jpeg',
       category: 'Rice',
       priceOptions: {
         wasPrice: { size: { Full: 126.0 } },
@@ -460,7 +492,7 @@ export default {
     //   description: '',
     //   veg: true,
     //   rating: 4,
-    //   image: '/imgs/food/downloads/chinese-chicken-chilli-gravy.jpeg',
+    //   image: 'https://bobsimages.blob.core.windows.net/dishesh/chinese-chicken-chilli-gravy.jpeg',
     //   category: 'Main Course',
     //   priceOptions: {
     //     wasPrice: { size: { Full: 20.0 } },
@@ -473,7 +505,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/main-paneer-lababdar.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/main-paneer-lababdar.jpeg',
       category: 'Main Course',
       priceOptions: {
         wasPrice: { size: { Full: 387.45, Half: 271.95 } },
@@ -487,7 +520,8 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/main-chicken-curry.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/main-chicken-curry.jpeg',
       category: 'Main Course',
       priceOptions: {
         wasPrice: { size: { Full: 765.45, Half: 492.45, Quarter: 313.95 } },
@@ -501,7 +535,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/bread-paratha-methi.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/bread-paratha-methi.jpeg',
       category: 'Breads',
       priceOptions: {
         wasPrice: { size: { Full: 68.25 } },
@@ -515,7 +550,8 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/starter-chicken-kali-mirch-tikka.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/starter-chicken-kali-mirch-tikka.jpeg',
       category: 'Starters',
       priceOptions: {
         wasPrice: { size: { Full: 418.95 } },
@@ -528,7 +564,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/roll-malai-paneer-tikka.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/roll-malai-paneer-tikka.jpeg',
       category: 'Starters',
       priceOptions: {
         wasPrice: { size: { Full: 208.95 } },
@@ -541,7 +578,8 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/roll-chicken-tikka.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/roll-chicken-tikka.jpeg',
       category: 'Starters',
       priceOptions: {
         wasPrice: { size: { Full: 208.95 } },
@@ -555,7 +593,8 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/main-bobs-special-chicken-gravy.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/main-bobs-special-chicken-gravy.jpeg',
       category: 'Main Course',
       priceOptions: {
         wasPrice: { size: { Full: 880.95, Half: 586.95 } },
@@ -568,7 +607,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/starter-paneer-achari-tikka.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/starter-paneer-achari-tikka.jpeg',
       category: 'Starters',
       priceOptions: {
         wasPrice: { size: { Full: 334.95 } },
@@ -581,7 +621,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/bread-paratha-malabar.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/bread-paratha-malabar.jpeg',
       category: 'Breads',
       priceOptions: {
         wasPrice: { size: { Full: 57.75 } },
@@ -594,7 +635,8 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/main-chicken-butter-special.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/main-chicken-butter-special.jpeg',
       category: 'Main Course',
       priceOptions: {
         wasPrice: { size: { Full: 838.95, Half: 576.45 } },
@@ -608,7 +650,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/chinese-hakka-noodles.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/chinese-hakka-noodles.jpeg',
       category: 'Noodles',
       priceOptions: {
         wasPrice: { size: { Full: 313.95, Half: 166.95 } },
@@ -621,7 +664,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/chinese-rice-schezwan.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/chinese-rice-schezwan.jpeg',
       category: 'Chinese Rice',
       priceOptions: {
         wasPrice: { size: { Full: 313.95, Half: 156.45 } },
@@ -634,7 +678,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/main-veg-kolhapuri.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/main-veg-kolhapuri.jpeg',
       category: 'Main Course',
       priceOptions: {
         wasPrice: { size: { Full: 313.95, Half: 177.45 } },
@@ -648,7 +693,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/bread-naan-plain.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/bread-naan-plain.jpeg',
       category: 'Breads',
       priceOptions: {
         wasPrice: { size: { Full: 52.5 } },
@@ -662,7 +708,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/bread-paratha-aloo.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/bread-paratha-aloo.jpeg',
       category: 'Breads',
       priceOptions: {
         wasPrice: { size: { Full: 84.0 } },
@@ -675,7 +722,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/chinese-paneer-chilli-gravy.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/chinese-paneer-chilli-gravy.jpeg',
       category: 'Chinese',
       priceOptions: {
         wasPrice: { size: { Full: 334.95, Half: 229.95 } },
@@ -689,7 +737,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/roll-paneer-tikka.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/roll-paneer-tikka.jpeg',
       category: 'Starters',
       priceOptions: {
         wasPrice: { size: { Full: 177.45 } },
@@ -702,7 +751,8 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/starter-seekh-kabab.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/starter-seekh-kabab.jpeg',
       category: 'Starters',
       priceOptions: {
         wasPrice: { size: { Full: 324.45 } },
@@ -715,7 +765,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/main-paneer-kali-mirch.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/main-paneer-kali-mirch.jpeg',
       category: 'Main Course',
       priceOptions: {
         wasPrice: { size: { Full: 418.95, Half: 292.95 } },
@@ -729,7 +780,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/breads-tandoori-paneer-paratha.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/breads-paratha-paneer.jpeg',
       category: 'Breads',
       priceOptions: {
         wasPrice: { size: { Full: 126.0 } },
@@ -743,7 +795,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/rice-jeera-rice.jpeg',
+      image: 'https://bobsimages.blob.core.windows.net/dishesh/rice-jeera.jpeg',
       category: 'Rice',
       priceOptions: {
         wasPrice: { size: { Full: 147.0 } },
@@ -757,7 +809,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/chinese-chilli-potato.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/chinese-chilli-potato.jpeg',
       category: 'Chinese',
       priceOptions: {
         wasPrice: { size: { Full: 240.45, Half: 177.45 } },
@@ -771,7 +824,8 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/chinese-chicken-chilli-gravy.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/chinese-chicken-chilli-gravy.jpeg',
       category: 'Chinese',
       priceOptions: {
         wasPrice: { size: { Full: 366.45, Half: 271.95 } },
@@ -785,7 +839,8 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/starter-seekh-kabab.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/starter-seekh-kabab.jpeg',
       category: 'Starters',
       priceOptions: {
         wasPrice: { size: { Full: 271.95 } },
@@ -799,7 +854,8 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/starter-chicken-tikka.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/starter-chicken-tikka.jpeg',
       category: 'Starters',
       priceOptions: {
         wasPrice: { size: { Full: 397.95 } },
@@ -813,7 +869,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/chinese-rice-chilli-garlic.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/chinese-rice-chilli-garlic.jpeg',
       category: 'Chinese Rice',
       priceOptions: {
         wasPrice: { size: { Full: 313.95, Half: 156.45 } },
@@ -827,7 +884,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/raita-mix-veg.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/raita-mix-veg.jpeg',
       category: 'Sides',
       priceOptions: {
         wasPrice: { size: { Full: 126.0 } },
@@ -840,7 +898,8 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/starter-chicken-malai-tikka.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/starter-chicken-malai-tikka.jpeg',
       category: 'Starters',
       priceOptions: {
         wasPrice: { size: { Full: 418.95 } },
@@ -853,7 +912,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/bread-naan-aloo.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/bread-naan-aloo.jpeg',
       category: 'Breads',
       priceOptions: {
         wasPrice: { size: { Full: 105.0 } },
@@ -866,7 +926,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/chinese-noodles-chilli-garlic.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/chinese-noodles-chilli-garlic.jpeg',
       category: 'Noodles',
       priceOptions: {
         wasPrice: { size: { Full: 334.95, Half: 187.95 } },
@@ -879,7 +940,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/burgers-veg-cheese-burger.jpeg',
+      image: 'https://bobsimages.blob.core.windows.net/dishesh/no-image.jpeg',
       category: 'Burgers',
       priceOptions: {
         wasPrice: { size: { Full: 103.95 } },
@@ -892,7 +953,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/roll-chaap-malai.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/roll-chaap-malai.jpeg',
       category: 'Starters',
       priceOptions: {
         wasPrice: { size: { Full: 177.45 } },
@@ -905,7 +967,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/main-mushroom-masala.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/main-mushroom-masala.jpeg',
       category: 'Main Course',
       priceOptions: {
         wasPrice: { size: { Full: 366.45, Half: 229.95 } },
@@ -919,7 +982,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/bread-paratha-hari-mirch.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/bread-paratha-hari-mirch.jpeg',
       category: 'Breads',
       priceOptions: {
         wasPrice: { size: { Full: 63.0 } },
@@ -933,7 +997,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/chinese-veg-manchurian.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/chinese-veg-manchurian.jpeg',
       category: 'Chinese',
       priceOptions: {
         wasPrice: { size: { Full: 313.95, Half: 208.95 } },
@@ -946,7 +1011,8 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/main-chicken-kadhai.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/main-chicken-kadhai.jpeg',
       category: 'Main Course',
       priceOptions: {
         wasPrice: { size: { Full: 754.95, Half: 481.95, Quarter: 313.95 } },
@@ -960,7 +1026,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/bread-missi.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/bread-missi.jpeg',
       category: 'Breads',
       priceOptions: {
         wasPrice: { size: { Full: 52.5 } },
@@ -974,7 +1041,8 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/burgers-chicken-cheese-burger.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/burgers-chicken-cheese-burger.jpeg',
       category: 'Burgers',
       priceOptions: {
         wasPrice: { size: { Full: 156.45 } },
@@ -988,7 +1056,8 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/main-chicken-lababdar.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/main-chicken-lababdar.jpeg',
       category: 'Main Course',
       priceOptions: {
         wasPrice: { size: { Full: 754.95, Half: 481.95, Quarter: 313.95 } },
@@ -1002,7 +1071,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/starter-chaap-tandoori.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/starter-chaap-tandoori.jpeg',
       category: 'Starters',
       priceOptions: {
         wasPrice: { size: { Full: 282.45, Half: 177.45 } },
@@ -1016,7 +1086,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/starter-mushroom-tikka.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/starter-mushroom-tikka.jpeg',
       category: 'Starters',
       priceOptions: {
         wasPrice: { size: { Full: 271.95 } },
@@ -1029,7 +1100,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/roll-chaap-tandoori.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/roll-chaap-tandoori.jpeg',
       category: 'Starters',
       priceOptions: {
         wasPrice: { size: { Full: 156.45 } },
@@ -1042,7 +1114,7 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/breads-chicken-keema-naan.jpeg',
+      image: 'https://bobsimages.blob.core.windows.net/dishesh/no-image.jpeg',
       category: 'Breads',
       priceOptions: {
         wasPrice: { size: { Full: 208.95 } },
@@ -1055,7 +1127,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/main-mix-veg.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/main-mix-veg.jpeg',
       category: 'Main Course',
       priceOptions: {
         wasPrice: { size: { Full: 345.45, Half: 208.95 } },
@@ -1068,7 +1141,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/main-navratan-korma.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/main-navratan-korma.jpeg',
       category: 'Main Course',
       priceOptions: {
         wasPrice: { size: { Full: 303.45, Half: 219.45 } },
@@ -1081,7 +1155,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/main-paneer-kadhai.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/main-paneer-kadhai.jpeg',
       category: 'Main Course',
       priceOptions: {
         wasPrice: { size: { Full: 387.45, Half: 271.95 } },
@@ -1094,7 +1169,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/roll-chaap-haryali.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/roll-chaap-haryali.jpeg',
       category: 'Starters',
       priceOptions: {
         wasPrice: { size: { Full: 177.45 } },
@@ -1107,7 +1183,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/starter-chaap-tandoori.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/starter-chaap-tandoori.jpeg',
       category: 'Starters',
       priceOptions: {
         wasPrice: { size: { Full: 313.95, Half: 208.95 } },
@@ -1120,7 +1197,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/starter-chaap-kali-mirch.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/starter-chaap-kali-mirch.jpeg',
       category: 'Starters',
       priceOptions: {
         wasPrice: { size: { Full: 313.95, Half: 208.95 } },
@@ -1134,7 +1212,8 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/starter-chicken-haryali-tikka.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/starter-chicken-haryali-tikka.jpeg',
       category: 'Starters',
       priceOptions: {
         wasPrice: { size: { Full: 397.95 } },
@@ -1147,7 +1226,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/bread-roti-tandoori.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/bread-roti-tandoori-plain.jpeg',
       category: 'Breads',
       priceOptions: {
         wasPrice: { size: { Full: 26.25 } },
@@ -1161,7 +1241,8 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/chinese-chicken-manchurian-gravy.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/chinese-chicken-manchurian-gravy.jpeg',
       category: 'Chinese',
       priceOptions: {
         wasPrice: { size: { Full: 376.95, Half: 271.95 } },
@@ -1175,7 +1256,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/bread-naan-paneer.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/bread-naan-paneer.jpeg',
       category: 'Breads',
       priceOptions: {
         wasPrice: { size: { Full: 147.0 } },
@@ -1189,7 +1271,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/raita-boondi.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/raita-boondi.jpeg',
       category: 'Sides',
       priceOptions: {
         wasPrice: { size: { Full: 126.0 } },
@@ -1203,7 +1286,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/main-paneer-shahi.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/main-paneer-shahi.jpeg',
       category: 'Main Course',
       priceOptions: {
         wasPrice: { size: { Full: 387.45, Half: 271.95 } },
@@ -1217,7 +1301,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/main-paneer-palak.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/main-paneer-palak.jpeg',
       category: 'Main Course',
       priceOptions: {
         wasPrice: { size: { Full: 387.45, Half: 271.95 } },
@@ -1231,7 +1316,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/main-chaap-tawa.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/main-chaap-tawa.jpeg',
       category: 'Main Course',
       priceOptions: {
         wasPrice: { size: { Full: 366.45, Half: 229.95 } },
@@ -1245,7 +1331,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/main-chaap-butter-masala.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/main-chaap-butter-masala.jpeg',
       category: 'Main Course',
       priceOptions: {
         wasPrice: { size: { Full: 366.45, Half: 229.95 } },
@@ -1259,7 +1346,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/main-chaap-kadhai.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/main-chaap-kadhai.jpeg',
       category: 'Main Course',
       priceOptions: {
         wasPrice: { size: { Full: 366.45, Half: 229.95 } },
@@ -1273,7 +1361,8 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/main-chicken-butter-masala.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/main-chicken-butter-masala.jpeg',
       category: 'Main Course',
       priceOptions: {
         wasPrice: { size: { Full: 754.95, Half: 481.95, Quarter: 313.95 } },
@@ -1282,12 +1371,13 @@ export default {
     },
     {
       id: '96',
-      name: 'Achaari Chaap',
+      name: 'Achari Chaap',
 
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/starter-chaap-achaari.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/starter-chaap-achari.jpeg',
       category: 'Starters',
       priceOptions: {
         wasPrice: { size: { Full: 282.45, Half: 177.45 } },
@@ -1301,7 +1391,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/starter-paneer-haryali-tikka.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/starter-paneer-haryali-tikka.jpeg',
       category: 'Starters',
       priceOptions: {
         wasPrice: { size: { Full: 334.95 } },
@@ -1314,7 +1405,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/starter-tangdi.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/starter-tandoori-tangdi.jpeg',
       category: 'Starters',
       priceOptions: {
         wasPrice: { size: { Full: 313.95 } },
@@ -1328,7 +1420,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/starter-malai-tangdi.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/starter-chicken-malai-tangadi.jpeg',
       category: 'Starters',
       priceOptions: {
         wasPrice: { size: { Full: 366.45 } },
@@ -1341,7 +1434,8 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/chinese-rice-chicken.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/chinese-rice-chicken.jpeg',
       category: 'Chinese Rice',
       priceOptions: {
         wasPrice: { size: { Full: 366.45, Half: 208.95 } },
@@ -1354,7 +1448,8 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/chinese-rice-chicken-chilli-garlic.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/chinese-rice-chicken-chilli-garlic.jpeg',
       category: 'Chinese Rice',
       priceOptions: {
         wasPrice: { size: { Full: 366.45, Half: 208.95 } },
@@ -1368,7 +1463,8 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/chinese-rice-egg-chilli.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/chinese-rice-egg-chilli.jpeg',
       category: 'Chinese Rice',
       priceOptions: {
         wasPrice: { size: { Full: 366.45, Half: 208.95 } },
@@ -1382,7 +1478,8 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/chinese-rice-egg.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/chinese-rice-egg.jpeg',
       category: 'Chinese Rice',
       priceOptions: {
         wasPrice: { size: { Full: 334.95, Half: 177.45 } },
@@ -1395,7 +1492,8 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/chinese-rice-egg-chilli-garlic.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/chinese-rice-egg-chilli-garlic.jpeg',
       category: 'Chinese Rice',
       priceOptions: {
         wasPrice: { size: { Full: 334.95, Quarter: 177.45 } },
@@ -1409,7 +1507,8 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/chinese-rice-egg-schezwan.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/chinese-rice-egg-schezwan.jpeg',
       category: 'Chinese Rice',
       priceOptions: {
         wasPrice: { size: { Full: 334.95, Half: 177.45 } },
@@ -1423,7 +1522,8 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/chinese-noodles-chicken-hakka.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/chinese-noodles-chicken-hakka.jpeg',
       category: 'Noodles',
       priceOptions: {
         wasPrice: { size: { Full: 366.45, Half: 219.45 } },
@@ -1437,7 +1537,8 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/chinese-noodles-chilli-garlic.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/chinese-noodles-chilli-garlic.jpeg',
       category: 'Noodles',
       priceOptions: {
         wasPrice: { size: { Full: 366.45, Half: 229.95 } },
@@ -1451,7 +1552,8 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/chinese-noodels-chicken-schezwan.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/chinese-noodels-chicken-schezwan.jpeg',
       category: 'Noodles',
       priceOptions: {
         wasPrice: { size: { Full: 366.45, Half: 229.95 } },
@@ -1465,7 +1567,8 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/chinese-noodles-egg-hakka.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/chinese-noodles-egg-hakka.jpeg',
       category: 'Noodles',
       priceOptions: {
         wasPrice: { size: { Full: 334.95, Half: 177.45 } },
@@ -1479,7 +1582,8 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/chinese-noodles-egg-chilli-garlic.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/chinese-noodles-egg-chilli-garlic.jpeg',
       category: 'Noodles',
       priceOptions: {
         wasPrice: { size: { Full: 334.95, Quarter: 187.95 } },
@@ -1493,7 +1597,8 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/chinese-noodles-egg-schezwan.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/chinese-noodles-egg-schezwan.jpeg',
       category: 'Noodles',
       priceOptions: {
         wasPrice: { size: { Full: 334.95, Quarter: 187.95 } },
@@ -1506,7 +1611,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/chinese-manchurian-veg-gravy.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/chinese-manchurian-veg-gravy.jpeg',
       category: 'Chinese',
       priceOptions: {
         wasPrice: { size: { Full: 345.45, Half: 240.45 } },
@@ -1519,7 +1625,8 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/chinese-manchurian-chicken-gravy.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/chinese-manchurian-chicken-gravy.jpeg',
       category: 'Chinese',
       priceOptions: {
         wasPrice: { size: { Full: 397.95, Half: 292.95 } },
@@ -1533,7 +1640,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/chinese-paneer-chilli-gravy.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/chinese-paneer-chilli-gravy.jpeg',
       category: 'Chinese',
       priceOptions: {
         wasPrice: { size: { Full: 366.45, Half: 261.45 } },
@@ -1547,7 +1655,8 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/chinese-chicken-chilli-gravy.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/chinese-chicken-chilli-gravy.jpeg',
       category: 'Chinese',
       priceOptions: {
         wasPrice: { size: { Full: 397.95, Half: 303.45 } },
@@ -1561,7 +1670,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/chinese-spring-roll.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/chinese-spring-roll.jpeg',
       category: 'Chinese',
       priceOptions: {
         wasPrice: { size: { Full: 240.45 } },
@@ -1574,7 +1684,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/momo-veg.jpeg',
+      image: 'https://bobsimages.blob.core.windows.net/dishesh/momo-veg.jpeg',
       category: 'Momos',
       priceOptions: {
         wasPrice: { size: { Full: 103.95 } },
@@ -1588,7 +1698,8 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/momo-chicken.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/momo-chicken.jpeg',
       category: 'Momos',
       priceOptions: {
         wasPrice: { size: { Full: 156.45 } },
@@ -1602,7 +1713,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/momo-paneer.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/momo-paneer.jpeg',
       category: 'Momos',
       priceOptions: {
         wasPrice: { size: { Full: 156.45 } },
@@ -1616,7 +1728,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/momo-veg-fried.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/momo-veg-fried.jpeg',
       category: 'Momos',
       priceOptions: {
         wasPrice: { size: { Full: 124.95 } },
@@ -1630,7 +1743,8 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/momo-chicken-fried.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/momo-chicken-fried.jpeg',
       category: 'Momos',
       priceOptions: {
         wasPrice: { size: { Full: 177.45 } },
@@ -1643,7 +1757,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/momo-paneer-fried.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/momo-paneer-fried.jpeg',
       category: 'Momos',
       priceOptions: {
         wasPrice: { size: { Full: 177.45 } },
@@ -1657,7 +1772,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/momo-veg-tandoori.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/momo-veg-tandoori.jpeg',
       category: 'Momos',
       priceOptions: {
         wasPrice: { size: { Full: 208.95 } },
@@ -1671,7 +1787,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/momo-paneer-tandoori.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/momo-paneer-tandoori.jpeg',
       category: 'Momos',
       priceOptions: {
         wasPrice: { size: { Full: 261.45 } },
@@ -1684,7 +1801,8 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/momo-chicken-tandoori.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/momo-chicken-tandoori.jpeg',
       category: 'Momos',
       priceOptions: {
         wasPrice: { size: { Full: 261.45 } },
@@ -1698,7 +1816,8 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/starter-malai-chicken.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/starter-chicken-malai.jpeg',
       category: 'Starters',
       priceOptions: {
         wasPrice: { size: { Full: 399 } },
@@ -1712,7 +1831,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/momo-veg-kurkure.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/momo-veg-kurkure.jpeg',
       category: 'Momos',
       priceOptions: {
         wasPrice: { size: { Full: 208.95 } },
@@ -1726,7 +1846,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/momo-paneer-kurkure.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/momo-paneer-kurkure.jpeg',
       category: 'Momos',
       priceOptions: {
         wasPrice: { size: { Full: 261.45 } },
@@ -1740,7 +1861,8 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/momo-chicken-kurkure.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/momo-chicken-kurkure.jpeg',
       category: 'Momos',
       priceOptions: {
         wasPrice: { size: { Full: 261.45 } },
@@ -1753,7 +1875,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/momo-veg-afghani.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/momo-veg-afghani.jpeg',
       category: 'Momos',
       priceOptions: {
         wasPrice: { size: { Full: 208.95 } },
@@ -1767,7 +1890,8 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/chinese-chicken-lollipop.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/chinese-chicken-lollipop.jpeg',
       category: 'Chinese',
       priceOptions: {
         wasPrice: { size: { Full: 261.45 } },
@@ -1780,7 +1904,7 @@ export default {
     //   description: '',
     //   veg: true,
     //   rating: 4,
-    //   image: '/imgs/food/downloads/bread-paratha-aloo.jpeg',
+    //   image: 'https://bobsimages.blob.core.windows.net/dishesh/bread-paratha-aloo.jpeg',
     //   category: 'Breads',
     //   priceOptions: {
     //     wasPrice: { size: {} },
@@ -1793,7 +1917,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/momo-paneer-afghani.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/momo-paneer-afghani.jpeg',
       category: 'Momos',
       priceOptions: {
         wasPrice: { size: { Full: 261.45 } },
@@ -1807,7 +1932,8 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/chicken-afghani-momos.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/chicken-afghani-momos.jpeg',
       category: 'Momos',
       priceOptions: {
         wasPrice: { size: { Full: 282.45 } },
@@ -1821,7 +1947,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/soup-hot-and-sour.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/soup-hot-and-sour.jpeg',
       category: 'Soups',
       priceOptions: {
         wasPrice: { size: { Full: 126.0 } },
@@ -1848,7 +1975,7 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/starter/peri-peri-chicken.jpg',
+      image: '/imgs/food/starter/starter-chicken-peri-peri-fried.jpg',
       category: 'Starters',
       priceOptions: {
         wasPrice: { size: { Full: 733.95, Half: 418.95 } },
@@ -1875,7 +2002,8 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/starter-chicken-tandoori-wings.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/starter-chicken-tandoori-wings.jpeg',
       category: 'Starters',
       priceOptions: {
         wasPrice: { size: { Full: 366.45 } },
@@ -1889,7 +2017,8 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/starter-chicken-peri-peri-fried.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/starter-chicken-peri-peri-fried.jpeg',
       category: 'Starters',
       priceOptions: {
         wasPrice: { size: { Full: 387.45 } },
@@ -1903,7 +2032,8 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/starter-chicken-peri-peri-tikka.jpg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/starter-chicken-peri-peri-tikka.jpg',
       category: 'Starters',
       priceOptions: {
         wasPrice: { size: { Full: 376.95 } },
@@ -1917,7 +2047,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/bread-missi.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/bread-missi.jpeg',
       category: 'Breads',
       priceOptions: {
         wasPrice: { size: { Full: 30 } },
@@ -1931,7 +2062,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/bread-roti-tandoori-onion.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/bread-roti-tandoori-onion.jpeg',
       category: 'Breads',
       priceOptions: {
         wasPrice: { size: { Full: 42.0 } },
@@ -1945,7 +2077,7 @@ export default {
     //   description: '',
     //   veg: false,
     //   rating: 4,
-    //   image: '/imgs/food/downloads/chinese-noodels-schezwan-egg.jpeg',
+    //   image: 'https://bobsimages.blob.core.windows.net/dishesh/chinese-noodels-schezwan-egg.jpeg',
     //   category: 'Others',
     //   priceOptions: {
     //     wasPrice: { size: { Full: 20.0 } },
@@ -1959,7 +2091,7 @@ export default {
     //   description: '',
     //   veg: false,
     //   rating: 4,
-    //   image: '/imgs/food/downloads/chinese-chicken-chilli-gravy.jpeg',
+    //   image: 'https://bobsimages.blob.core.windows.net/dishesh/chinese-chicken-chilli-gravy.jpeg',
     //   category: 'Others',
     //   priceOptions: {
     //     wasPrice: { size: { Full: 50.0 } },
@@ -1973,7 +2105,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/soup-mancho.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/soup-mancho.jpeg',
       category: 'Soups',
       priceOptions: {
         wasPrice: { size: { Full: 126.0 } },
@@ -1987,7 +2120,8 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image: '/imgs/food/downloads/roll-chilli-chicken.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/roll-chilli-chicken.jpeg',
       category: 'Starters',
       priceOptions: {
         wasPrice: { size: { Full: 366.45 } },
@@ -2001,7 +2135,7 @@ export default {
     //   description: '',
     //   veg: true,
     //   rating: 4,
-    //   image: '/imgs/food/downloads/roll-chilli-paneer.jpeg',
+    //   image: 'https://bobsimages.blob.core.windows.net/dishesh/roll-chilli-paneer.jpeg',
     //   category: 'Starters',
     //   priceOptions: {
     //     wasPrice: { size: { Full: 366.45 } },
@@ -2015,7 +2149,7 @@ export default {
     //   description: '',
     //   veg: true,
     //   rating: 4,
-    //   image: '/imgs/food/downloads/chinese-rice-chicken-chilli-garlic.jpeg',
+    //   image: 'https://bobsimages.blob.core.windows.net/dishesh/chinese-rice-chicken-chilli-garlic.jpeg',
     //   category: 'Rice',
     //   priceOptions: {
     //     wasPrice: { size: { Full: 471.45, Half: 261.45 } },
@@ -2029,7 +2163,7 @@ export default {
     //   description: '',
     //   veg: true,
     //   rating: 4,
-    //   image: '/imgs/food/downloads/main-chaap-kadhai.jpeg',
+    //   image: 'https://bobsimages.blob.core.windows.net/dishesh/main-chaap-kadhai.jpeg',
     //   category: 'Main Course',
     //   priceOptions: {
     //     wasPrice: { size: { Full: 471.45, Half: 313.95 } },
@@ -2043,7 +2177,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/starter-crispy-corn.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/starter-crispy-corn.jpeg',
       category: 'Starters',
       priceOptions: {
         wasPrice: { size: { Full: 292.95 } },
@@ -2098,7 +2233,7 @@ export default {
     //   description: '',
     //   veg: true,
     //   rating: 4,
-    //   image: '/imgs/food/downloads/chinese-chilli-potato.jpeg',
+    //   image: 'https://bobsimages.blob.core.windows.net/dishesh/chinese-chilli-potato.jpeg',
     //   category: 'Snacks',
     //   priceOptions: {
     //     wasPrice: { size: { Full: 282.45, Half: 208.95 } },
@@ -2111,7 +2246,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/bread-roti-tawa.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/bread-roti-tawa.jpeg',
       category: 'Breads',
       priceOptions: {
         wasPrice: { size: { Full: 15 } },
@@ -2124,7 +2260,8 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: '/imgs/food/downloads/bread-roti-tawa-butter.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/bread-roti-tawa-butter.jpeg',
       category: 'Breads',
       priceOptions: {
         wasPrice: { size: { Full: 26.25 } },
