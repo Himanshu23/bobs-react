@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
+import Fuse from 'fuse.js';
 import {
   Box,
   Typography,
@@ -64,23 +65,48 @@ const FoodListPage: React.FC = () => {
     }
   }, [status, dispatch]);
 
+  // Fuse.js configuration for intelligent fuzzy search
+  const fuseOptions = useMemo(
+    () => ({
+      keys: [
+        { name: 'name', weight: 0.7 }, // Name has higher weight
+        { name: 'category', weight: 0.2 },
+        { name: 'description', weight: 0.1 },
+      ],
+      threshold: 0.3, // Allow fuzzy matching (0.3 = moderate fuzzy)
+      distance: 100,
+      minMatchCharLength: 2,
+      includeScore: true,
+    }),
+    []
+  );
+
+  // Initialize Fuse with all items
+  const fuse = useMemo(
+    () => new Fuse(items, fuseOptions),
+    [items, fuseOptions]
+  );
+
   // Filter items based on search query, selected category, and veg filter
-  // If searching, show results from ALL categories; otherwise use selected category
-  const filteredItems = items.filter((item) => {
-    const matchesSearch =
-      searchQuery === '' ||
-      item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (item.description &&
-        item.description.toLowerCase().includes(searchQuery.toLowerCase()));
+  const filteredItems = useMemo(() => {
+    let results = items;
 
-    const matchesCategory =
-      searchQuery === '' ? item.category === selectedCategory : true;
+    // Apply veg filter first
+    if (vegOnly) {
+      results = results.filter((item) => item.veg === true);
+    }
 
-    const matchesVegFilter = !vegOnly || item.veg === true;
+    // Apply search filter
+    if (searchQuery.trim() !== '') {
+      const searchResults = fuse.search(searchQuery);
+      results = searchResults.map((result) => result.item);
+    } else {
+      // If no search, filter by selected category
+      results = results.filter((item) => item.category === selectedCategory);
+    }
 
-    return matchesSearch && matchesCategory && matchesVegFilter;
-  });
+    return results;
+  }, [searchQuery, selectedCategory, vegOnly, items, fuse]);
 
   useEffect(() => {
     if (scrollToItemId && itemsContainerRef.current) {
@@ -274,18 +300,6 @@ const FoodListPage: React.FC = () => {
             ))}
           </Tabs>
         </Box>
-
-        {searchQuery && (
-          <Box
-            sx={{ mb: 2, p: 1.5, backgroundColor: '#f5f5f5', borderRadius: 1 }}
-          >
-            <Typography variant="body2" color="textSecondary">
-              🔍 Searching across all items... Found{' '}
-              <strong>{filteredItems.length}</strong> result
-              {filteredItems.length !== 1 ? 's' : ''}
-            </Typography>
-          </Box>
-        )}
 
         {filteredItems.length > 0 ? (
           <Box
