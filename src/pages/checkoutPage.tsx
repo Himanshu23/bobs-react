@@ -25,6 +25,11 @@ import {
   Radio,
   AppBar,
   Toolbar,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
@@ -63,6 +68,7 @@ const CheckoutPage: React.FC = () => {
   const [customerInstructions, setCustomerInstructions] = useState<string>('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [selectedDiscountId, setSelectedDiscountId] = useState<string>('');
+  const [orderConfirmationOpen, setOrderConfirmationOpen] = useState(false);
 
   // Reset tower when habitat changes
   const handleHabitatChange = (event: SelectChangeEvent<string>) => {
@@ -140,18 +146,23 @@ const CheckoutPage: React.FC = () => {
       // Format and send WhatsApp message
       const message = formatOrderMessage(orderMessage);
       openWhatsApp(WHATSAPP_PHONE, message);
-
-      // Clear cart after successful order
-      setTimeout(() => {
-        dispatch(clearCart());
-        navigate('/');
-      }, 1000);
+      setOrderConfirmationOpen(true);
     } catch (error) {
       console.error('Error processing order:', error);
       alert('Error processing order. Please try again.');
     } finally {
       setIsProcessing(false);
     }
+  };
+
+  const handleOrderSentConfirmation = () => {
+    setOrderConfirmationOpen(false);
+    dispatch(clearCart());
+    navigate('/');
+  };
+
+  const handleOrderNotSent = () => {
+    setOrderConfirmationOpen(false);
   };
 
   if (cartItems.length === 0) {
@@ -644,12 +655,13 @@ const CheckoutPage: React.FC = () => {
                   startIcon={<WhatsAppIcon />}
                   onClick={handleProceedToCheckout}
                   disabled={
-                    deliveryMethod === 'delivery'
+                    isProcessing ||
+                    (deliveryMethod === 'delivery'
                       ? (tower && flatNumber && flatNumber.trim() !== '') ||
                         (customAddress && customAddress.trim() !== '')
                         ? false
                         : true
-                      : isProcessing
+                      : false)
                   }
                   sx={{
                     background:
@@ -698,6 +710,29 @@ const CheckoutPage: React.FC = () => {
           backdropFilter: 'blur(10px)',
         }}
       ></Box>
+
+      <Dialog
+        open={orderConfirmationOpen}
+        onClose={handleOrderNotSent}
+        fullWidth
+        maxWidth="xs"
+      >
+        <DialogTitle>Did you send the order?</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            WhatsApp opened 😊 Confirm if you sent the order, or go back to edit
+            your cart.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2 }}>
+          <Button onClick={handleOrderNotSent} variant="outlined">
+            No
+          </Button>
+          <Button onClick={handleOrderSentConfirmation} variant="contained">
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

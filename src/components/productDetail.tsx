@@ -1,11 +1,6 @@
 import React, { useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  addToCart,
-  removeFromCart,
-  updateQuantity,
-  RootState,
-} from '../redux/store';
+import { useDispatch } from 'react-redux';
+import { addToCart } from '../redux/store';
 import {
   Box,
   Button,
@@ -14,22 +9,16 @@ import {
   MenuItem,
   Drawer,
   IconButton,
-  Card,
-  CardContent,
   FormControl,
   FormControlLabel,
   Radio,
   RadioGroup,
   Paper,
-  Divider,
-  List,
-  ListItem,
-  ListItemText,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import DeleteIcon from '@mui/icons-material/Delete';
 import { FoodItem, ItemOptions } from '../types';
 import { createCartItem } from '../utils/cartUtils';
+import PriceDisplay from './PriceDisplay';
 
 interface ProductDetailModalProps {
   open: boolean;
@@ -43,25 +32,35 @@ const ProductDetailModal = ({
   product,
 }: ProductDetailModalProps) => {
   const dispatch = useDispatch();
-  const cartItems = useSelector((state: RootState) => state.cart.items);
 
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState<ItemOptions['size']>('Full');
   const [selectedType, setSelectedType] = useState<ItemOptions['style']>();
   const [selectedBase, setSelectedBase] = useState<ItemOptions['base']>();
 
-  // Get all variants of this product in the cart
-  const variants = cartItems.filter((item) => item.id === product.id);
+  const renderOptionPriceLabel = (
+    label: string,
+    nowPrice?: number,
+    wasPrice?: number
+  ) => (
+    <Box
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 1,
+      }}
+    >
+      <Typography variant="body2">{label}</Typography>
+      <PriceDisplay
+        nowPrice={nowPrice}
+        wasPrice={wasPrice}
+        nowVariant="body2"
+        wasVariant="caption"
+      />
+    </Box>
+  );
 
-  const formatVariant = (option: ItemOptions): string => {
-    const parts = [];
-    if (option.size) parts.push(`Size: ${option.size}`);
-    if (option.style) parts.push(`Style: ${option.style}`);
-    if (option.base) parts.push(`Base: ${option.base}`);
-    return parts.length > 0 ? parts.join(' • ') : 'Default';
-  };
-
-  const total = useMemo(
+  const unitPrice = useMemo(
     () =>
       (selectedSize
         ? (product.priceOptions.nowPrice.size?.[selectedSize] ?? 0)
@@ -75,6 +74,23 @@ const ProductDetailModal = ({
     [product, selectedType, selectedSize, selectedBase]
   );
 
+  const unitWasPrice = useMemo(
+    () =>
+      (selectedSize
+        ? (product.priceOptions.wasPrice.size?.[selectedSize] ?? 0)
+        : 0) +
+      (selectedType && product.priceOptions.wasPrice.type?.[selectedType]
+        ? product.priceOptions.wasPrice.type?.[selectedType]
+        : 0) +
+      (selectedBase && product.priceOptions.wasPrice.base?.[selectedBase]
+        ? product.priceOptions.wasPrice.base?.[selectedBase]
+        : 0),
+    [product, selectedBase, selectedSize, selectedType]
+  );
+
+  const totalPrice = unitPrice * quantity;
+  const totalWasPrice = unitWasPrice > 0 ? unitWasPrice * quantity : undefined;
+
   const handleAddToCart = () => {
     const newCartItem = createCartItem(
       product,
@@ -86,20 +102,6 @@ const ProductDetailModal = ({
     dispatch(addToCart(newCartItem));
     setQuantity(1);
     onClose();
-  };
-
-  const handleRemoveVariant = (variant: any) => {
-    dispatch(removeFromCart({ id: variant.id, option: variant.option }));
-  };
-
-  const handleAddMoreSameVariant = (variant: any) => {
-    dispatch(
-      updateQuantity({
-        id: variant.id,
-        option: variant.option,
-        quantity: variant.quantity + 1,
-      })
-    );
   };
 
   return (
@@ -120,168 +122,171 @@ const ProductDetailModal = ({
         sx={{
           display: 'flex',
           flexDirection: 'column',
-          alignItems: 'center',
-          gap: 2,
+          gap: 1.5,
         }}
       >
         <Box
           sx={{
             width: '100%',
             display: 'flex',
+            alignItems: 'flex-start',
             justifyContent: 'space-between',
           }}
         >
-          <Typography variant="h5">{product.name}</Typography>
+          <Box sx={{ pr: 1, minWidth: 0 }}>
+            <Typography variant="h6" sx={{ lineHeight: 1.2 }}>
+              {product.name}
+            </Typography>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ mt: 0.5, lineHeight: 1.4 }}
+            >
+              {product.description}
+            </Typography>
+            <Box sx={{ mt: 1 }}>
+              <PriceDisplay
+                nowPrice={totalPrice}
+                wasPrice={totalWasPrice}
+                nowVariant="h6"
+                wasVariant="body2"
+              />
+            </Box>
+          </Box>
           <IconButton onClick={onClose}>
             <CloseIcon />
           </IconButton>
         </Box>
 
-        <img
-          src={product.image}
-          alt={product.name}
-          style={{ width: '100%', borderRadius: '10px' }}
-        />
-        <Typography variant="body1">{product.description}</Typography>
-
-        {/* Show existing variants */}
-        {variants.length > 0 && (
-          <>
-            <Divider sx={{ width: '100%' }} />
-            <Typography variant="h6" sx={{ width: '100%' }}>
-              Cart Items ({variants.length})
-            </Typography>
-            <List sx={{ width: '100%' }}>
-              {variants.map((variant, idx) => (
-                <ListItem
-                  key={idx}
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    border: '1px solid #eee',
-                    borderRadius: 1,
-                    mb: 1,
-                    p: 1,
-                  }}
-                >
-                  <Box sx={{ flex: 1 }}>
-                    <ListItemText
-                      primary={formatVariant(variant.option)}
-                      secondary={`₹${variant.price} x ${variant.quantity}`}
-                    />
-                  </Box>
-                  <Box sx={{ display: 'flex', gap: 1 }}>
-                    <Button
-                      size="small"
-                      variant="outlined"
-                      onClick={() => handleAddMoreSameVariant(variant)}
-                    >
-                      +
-                    </Button>
-                    <Button
-                      size="small"
-                      variant="outlined"
-                      color="error"
-                      startIcon={<DeleteIcon />}
-                      onClick={() => handleRemoveVariant(variant)}
-                    >
-                      Remove
-                    </Button>
-                  </Box>
-                </ListItem>
-              ))}
-            </List>
-            <Divider sx={{ width: '100%' }} />
-          </>
-        )}
-
         <Box
           sx={{
             display: 'flex',
             flexDirection: 'column',
-            gap: 2,
+            gap: 1,
             width: '100%',
           }}
         >
           {/* Size Options */}
           {product.priceOptions.nowPrice.size && (
-            <Card>
-              <CardContent>
-                <Typography variant="h6">Select Size</Typography>
-                <FormControl component="fieldset">
-                  <RadioGroup
-                    value={selectedSize}
-                    onChange={(e) =>
-                      setSelectedSize(e.target.value as ItemOptions['size'])
-                    }
-                  >
-                    {Object.entries(product.priceOptions.nowPrice.size).map(
-                      ([size, price]) => (
-                        <FormControlLabel
-                          key={size}
-                          value={size}
-                          control={<Radio />}
-                          label={`${size} - ₹${price}`}
-                        />
-                      )
-                    )}
-                  </RadioGroup>
-                </FormControl>
-              </CardContent>
-            </Card>
+            <Box
+              sx={{
+                border: '1px solid',
+                borderColor: 'divider',
+                borderRadius: 2,
+                px: 1.5,
+                py: 1.25,
+              }}
+            >
+              <Typography variant="subtitle1" sx={{ mb: 0.75 }}>
+                Size
+              </Typography>
+              <FormControl component="fieldset">
+                <RadioGroup
+                  value={selectedSize}
+                  onChange={(e) =>
+                    setSelectedSize(e.target.value as ItemOptions['size'])
+                  }
+                >
+                  {Object.entries(product.priceOptions.nowPrice.size).map(
+                    ([size, price]) => (
+                      <FormControlLabel
+                        key={size}
+                        value={size}
+                        control={<Radio />}
+                        label={renderOptionPriceLabel(
+                          size,
+                          price,
+                          product.priceOptions.wasPrice?.size[
+                            size as ItemOptions['size']
+                          ]
+                        )}
+                      />
+                    )
+                  )}
+                </RadioGroup>
+              </FormControl>
+            </Box>
           )}
 
           {/* Type Options */}
           {product.priceOptions.nowPrice.type && (
-            <Card>
-              <CardContent>
-                <Typography variant="h6">Select Type</Typography>
-                <Select
-                  value={selectedType}
-                  onChange={(e) =>
-                    setSelectedType(e.target.value as ItemOptions['style'])
-                  }
-                  fullWidth
-                >
-                  {Object.entries(product.priceOptions.nowPrice.type).map(
-                    ([type, price]) => (
-                      <MenuItem key={type} value={type}>
-                        {`${type} - ₹${price}`}
-                      </MenuItem>
-                    )
-                  )}
-                </Select>
-              </CardContent>
-            </Card>
+            <Box
+              sx={{
+                border: '1px solid',
+                borderColor: 'divider',
+                borderRadius: 2,
+                px: 1.5,
+                py: 1.25,
+              }}
+            >
+              <Typography variant="subtitle1" sx={{ mb: 0.75 }}>
+                Type
+              </Typography>
+              <Select
+                value={selectedType}
+                onChange={(e) =>
+                  setSelectedType(e.target.value as ItemOptions['style'])
+                }
+                fullWidth
+                size="small"
+              >
+                {Object.entries(product.priceOptions.nowPrice.type).map(
+                  ([type, price]) => (
+                    <MenuItem key={type} value={type}>
+                      {renderOptionPriceLabel(
+                        type,
+                        price,
+                        product.priceOptions.wasPrice?.type?.[
+                          type as NonNullable<ItemOptions['style']>
+                        ]
+                      )}
+                    </MenuItem>
+                  )
+                )}
+              </Select>
+            </Box>
           )}
 
           {/* Base Options */}
           {product.priceOptions.nowPrice.base && (
-            <Card>
-              <CardContent>
-                <Typography variant="h6">Select Base</Typography>
-                <FormControl component="fieldset">
-                  <RadioGroup
-                    value={selectedBase}
-                    onChange={(e) =>
-                      setSelectedBase(e.target.value as ItemOptions['base'])
-                    }
-                  >
-                    {Object.entries(product.priceOptions.nowPrice.base).map(
-                      ([base, price]) => (
-                        <FormControlLabel
-                          key={base}
-                          value={base}
-                          control={<Radio />}
-                          label={`${base} - ₹${price}`}
-                        />
-                      )
-                    )}
-                  </RadioGroup>
-                </FormControl>
-              </CardContent>
-            </Card>
+            <Box
+              sx={{
+                border: '1px solid',
+                borderColor: 'divider',
+                borderRadius: 2,
+                px: 1.5,
+                py: 1.25,
+              }}
+            >
+              <Typography variant="subtitle1" sx={{ mb: 0.75 }}>
+                Base
+              </Typography>
+              <FormControl component="fieldset">
+                <RadioGroup
+                  value={selectedBase}
+                  onChange={(e) =>
+                    setSelectedBase(e.target.value as ItemOptions['base'])
+                  }
+                >
+                  {Object.entries(product.priceOptions.nowPrice.base).map(
+                    ([base, price]) => (
+                      <FormControlLabel
+                        key={base}
+                        value={base}
+                        control={<Radio />}
+                        label={renderOptionPriceLabel(
+                          base,
+                          price,
+                          product.priceOptions.wasPrice?.base?.[
+                            base as NonNullable<ItemOptions['base']>
+                          ]
+                        )}
+                      />
+                    )
+                  )}
+                </RadioGroup>
+              </FormControl>
+            </Box>
           )}
         </Box>
         {/* Add to Cart */}
@@ -289,72 +294,30 @@ const ProductDetailModal = ({
           elevation={3}
           sx={{
             width: '100%',
-            minHeight: '60px',
-            padding: '2px',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
+            p: 1,
           }}
         >
           <Box
-            display="flex"
-            alignItems="center"
-            justifyContent="space-between"
-            gap={1}
-            sx={{ width: '100%', minHeight: '48px' }}
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: 1,
+              width: '100%',
+            }}
           >
-            <Card
-              sx={{
-                padding: '5px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                height: '48px',
-                flexShrink: 0, // Prevents shrinking in flex container
-              }}
-            >
-              <CardContent
-                sx={{
-                  padding: '0px !important',
-                  textAlign: 'center',
-                  width: '100%',
-                }}
-              >
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                  gap={1}
-                >
-                  <Button
-                    sx={{ minWidth: '30px', padding: '2px' }}
-                    onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                  >
-                    -
-                  </Button>
-                  <Typography sx={{ minWidth: '30px' }}>{quantity}</Typography>
-                  <Button
-                    sx={{ minWidth: '30px', padding: '2px' }}
-                    onClick={() => setQuantity((q) => q + 1)}
-                  >
-                    +
-                  </Button>
-                </Box>
-              </CardContent>
-            </Card>
-
             <Button
               variant="contained"
               color="primary"
+              fullWidth
               onClick={handleAddToCart}
-              sx={{ width: '75%', height: '48px' }}
               disabled={
                 (product.priceOptions.nowPrice.size && !selectedSize) ||
                 (product.priceOptions.nowPrice.type && !selectedType) ||
                 (product.priceOptions.nowPrice.base && !selectedBase)
               }
             >
-              Add Item &#8377;{total * quantity}
+              Add Item • ₹{totalPrice}
             </Button>
           </Box>
         </Paper>

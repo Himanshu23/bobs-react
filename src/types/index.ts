@@ -1,6 +1,37 @@
 type TypeKey = Exclude<ItemOptions['style'], undefined>;
 type BaseKey = Exclude<ItemOptions['base'], undefined>;
 
+export enum FoodCategory {
+  Starters = 'Starters',
+  MainCourse = 'Main Course',
+  Chinese = 'Chinese',
+  Breads = 'Breads',
+  ChineseRice = 'Chinese Rice',
+  Noodles = 'Noodles',
+  Rolls = 'Rolls',
+  Sides = 'Sides',
+  Momos = 'Momos',
+  Burgers = 'Burgers',
+  Soups = 'Soups',
+  Rice = 'Rice',
+}
+
+// Category order for display
+export const CATEGORY_ORDER = [
+  FoodCategory.Starters,
+  FoodCategory.MainCourse,
+  FoodCategory.Chinese,
+  FoodCategory.ChineseRice,
+  FoodCategory.Noodles,
+  FoodCategory.Momos,
+  FoodCategory.Rolls,
+  FoodCategory.Burgers,
+  FoodCategory.Soups,
+  FoodCategory.Breads,
+  FoodCategory.Rice,
+  FoodCategory.Sides,
+];
+
 export interface FoodItem {
   id: string;
   name: string;
@@ -8,7 +39,7 @@ export interface FoodItem {
   veg: boolean;
   rating: number;
   image: string;
-  category: string;
+  category: FoodCategory;
   priceOptions: {
     wasPrice: {
       size: Partial<Record<ItemOptions['size'], number>>;
@@ -21,8 +52,6 @@ export interface FoodItem {
       base?: Record<BaseKey, number>;
     };
   };
-  // wasPrice?: number;
-  // nowPrice?: number;
 }
 
 export interface ItemOptions {

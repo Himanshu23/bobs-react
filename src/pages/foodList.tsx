@@ -15,6 +15,10 @@ import {
   TextField,
   InputAdornment,
   Container,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Divider,
 } from '@mui/material';
 import {
   List as ListIcon,
@@ -28,11 +32,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { RootState, AppDispatch, removeFromCart } from '../redux/store';
 import { fetchFoodItems } from '../redux/foodSlice';
-import { CartActions, FoodItem, ItemOptions } from '../types';
+import { CartActions, CATEGORY_ORDER, FoodItem, ItemOptions } from '../types';
 import FoodItemCard from '../components/listing/foodItemCard';
 import ProductDetailModal from '../components/productDetail';
 import QuantityUpdate from '../components/quanityUpdate/quantityUpdate';
 import VariantRemovalModal from '../components/variantRemovalModal';
+import { getLowestNowPrice } from '../utils/priceUtils';
 
 const FoodListPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -57,6 +62,8 @@ const FoodListPage: React.FC = () => {
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
   const [scrollToItemId, setScrollToItemId] = useState<string | null>(null);
   const [vegOnly, setVegOnly] = useState<boolean>(false);
+  const [vegAccordionExpanded, setVegAccordionExpanded] = useState(true);
+  const [nonVegAccordionExpanded, setNonVegAccordionExpanded] = useState(true);
   const itemsContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -107,6 +114,13 @@ const FoodListPage: React.FC = () => {
 
     return results;
   }, [searchQuery, selectedCategory, vegOnly, items, fuse]);
+
+  const vegFilteredItems = filteredItems
+    .filter((item) => item.veg)
+    .sort((a, b) => (getLowestNowPrice(a) ?? 0) - (getLowestNowPrice(b) ?? 0));
+  const nonVegFilteredItems = filteredItems
+    .filter((item) => !item.veg)
+    .sort((a, b) => (getLowestNowPrice(a) ?? 0) - (getLowestNowPrice(b) ?? 0));
 
   useEffect(() => {
     if (scrollToItemId && itemsContainerRef.current) {
@@ -194,17 +208,7 @@ const FoodListPage: React.FC = () => {
   };
 
   // Get unique categories
-  const categories = Array.from(new Set(items.map((item) => item.category)));
-
-  // Group items by category
-  // const groupedItems = items.reduce(
-  //   (acc, item) => {
-  //     if (!acc[item.category]) acc[item.category] = [];
-  //     acc[item.category].push(item);
-  //     return acc;
-  //   },
-  //   {} as Record<string, FoodItem[]>
-  // );
+  const categories = CATEGORY_ORDER;
 
   if (status === 'loading') {
     return <CircularProgress />;
@@ -281,14 +285,13 @@ const FoodListPage: React.FC = () => {
             value={searchQuery ? false : selectedCategory}
             onChange={(_, newValue) => setSelectedCategory(newValue)}
             variant="scrollable"
-            scrollButtons="auto"
+            scrollButtons={false}
             allowScrollButtonsMobile
             sx={{
               '& .MuiTabs-indicator': {
                 backgroundColor: 'primary.main',
               },
               '& .MuiTab-root': {
-                minWidth: 120,
                 fontSize: '0.875rem',
                 py: 1,
                 opacity: searchQuery ? 0.5 : 1,
@@ -301,65 +304,212 @@ const FoodListPage: React.FC = () => {
           </Tabs>
         </Box>
 
-        {filteredItems.length > 0 ? (
-          <Box
-            ref={itemsContainerRef}
+        {/* Veg and Non-Veg Accordions */}
+        <Box sx={{ mt: 2, mb: totalItems > 0 ? 15 : 2 }}>
+          {/* Vegetarian Accordion */}
+          <Accordion
+            slotProps={{ heading: { component: 'h4' } }}
+            defaultExpanded
+            expanded={vegAccordionExpanded}
+            onChange={() => setVegAccordionExpanded(!vegAccordionExpanded)}
             sx={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: 2,
-              justifyContent: 'center',
-              padding: 1,
+              width: '100%',
+              backgroundColor: 'transparent',
+              boxShadow: 'none',
+              border: 'none',
+              transition: 'all 0.3s ease-in-out',
+              '&:before': {
+                display: 'none',
+              },
             }}
           >
-            {filteredItems.map((food: FoodItem) => (
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              sx={{
+                padding: '0px 16px',
+                minHeight: '20px !important',
+                height: '20px',
+                alignItems: 'center',
+                transition: 'all 0.3s ease-in-out',
+                '&.Mui-expanded': {
+                  minHeight: '20px !important',
+                },
+              }}
+            >
+              <Typography variant="subtitle1" sx={{ lineHeight: 1 }}>
+                Vegetarian ({vegFilteredItems.length})
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails
+              sx={{
+                backgroundColor: 'transparent',
+                padding: 1,
+                transition: 'all 0.3s ease-in-out',
+              }}
+            >
               <Box
-                key={`list_${food.id}`}
-                data-item-id={food.id}
-                sx={{ position: 'relative' }}
+                ref={itemsContainerRef}
+                sx={{
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  gap: 2,
+                  justifyContent: 'center',
+                  padding: 1,
+                  width: '100%',
+                }}
               >
-                {searchQuery && (
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      position: 'absolute',
-                      top: 8,
-                      right: 8,
-                      backgroundColor: '#e3f2fd',
-                      color: '#1976d2',
-                      px: 1,
-                      py: 0.5,
-                      borderRadius: '4px',
-                      fontSize: '10px',
-                      fontWeight: 600,
-                      zIndex: 10,
-                    }}
-                  >
-                    {food.category}
+                {vegFilteredItems.length > 0 ? (
+                  vegFilteredItems.map((food: FoodItem) => (
+                    <Box
+                      key={`list_${food.id}`}
+                      data-item-id={food.id}
+                      sx={{ position: 'relative' }}
+                    >
+                      {searchQuery && (
+                        <Typography
+                          variant="caption"
+                          sx={{
+                            position: 'absolute',
+                            top: 8,
+                            right: 8,
+                            backgroundColor: '#e3f2fd',
+                            color: '#1976d2',
+                            px: 1,
+                            py: 0.5,
+                            borderRadius: '4px',
+                            fontSize: '10px',
+                            fontWeight: 600,
+                            zIndex: 10,
+                          }}
+                        >
+                          {food.category}
+                        </Typography>
+                      )}
+                      <FoodItemCard item={food} handleCart={handleCart} />
+                    </Box>
+                  ))
+                ) : (
+                  <Typography color="textSecondary">
+                    No vegetarian items found
                   </Typography>
                 )}
-                <FoodItemCard item={food} handleCart={handleCart} />
               </Box>
-            ))}
-          </Box>
-        ) : (
-          <Box sx={{ textAlign: 'center', py: 6 }}>
-            <Typography variant="h6" color="textSecondary" sx={{ mb: 1 }}>
-              {searchQuery
-                ? 'No items found matching your search'
-                : 'No items in this category'}
-            </Typography>
-            {searchQuery && (
-              <Button
-                variant="text"
-                onClick={() => setSearchQuery('')}
-                sx={{ mt: 2 }}
+            </AccordionDetails>
+          </Accordion>
+          <Divider sx={{ my: 1 }} />
+          {/* Non-Vegetarian Accordion */}
+          <Accordion
+            slotProps={{ heading: { component: 'h4' } }}
+            defaultExpanded
+            expanded={nonVegAccordionExpanded}
+            onChange={() =>
+              setNonVegAccordionExpanded(!nonVegAccordionExpanded)
+            }
+            sx={{
+              width: '100%',
+              backgroundColor: 'transparent',
+              boxShadow: 'none',
+              border: 'none',
+              transition: 'all 0.3s ease-in-out',
+              '&:before': {
+                display: 'none',
+              },
+            }}
+          >
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              sx={{
+                padding: '0px 16px',
+                minHeight: '20px !important',
+                height: '20px',
+                alignItems: 'center',
+                transition: 'all 0.3s ease-in-out',
+                '&.Mui-expanded': {
+                  minHeight: '20px !important',
+                },
+              }}
+            >
+              <Typography variant="subtitle1" sx={{ lineHeight: 1 }}>
+                Non-Vegetarian ({nonVegFilteredItems.length})
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails
+              sx={{
+                backgroundColor: 'transparent',
+                padding: 1,
+                transition: 'all 0.3s ease-in-out',
+              }}
+            >
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  gap: 2,
+                  justifyContent: 'center',
+                  padding: 1,
+                  width: '100%',
+                }}
               >
-                Clear Search
-              </Button>
+                {nonVegFilteredItems.length > 0 ? (
+                  nonVegFilteredItems.map((food: FoodItem) => (
+                    <Box
+                      key={`list_${food.id}`}
+                      data-item-id={food.id}
+                      sx={{ position: 'relative' }}
+                    >
+                      {searchQuery && (
+                        <Typography
+                          variant="caption"
+                          sx={{
+                            position: 'absolute',
+                            top: 8,
+                            right: 8,
+                            backgroundColor: '#e3f2fd',
+                            color: '#1976d2',
+                            px: 1,
+                            py: 0.5,
+                            borderRadius: '4px',
+                            fontSize: '10px',
+                            fontWeight: 600,
+                            zIndex: 10,
+                          }}
+                        >
+                          {food.category}
+                        </Typography>
+                      )}
+                      <FoodItemCard item={food} handleCart={handleCart} />
+                    </Box>
+                  ))
+                ) : (
+                  <Typography color="textSecondary">
+                    No non-vegetarian items found
+                  </Typography>
+                )}
+              </Box>
+            </AccordionDetails>
+          </Accordion>
+
+          {/* Empty state message */}
+          {vegFilteredItems.length === 0 &&
+            nonVegFilteredItems.length === 0 && (
+              <Box sx={{ textAlign: 'center', py: 6 }}>
+                <Typography variant="h6" color="textSecondary" sx={{ mb: 1 }}>
+                  {searchQuery
+                    ? 'No items found matching your search'
+                    : 'No items in this category'}
+                </Typography>
+                {searchQuery && (
+                  <Button
+                    variant="text"
+                    onClick={() => setSearchQuery('')}
+                    sx={{ mt: 2 }}
+                  >
+                    Clear Search
+                  </Button>
+                )}
+              </Box>
             )}
-          </Box>
-        )}
+        </Box>
       </Container>
 
       {productDetailModal && product && (

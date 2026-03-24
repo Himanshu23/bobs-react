@@ -1,11 +1,20 @@
-import { Drawer, Box, Button, Typography, Divider } from '@mui/material';
-import { CartActions } from '../../types';
+import {
+  Drawer,
+  Box,
+  Button,
+  Typography,
+  Divider,
+  IconButton,
+} from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import { CartItem } from '../../types';
 import QuantityUpdateCard from './quantityUpdateCard';
 import ProductDetailModal from '../productDetail';
+import PriceDisplay from '../PriceDisplay';
 import { useDispatch, useSelector } from 'react-redux';
 import { removeFromCart, updateQuantity } from '../../redux/store';
 import { RootState } from '../../redux/store';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { selectFoodItemById } from '../../redux/selectors';
 
 interface QuantityUpdateProps {
@@ -29,58 +38,60 @@ const QuantityUpdate = ({ open, onClose, itemID }: QuantityUpdateProps) => {
   const showCustomizeOption =
     hasMultipleSizes || hasMultipleBases || hasMultipleStyles;
   const allCartItems = useSelector((state: RootState) => state.cart.items);
-  const itemVariants = allCartItems.filter((el) => el.id === itemID);
-  const [addQty, setAddQty] = useState(1);
+  const itemVariants = useMemo(
+    () => allCartItems.filter((el) => el.id === itemID),
+    [allCartItems, itemID]
+  );
+  const totalPrice = useMemo(
+    () =>
+      itemVariants.reduce(
+        (sum, variant) => sum + variant.price * variant.quantity,
+        0
+      ),
+    [itemVariants]
+  );
   const [showProductDetail, setShowProductDetail] = useState(false);
+  const product = itemVariants[0]?.product;
 
-  if (itemVariants.length === 0) return <></>;
-
-  const product = itemVariants[0].product;
-
-  const handleCart = (id: string, action: CartActions, variant: any) => {
-    if (action === 'Add')
-      dispatch(
-        updateQuantity({
-          id,
-          option: variant.option,
-          quantity: variant.quantity + 1,
-        })
-      );
-    else {
-      const newQuantity = variant.quantity - 1;
-      if (newQuantity === 0) {
-        dispatch(removeFromCart({ id, option: variant.option }));
-      } else
-        dispatch(
-          updateQuantity({
-            id,
-            option: variant.option,
-            quantity: variant.quantity - 1,
-          })
-        );
+  useEffect(() => {
+    if (!open || showProductDetail) {
+      return;
     }
-  };
 
-  const handleAddMore = (variant: any) => {
+    if (itemVariants.length === 0) {
+      onClose();
+    }
+  }, [open, itemVariants, onClose, showProductDetail]);
+
+  const handleQuantityChange = (variant: CartItem, delta: number) => {
+    const nextQuantity = Math.max(0, variant.quantity + delta);
+
+    if (nextQuantity === 0) {
+      dispatch(removeFromCart({ id: variant.id, option: variant.option }));
+      return;
+    }
+
     dispatch(
       updateQuantity({
         id: variant.id,
         option: variant.option,
-        quantity: variant.quantity + addQty,
+        quantity: nextQuantity,
       })
     );
-    setAddQty(1);
   };
+
+  const handleDrawerClose = () => {
+    onClose();
+  };
+
+  if (itemVariants.length === 0 && !showProductDetail) return <></>;
 
   return (
     <div>
       <Drawer
         anchor="bottom"
         open={open}
-        onClose={() => {
-          setAddQty(1);
-          onClose();
-        }}
+        onClose={handleDrawerClose}
         PaperProps={{
           sx: {
             borderRadius: '16px 16px 0 0',
@@ -96,77 +107,57 @@ const QuantityUpdate = ({ open, onClose, itemID }: QuantityUpdateProps) => {
             boxShadow: 2,
           }}
         >
-          <Typography variant="h6" fontWeight="bold" textAlign="left">
-            All Variants
-          </Typography>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+          >
+            <Typography variant="h6" fontWeight="bold" textAlign="left">
+              All Variants
+            </Typography>
+            <IconButton
+              aria-label="Close quantity drawer"
+              onClick={handleDrawerClose}
+            >
+              <CloseIcon />
+            </IconButton>
+          </Box>
           <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
             Manage your cart items
           </Typography>
-          <Divider sx={{ mb: 2 }} />
+          <Divider sx={{ mb: 1 }} />
 
           {/* Display all variants */}
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 3 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 2 }}>
             {itemVariants.map((variant, index) => (
               <Box key={index}>
                 <QuantityUpdateCard
                   item={variant}
-                  handleCart={(id: string, action: CartActions) =>
-                    handleCart(id, action, variant)
-                  }
+                  quantity={variant.quantity}
+                  onDecrease={() => handleQuantityChange(variant, -1)}
+                  onIncrease={() => handleQuantityChange(variant, 1)}
                 />
                 {index < itemVariants.length - 1 && <Divider sx={{ my: 2 }} />}
               </Box>
             ))}
           </Box>
 
-          <Divider sx={{ my: 2 }} />
-
-          {/* Add More of same variant section - only show for single variant */}
-          {itemVariants.length === 1 && (
-            <>
-              <Typography variant="body2" fontWeight="bold" sx={{ mb: 2 }}>
-                Add {addQty} more
-              </Typography>
-              <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
-                <Button
-                  variant="outlined"
-                  sx={{ minWidth: '40px' }}
-                  onClick={() => setAddQty(Math.max(1, addQty - 1))}
-                >
-                  -
-                </Button>
-                <Box
-                  sx={{
-                    flex: 1,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    border: '1px solid #ccc',
-                    borderRadius: 1,
-                  }}
-                >
-                  <Typography>{addQty}</Typography>
-                </Box>
-                <Button
-                  variant="outlined"
-                  sx={{ minWidth: '40px' }}
-                  onClick={() => setAddQty(addQty + 1)}
-                >
-                  +
-                </Button>
-              </Box>
-
-              <Button
-                variant="contained"
-                color="primary"
-                fullWidth
-                sx={{ textTransform: 'none', mb: 2 }}
-                onClick={() => handleAddMore(itemVariants[0])}
-              >
-                Add to Cart
-              </Button>
-            </>
-          )}
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              mb: 2,
+              px: 0.5,
+            }}
+          >
+            <Typography variant="body2" color="text.secondary">
+              Total Price
+            </Typography>
+            <PriceDisplay nowPrice={totalPrice} nowVariant="h6" gap={0} />
+          </Box>
 
           {showCustomizeOption && (
             <Button

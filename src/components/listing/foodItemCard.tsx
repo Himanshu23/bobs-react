@@ -4,6 +4,8 @@ import { CartActions, FoodItem, ItemOptions } from '../../types';
 import { useSelector } from 'react-redux';
 import { selectProductTotalQuantity } from '../../redux/selectors';
 import { useState } from 'react';
+import PriceDisplay from '../PriceDisplay';
+import { getLowestNowPrice, getLowestWasPrice } from '../../utils/priceUtils';
 
 interface FoodItemCardProps {
   item: FoodItem;
@@ -18,13 +20,16 @@ const FoodItemCard = ({ item, handleCart }: FoodItemCardProps) => {
     setImageError(true);
   };
 
+  const lowestNowPrice = getLowestNowPrice(item);
+  const lowestWasPrice = getLowestWasPrice(item);
+
   return (
     <Box
       sx={{
         display: 'flex',
         alignItems: 'stretch',
         gap: 2,
-        width: 380,
+        width: 360,
         padding: 2,
         borderRadius: 2,
         boxShadow: 3,
@@ -61,24 +66,7 @@ const FoodItemCard = ({ item, handleCart }: FoodItemCardProps) => {
         </Typography>
 
         {/* Was Now Price */}
-        {/* <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          {item.wasPrice && (
-            <Typography
-              variant="body2"
-              sx={{ textDecoration: 'line-through', color: 'text.secondary' }}
-            >
-              ₹{item.wasPrice}
-            </Typography>
-          )}
-          {item.nowPrice && (
-            <Typography
-              variant="h6"
-              sx={{ fontWeight: 'bold', color: 'primary.main' }}
-            >
-              ₹{item.nowPrice}
-            </Typography>
-          )}
-        </Box> */}
+        <PriceDisplay nowPrice={lowestNowPrice} wasPrice={lowestWasPrice} />
 
         {totalQuantity > 0 ? (
           <Badge
@@ -86,8 +74,8 @@ const FoodItemCard = ({ item, handleCart }: FoodItemCardProps) => {
             color="primary"
             sx={{
               '& .MuiBadge-badge': {
-                right: -3,
-                top: 13,
+                right: 43,
+                top: 12,
                 fontSize: '12px',
               },
             }}
