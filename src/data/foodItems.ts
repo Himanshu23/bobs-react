@@ -27,7 +27,7 @@ export default {
       category: FoodCategory.ChineseRice,
       priceOptions: {
         wasPrice: { size: { Full: 313.95, Half: 156.45 }, type: {} },
-        nowPrice: { size: { Full: 99, Half: 149 } },
+        nowPrice: { size: { Full: 149, Half: 99 } },
       },
     },
     {
@@ -97,7 +97,7 @@ export default {
       category: FoodCategory.MainCourse,
       priceOptions: {
         wasPrice: { size: { Full: 366.45, Half: 229.95 } },
-        nowPrice: { size: { Full: 169, Half: 239 } },
+        nowPrice: { size: { Full: 239, Half: 169 } },
       },
     },
     {
@@ -138,8 +138,8 @@ export default {
         'https://bobsimages.blob.core.windows.net/dishesh/roll-paneer-haryali-tikka.jpeg',
       category: FoodCategory.Rolls,
       priceOptions: {
-        wasPrice: { size: { Full: 208.95 } },
-        nowPrice: { size: { Full: 129 } },
+        wasPrice: { size: { Full: 208.95 }, base: { Paratha: 0, Roomali: 0 } },
+        nowPrice: { size: { Full: 129 }, base: { Paratha: 0, Roomali: 0 } },
       },
     },
     {
@@ -151,8 +151,8 @@ export default {
       image: 'https://bobsimages.blob.core.windows.net/dishesh/no-image.jpeg',
       category: FoodCategory.Rolls,
       priceOptions: {
-        wasPrice: { size: { Full: 156.45 } },
-        nowPrice: { size: { Full: 150 } },
+        wasPrice: { size: { Full: 156.45 }, base: { Paratha: 0, Roomali: 0 } },
+        nowPrice: { size: { Full: 119 }, base: { Paratha: 0, Roomali: 0 } },
       },
     },
     {
@@ -166,7 +166,7 @@ export default {
       category: FoodCategory.Starters,
       priceOptions: {
         wasPrice: { size: { Full: 681.45, Half: 366.45 } },
-        nowPrice: { size: { Full: 350, Half: 199 } },
+        nowPrice: { size: { Full: 349, Half: 199 } },
       },
     },
     {
@@ -209,7 +209,7 @@ export default {
       category: FoodCategory.MainCourse,
       priceOptions: {
         wasPrice: { size: { Full: 345.45, Half: 208.95 } },
-        nowPrice: { size: { Full: 149, Half: 179 } },
+        nowPrice: { size: { Full: 199, Half: 149 } },
       },
     },
     {
@@ -222,8 +222,8 @@ export default {
         'https://bobsimages.blob.core.windows.net/dishesh/roll-chicken-haryali-tikka.jpeg',
       category: FoodCategory.Rolls,
       priceOptions: {
-        wasPrice: { size: { Full: 240.45 } },
-        nowPrice: { size: { Full: 149 } },
+        wasPrice: { size: { Full: 240.45 }, base: { Paratha: 0, Roomali: 0 } },
+        nowPrice: { size: { Full: 149 }, base: { Paratha: 0, Roomali: 0 } },
       },
     },
     {
@@ -240,19 +240,19 @@ export default {
         nowPrice: { size: { Full: 79 } },
       },
     },
-    {
-      id: '18',
-      name: 'Bobs Special Mutton Keema Naan',
-      description: '',
-      veg: false,
-      rating: 4,
-      image: 'https://bobsimages.blob.core.windows.net/dishesh/no-image.jpeg',
-      category: FoodCategory.Breads,
-      priceOptions: {
-        wasPrice: { size: { Full: 261.45 } },
-        nowPrice: { size: { Full: 199 } },
-      },
-    },
+    // {
+    //   id: '18',
+    //   name: 'Bobs Special Mutton Keema Naan',
+    //   description: '',
+    //   veg: false,
+    //   rating: 4,
+    //   image: 'https://bobsimages.blob.core.windows.net/dishesh/no-image.jpeg',
+    //   category: FoodCategory.Breads,
+    //   priceOptions: {
+    //     wasPrice: { size: { Full: 261.45 } },
+    //     nowPrice: { size: { Full: 199 } },
+    //   },
+    // },
     {
       id: '19',
       name: 'Schezwan Noodles',
@@ -280,7 +280,7 @@ export default {
       category: FoodCategory.MainCourse,
       priceOptions: {
         wasPrice: { size: { Full: 345.45, Half: 208.95 } },
-        nowPrice: { size: { Full: 149, Half: 199 } },
+        nowPrice: { size: { Full: 199, Half: 149 } },
       },
     },
     {
@@ -364,8 +364,8 @@ export default {
         'https://bobsimages.blob.core.windows.net/dishesh/main-paneer-tawa.jpeg',
       category: FoodCategory.MainCourse,
       priceOptions: {
-        wasPrice: { size: { Full: 387.45 } },
-        nowPrice: { size: { Full: 199 } },
+        wasPrice: { size: { Full: 387.45, Half: 271.95 } },
+        nowPrice: { size: { Full: 249, Half: 179 } },
       },
     },
     {
@@ -409,8 +409,8 @@ export default {
         'https://bobsimages.blob.core.windows.net/dishesh/roll-chicken-malai-tikka.jpeg',
       category: FoodCategory.Rolls,
       priceOptions: {
-        wasPrice: { size: { Full: 240.45 } },
-        nowPrice: { size: { Full: 149 } },
+        wasPrice: { size: { Full: 240.45 }, base: { Paratha: 0, Roomali: 0 } },
+        nowPrice: { size: { Full: 149 }, base: { Paratha: 0, Roomali: 0 } },
       },
     },
     {
@@ -425,7 +425,7 @@ export default {
       category: FoodCategory.MainCourse,
       priceOptions: {
         wasPrice: { size: { Full: 838.95, Half: 576.45 } },
-        nowPrice: { size: { Full: 399, Half: 549 } },
+        nowPrice: { size: { Full: 549, Half: 399 } },
       },
     },
     {
@@ -453,7 +453,7 @@ export default {
       category: FoodCategory.MainCourse,
       priceOptions: {
         wasPrice: { size: { Full: 387.45, Half: 271.95 } },
-        nowPrice: { size: { Full: 179, Half: 249 } },
+        nowPrice: { size: { Full: 249, Half: 179 } },
       },
     },
     {
@@ -468,7 +468,7 @@ export default {
       category: FoodCategory.MainCourse,
       priceOptions: {
         wasPrice: { size: { Full: 838.95, Half: 576.45 } },
-        nowPrice: { size: { Full: 399, Half: 549 } },
+        nowPrice: { size: { Full: 549, Half: 399 } },
       },
     },
     {
@@ -506,7 +506,7 @@ export default {
       veg: true,
       rating: 4,
       image:
-        'https://bobsimages.blob.core.windows.net/dishesh/main-paneer-lababdar.jpeg',
+        'https://bobsimages.blob.core.windows.net/dishesh/main-paneer-lababdaar.jpeg',
       category: FoodCategory.MainCourse,
       priceOptions: {
         wasPrice: { size: { Full: 387.45, Half: 271.95 } },
@@ -568,8 +568,8 @@ export default {
         'https://bobsimages.blob.core.windows.net/dishesh/roll-malai-paneer-tikka.jpeg',
       category: FoodCategory.Rolls,
       priceOptions: {
-        wasPrice: { size: { Full: 208.95 } },
-        nowPrice: { size: { Full: 129 } },
+        wasPrice: { size: { Full: 208.95 }, base: { Paratha: 0, Roomali: 0 } },
+        nowPrice: { size: { Full: 129 }, base: { Paratha: 0, Roomali: 0 } },
       },
     },
     {
@@ -639,7 +639,7 @@ export default {
       category: FoodCategory.MainCourse,
       priceOptions: {
         wasPrice: { size: { Full: 838.95, Half: 576.45 } },
-        nowPrice: { size: { Full: 550, Half: 400 } },
+        nowPrice: { size: { Full: 549, Half: 399 } },
       },
     },
     {
@@ -650,7 +650,7 @@ export default {
       veg: true,
       rating: 4,
       image:
-        'https://bobsimages.blob.core.windows.net/dishesh/chinese-hakka-noodles.jpeg',
+        'https://bobsimages.blob.core.windows.net/dishesh/chinese-noodles-hakka.jpeg',
       category: FoodCategory.Noodles,
       priceOptions: {
         wasPrice: { size: { Full: 313.95, Half: 166.95 } },
@@ -722,11 +722,14 @@ export default {
       veg: true,
       rating: 4,
       image:
-        'https://bobsimages.blob.core.windows.net/dishesh/chinese-paneer-chilli-gravy.jpeg',
+        'https://bobsimages.blob.core.windows.net/dishesh/chinese-paneer-chilli.jpeg',
       category: 'Chinese',
       priceOptions: {
         wasPrice: { size: { Full: 334.95, Half: 229.95 } },
-        nowPrice: { size: { Full: 219, Half: 159 } },
+        nowPrice: {
+          size: { Full: 219, Half: 159 },
+          type: { Gravy: 20, Dry: 0 },
+        },
       },
     },
     {
@@ -740,24 +743,24 @@ export default {
         'https://bobsimages.blob.core.windows.net/dishesh/roll-paneer-tikka.jpeg',
       category: FoodCategory.Rolls,
       priceOptions: {
-        wasPrice: { size: { Full: 177.45 } },
-        nowPrice: { size: { Full: 129 } },
+        wasPrice: { size: { Full: 177.45 }, base: { Paratha: 0, Roomali: 0 } },
+        nowPrice: { size: { Full: 129 }, base: { Paratha: 0, Roomali: 0 } },
       },
     },
-    {
-      id: '53',
-      name: 'Mutton Seekh [2 Seekh]',
-      description: '',
-      veg: false,
-      rating: 4,
-      image:
-        'https://bobsimages.blob.core.windows.net/dishesh/starter-seekh-kabab.jpeg',
-      category: FoodCategory.Starters,
-      priceOptions: {
-        wasPrice: { size: { Full: 324.45 } },
-        nowPrice: { size: { Full: 250 } },
-      },
-    },
+    // {
+    //   id: '53',
+    //   name: 'Mutton Seekh [2 Seekh]',
+    //   description: '',
+    //   veg: false,
+    //   rating: 4,
+    //   image:
+    //     'https://bobsimages.blob.core.windows.net/dishesh/starter-seekh-kabab.jpeg',
+    //   category: FoodCategory.Starters,
+    //   priceOptions: {
+    //     wasPrice: { size: { Full: 324.45 } },
+    //     nowPrice: { size: { Full: 250 } },
+    //   },
+    // },
     {
       id: '54',
       name: 'Paneer Kali Mirch Gravy',
@@ -813,22 +816,25 @@ export default {
       category: 'Chinese',
       priceOptions: {
         wasPrice: { size: { Full: 240.45, Half: 177.45 } },
-        nowPrice: { size: { Full: 99, Half: 149 } },
+        nowPrice: { size: { Full: 149, Half: 99 } },
       },
     },
     {
       id: '58',
-      name: 'Chili Chicken',
+      name: 'Chilli Chicken',
 
       description: '',
       veg: false,
       rating: 4,
       image:
-        'https://bobsimages.blob.core.windows.net/dishesh/chinese-chicken-chilli-gravy.jpeg',
+        'https://bobsimages.blob.core.windows.net/dishesh/chinese-chicken-chilli.jpeg',
       category: 'Chinese',
       priceOptions: {
         wasPrice: { size: { Full: 366.45, Half: 271.95 } },
-        nowPrice: { size: { Full: 229, Half: 169 } },
+        nowPrice: {
+          size: { Full: 229, Half: 169 },
+          type: { Gravy: 20, Dry: 0 },
+        },
       },
     },
     {
@@ -971,7 +977,7 @@ export default {
       category: FoodCategory.MainCourse,
       priceOptions: {
         wasPrice: { size: { Full: 366.45, Half: 229.95 } },
-        nowPrice: { size: { Full: 229, Half: 169 } },
+        nowPrice: { size: { Full: 239, Half: 169 } },
       },
     },
     {
@@ -995,12 +1001,13 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image: 'https://bobsimages.blob.core.windows.net/dishesh/no-image.jpeg',
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/chinese-veg-manchurian.jpeg',
       category: 'Chinese',
       priceOptions: {
         wasPrice: { size: { Full: 313.95, Half: 208.95 } },
         nowPrice: {
-          size: { Full: 139, Half: 199 },
+          size: { Full: 199, Half: 139 },
           type: { Gravy: 20, Dry: 0 },
         },
       },
@@ -1057,7 +1064,7 @@ export default {
       veg: false,
       rating: 4,
       image:
-        'https://bobsimages.blob.core.windows.net/dishesh/main-chicken-lababdaar.jpeg',
+        'https://bobsimages.blob.core.windows.net/dishesh/main-chicken-lababdar.jpeg',
       category: FoodCategory.MainCourse,
       priceOptions: {
         wasPrice: { size: { Full: 754.95, Half: 481.95, Quarter: 313.95 } },
@@ -1104,8 +1111,8 @@ export default {
         'https://bobsimages.blob.core.windows.net/dishesh/roll-chaap-tandoori.jpeg',
       category: FoodCategory.Rolls,
       priceOptions: {
-        wasPrice: { size: { Full: 156.45 } },
-        nowPrice: { size: { Full: 99 } },
+        wasPrice: { size: { Full: 156.45 }, base: { Paratha: 0, Roomali: 0 } },
+        nowPrice: { size: { Full: 99 }, base: { Paratha: 0, Roomali: 0 } },
       },
     },
     {
@@ -1160,7 +1167,7 @@ export default {
       category: FoodCategory.MainCourse,
       priceOptions: {
         wasPrice: { size: { Full: 387.45, Half: 271.95 } },
-        nowPrice: { size: { Full: 179, Half: 249 } },
+        nowPrice: { size: { Full: 249, Half: 179 } },
       },
     },
     {
@@ -1173,8 +1180,8 @@ export default {
         'https://bobsimages.blob.core.windows.net/dishesh/roll-chaap-haryali.jpeg',
       category: FoodCategory.Rolls,
       priceOptions: {
-        wasPrice: { size: { Full: 177.45 } },
-        nowPrice: { size: { Full: 99 } },
+        wasPrice: { size: { Full: 177.45 }, base: { Paratha: 0, Roomali: 0 } },
+        nowPrice: { size: { Full: 99 }, base: { Paratha: 0, Roomali: 0 } },
       },
     },
     {
@@ -1188,7 +1195,7 @@ export default {
       category: FoodCategory.Starters,
       priceOptions: {
         wasPrice: { size: { Full: 313.95, Half: 208.95 } },
-        nowPrice: { size: { Full: 119, Half: 179 } },
+        nowPrice: { size: { Full: 179, Half: 119 } },
       },
     },
     {
@@ -1202,7 +1209,7 @@ export default {
       category: FoodCategory.Starters,
       priceOptions: {
         wasPrice: { size: { Full: 313.95, Half: 208.95 } },
-        nowPrice: { size: { Full: 119, Half: 179 } },
+        nowPrice: { size: { Full: 179, Half: 119 } },
       },
     },
     {
@@ -1231,7 +1238,7 @@ export default {
       category: FoodCategory.Breads,
       priceOptions: {
         wasPrice: { size: { Full: 26.25 } },
-        nowPrice: { size: { Full: 15 } },
+        nowPrice: { size: { Full: 10 } },
       },
     },
     {
@@ -1242,11 +1249,14 @@ export default {
       veg: false,
       rating: 4,
       image:
-        'https://bobsimages.blob.core.windows.net/dishesh/chinese-chicken-manchurian-gravy.jpeg',
+        'https://bobsimages.blob.core.windows.net/dishesh/chinese-chicken-manchurian.jpeg',
       category: 'Chinese',
       priceOptions: {
         wasPrice: { size: { Full: 376.95, Half: 271.95 } },
-        nowPrice: { size: { Full: 229, Half: 169 } },
+        nowPrice: {
+          size: { Full: 229, Half: 169 },
+          type: { Gravy: 20, Dry: 0 },
+        },
       },
     },
     {
@@ -1306,7 +1316,7 @@ export default {
       category: FoodCategory.MainCourse,
       priceOptions: {
         wasPrice: { size: { Full: 387.45, Half: 271.95 } },
-        nowPrice: { size: { Full: 299, Half: 199 } },
+        nowPrice: { size: { Full: 249, Half: 179 } },
       },
     },
     {
@@ -1321,7 +1331,7 @@ export default {
       category: FoodCategory.MainCourse,
       priceOptions: {
         wasPrice: { size: { Full: 366.45, Half: 229.95 } },
-        nowPrice: { size: { Full: 229, Half: 169 } },
+        nowPrice: { size: { Full: 239, Half: 169 } },
       },
     },
     {
@@ -1381,7 +1391,7 @@ export default {
       category: FoodCategory.Starters,
       priceOptions: {
         wasPrice: { size: { Full: 282.45, Half: 177.45 } },
-        nowPrice: { size: { Full: 99, Half: 159 } },
+        nowPrice: { size: { Full: 159, Half: 99 } },
       },
     },
     {
@@ -1415,7 +1425,7 @@ export default {
     },
     {
       id: '99',
-      name: 'Malai Tangdi',
+      name: 'Malai Tangdi [2/4 Pieces]',
 
       description: '',
       veg: true,
@@ -1483,7 +1493,7 @@ export default {
       category: FoodCategory.ChineseRice,
       priceOptions: {
         wasPrice: { size: { Full: 334.95, Half: 177.45 } },
-        nowPrice: { size: { Full: 174, Half: 124 } },
+        nowPrice: { size: { Full: 169, Half: 119 } },
       },
     },
     {
@@ -1497,7 +1507,7 @@ export default {
       category: FoodCategory.ChineseRice,
       priceOptions: {
         wasPrice: { size: { Full: 334.95, Quarter: 177.45 } },
-        nowPrice: { size: { Full: 174, Quarter: 124 } },
+        nowPrice: { size: { ull: 169, Half: 119 } },
       },
     },
     {
@@ -1512,7 +1522,7 @@ export default {
       category: FoodCategory.ChineseRice,
       priceOptions: {
         wasPrice: { size: { Full: 334.95, Half: 177.45 } },
-        nowPrice: { size: { Full: 174, Half: 124 } },
+        nowPrice: { size: { Full: 169, Half: 119 } },
       },
     },
     {
@@ -1527,7 +1537,7 @@ export default {
       category: FoodCategory.Noodles,
       priceOptions: {
         wasPrice: { size: { Full: 366.45, Half: 219.45 } },
-        nowPrice: { size: { Full: 149, Half: 199 } },
+        nowPrice: { size: { Full: 199, Half: 149 } },
       },
     },
     {
@@ -1557,7 +1567,7 @@ export default {
       category: FoodCategory.Noodles,
       priceOptions: {
         wasPrice: { size: { Full: 366.45, Half: 229.95 } },
-        nowPrice: { size: { Full: 169, Half: 119 } },
+        nowPrice: { size: { Full: 199, Half: 149 } },
       },
     },
     {
@@ -1568,7 +1578,7 @@ export default {
       veg: false,
       rating: 4,
       image:
-        'https://bobsimages.blob.core.windows.net/dishesh/chinese-noodles-egg-hakka.jpeg',
+        'https://bobsimages.blob.core.windows.net/dishesh/egg-noodles.jpeg',
       category: FoodCategory.Noodles,
       priceOptions: {
         wasPrice: { size: { Full: 334.95, Half: 177.45 } },
@@ -1583,7 +1593,7 @@ export default {
       veg: false,
       rating: 4,
       image:
-        'https://bobsimages.blob.core.windows.net/dishesh/chinese-noodles-egg-chilli-garlic.jpeg',
+        'https://bobsimages.blob.core.windows.net/dishesh/chinese-noodels-chilli-garlic.jpeg',
       category: FoodCategory.Noodles,
       priceOptions: {
         wasPrice: { size: { Full: 334.95, Quarter: 187.95 } },
@@ -1598,7 +1608,7 @@ export default {
       veg: false,
       rating: 4,
       image:
-        'https://bobsimages.blob.core.windows.net/dishesh/chinese-noodles-egg-schezwan.jpeg',
+        'https://bobsimages.blob.core.windows.net/dishesh/chinese-noodels-schezwan-egg.jpeg',
       category: FoodCategory.Noodles,
       priceOptions: {
         wasPrice: { size: { Full: 334.95, Quarter: 187.95 } },
@@ -1612,11 +1622,13 @@ export default {
       veg: true,
       rating: 4,
       image:
-        'https://bobsimages.blob.core.windows.net/dishesh/chinese-manchurian-veg-gravy.jpeg',
+        'https://bobsimages.blob.core.windows.net/dishesh/chinese-manchurian-gravy.jpeg',
       category: 'Chinese',
       priceOptions: {
         wasPrice: { size: { Full: 345.45, Half: 240.45 } },
-        nowPrice: { size: { Full: 199, Half: 139 } },
+        nowPrice: {
+          size: { Full: 219, Half: 159 },
+        },
       },
     },
     {
@@ -1626,11 +1638,11 @@ export default {
       veg: false,
       rating: 4,
       image:
-        'https://bobsimages.blob.core.windows.net/dishesh/chinese-manchurian-chicken-gravy.jpeg',
+        'https://bobsimages.blob.core.windows.net/dishesh/chinese-chicken-manchurian-gravy.jpeg',
       category: 'Chinese',
       priceOptions: {
         wasPrice: { size: { Full: 397.95, Half: 292.95 } },
-        nowPrice: { size: { Full: 249, Half: 189 } },
+        nowPrice: { size: { Full: 259, Half: 199 } },
       },
     },
     {
@@ -1645,7 +1657,7 @@ export default {
       category: 'Chinese',
       priceOptions: {
         wasPrice: { size: { Full: 366.45, Half: 261.45 } },
-        nowPrice: { size: { Full: 261.45, Half: 186.54 } },
+        nowPrice: { size: { Full: 239, Half: 179 } },
       },
     },
     {
@@ -1660,7 +1672,7 @@ export default {
       category: 'Chinese',
       priceOptions: {
         wasPrice: { size: { Full: 397.95, Half: 303.45 } },
-        nowPrice: { size: { Full: 239, Half: 179 } },
+        nowPrice: { size: { Full: 259, Half: 199 } },
       },
     },
     {
@@ -1675,7 +1687,7 @@ export default {
       category: 'Chinese',
       priceOptions: {
         wasPrice: { size: { Full: 240.45 } },
-        nowPrice: { size: { Full: 139 } },
+        nowPrice: { size: { Full: 149 } },
       },
     },
     {
@@ -1820,8 +1832,8 @@ export default {
         'https://bobsimages.blob.core.windows.net/dishesh/starter-chicken-malai.jpeg',
       category: FoodCategory.Starters,
       priceOptions: {
-        wasPrice: { size: { Full: 399 } },
-        nowPrice: { size: { Full: 219 } },
+        wasPrice: { size: { Full: 699, Half: 349 } },
+        nowPrice: { size: { Full: 499, Half: 299 } },
       },
     },
     {
@@ -1836,7 +1848,7 @@ export default {
       category: 'Momos',
       priceOptions: {
         wasPrice: { size: { Full: 208.95 } },
-        nowPrice: { size: { Full: 119 } },
+        nowPrice: { size: { Full: 129 } },
       },
     },
     {
@@ -1876,7 +1888,7 @@ export default {
       veg: true,
       rating: 4,
       image:
-        'https://bobsimages.blob.core.windows.net/dishesh/momo-veg-afghani.jpeg',
+        'https://bobsimages.blob.core.windows.net/dishesh/momo-veg-afgani.jpeg',
       category: 'Momos',
       priceOptions: {
         wasPrice: { size: { Full: 208.95 } },
@@ -1891,7 +1903,7 @@ export default {
       veg: false,
       rating: 4,
       image:
-        'https://bobsimages.blob.core.windows.net/dishesh/chinese-chicken-lollipop.jpeg',
+        'https://bobsimages.blob.core.windows.net/dishesh/chinese-chicken-lollypop.jpeg',
       category: 'Chinese',
       priceOptions: {
         wasPrice: { size: { Full: 261.45 } },
@@ -1918,7 +1930,7 @@ export default {
       veg: true,
       rating: 4,
       image:
-        'https://bobsimages.blob.core.windows.net/dishesh/momo-paneer-afghani.jpeg',
+        'https://bobsimages.blob.core.windows.net/dishesh/momo-chicken-afgani.jpeg',
       category: 'Momos',
       priceOptions: {
         wasPrice: { size: { Full: 261.45 } },
@@ -1933,7 +1945,7 @@ export default {
       veg: false,
       rating: 4,
       image:
-        'https://bobsimages.blob.core.windows.net/dishesh/chicken-afghani-momos.jpeg',
+        'https://bobsimages.blob.core.windows.net/dishesh/momo-chicken-afgani.jpeg',
       category: 'Momos',
       priceOptions: {
         wasPrice: { size: { Full: 282.45 } },
@@ -1980,7 +1992,7 @@ export default {
       category: FoodCategory.Starters,
       priceOptions: {
         wasPrice: { size: { Full: 733.95, Half: 418.95 } },
-        nowPrice: { size: { Full: 418.95, Half: 239.14 } },
+        nowPrice: { size: { Full: 499, Half: 249 } },
       },
     },
     {
@@ -2008,7 +2020,7 @@ export default {
       category: FoodCategory.Starters,
       priceOptions: {
         wasPrice: { size: { Full: 366.45 } },
-        nowPrice: { size: { Full: 200 } },
+        nowPrice: { size: { Full: 169 } },
       },
     },
     {
@@ -2023,7 +2035,7 @@ export default {
       category: FoodCategory.Starters,
       priceOptions: {
         wasPrice: { size: { Full: 387.45 } },
-        nowPrice: { size: { Full: 200 } },
+        nowPrice: { size: { Full: 179 } },
       },
     },
     {
@@ -2034,7 +2046,7 @@ export default {
       veg: false,
       rating: 4,
       image:
-        'https://bobsimages.blob.core.windows.net/dishesh/starter-chicken-peri-peri-tikka.jpeg',
+        'https://bobsimages.blob.core.windows.net/dishesh/starter-chicken-peri-peri-tikka.jpg',
       category: FoodCategory.Starters,
       priceOptions: {
         wasPrice: { size: { Full: 376.95 } },
@@ -2052,8 +2064,8 @@ export default {
         'https://bobsimages.blob.core.windows.net/dishesh/bread-missi.jpeg',
       category: FoodCategory.Breads,
       priceOptions: {
-        wasPrice: { size: { Full: 30 } },
-        nowPrice: { size: { Full: 30 } },
+        wasPrice: { size: { Full: 62.5 } },
+        nowPrice: { size: { Full: 50 } },
       },
     },
     {
@@ -2125,8 +2137,8 @@ export default {
         'https://bobsimages.blob.core.windows.net/dishesh/roll-chilli-chicken.jpeg',
       category: FoodCategory.Rolls,
       priceOptions: {
-        wasPrice: { size: { Full: 366.45 } },
-        nowPrice: { size: { Full: 149.0 } },
+        wasPrice: { size: { Full: 366.45 }, base: { Paratha: 0, Roomali: 0 } },
+        nowPrice: { size: { Full: 149.0 }, base: { Paratha: 0, Roomali: 0 } },
       },
     },
     // {
@@ -2183,7 +2195,7 @@ export default {
       category: FoodCategory.Starters,
       priceOptions: {
         wasPrice: { size: { Full: 292.95 } },
-        nowPrice: { size: { Full: 200 } },
+        nowPrice: { size: { Full: 199 } },
       },
     },
     // {
@@ -2252,7 +2264,7 @@ export default {
       category: FoodCategory.Breads,
       priceOptions: {
         wasPrice: { size: { Full: 15 } },
-        nowPrice: { size: { Full: 15 } },
+        nowPrice: { size: { Full: 10 } },
       },
     },
     {
@@ -2266,7 +2278,7 @@ export default {
       category: FoodCategory.Breads,
       priceOptions: {
         wasPrice: { size: { Full: 26.25 } },
-        nowPrice: { size: { Full: 25 } },
+        nowPrice: { size: { Full: 15 } },
       },
     },
   ] as FoodItem[],
