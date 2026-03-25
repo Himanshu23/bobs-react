@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -41,6 +41,7 @@ import {
   OrderMessage,
 } from '../utils/whatsappService';
 import { DISCOUNTS, calculateDiscountAmount } from '../data/discounts';
+import { trackEvent } from '../utils/analytics';
 
 const WHATSAPP_PHONE = '9643310092'; // Replace with your number
 
@@ -57,24 +58,26 @@ const CheckoutPage: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const cartItems = useSelector((state: RootState) => state.cart.items);
+  const addressSectionRef = useRef<HTMLDivElement | null>(null);
 
   const [deliveryMethod, setDeliveryMethod] = useState<string>('delivery');
   const [habitat, setHabitat] = useState<string>('');
   const [tower, setTower] = useState<string>('');
   const [flatNumber, setFlatNumber] = useState<string>('');
-  const [addressType] = useState<string>('habitat');
   const [customAddress, setCustomAddress] = useState<string>('');
   const [customerName, setCustomerName] = useState<string>('');
   const [customerInstructions, setCustomerInstructions] = useState<string>('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [selectedDiscountId, setSelectedDiscountId] = useState<string>('');
   const [orderConfirmationOpen, setOrderConfirmationOpen] = useState(false);
+  const [addressError, setAddressError] = useState<string>('');
 
   // Reset tower when habitat changes
   const handleHabitatChange = (event: SelectChangeEvent<string>) => {
     const newHabitat = event.target.value as string;
     setHabitat(newHabitat);
     setTower(''); // Reset tower selection
+    setAddressError('');
   };
 
   const totalPrice = cartItems.reduce(
@@ -93,31 +96,50 @@ const CheckoutPage: React.FC = () => {
   // Calculate total after discount
   const totalAfterDiscount = totalPrice - discountAmount;
   const tax = totalAfterDiscount * 0.05;
-  const finalTotal = totalAfterDiscount + tax;
+  const finalTotal = totalAfterDiscount;
 
   const availableTowers = habitat ? HABITAT_TOWERS[habitat] || [] : [];
+  const hasHabitatAddress = Boolean(
+    habitat && tower && flatNumber && flatNumber.trim() !== ''
+  );
+  const hasCustomAddress = Boolean(
+    customAddress && customAddress.trim() !== ''
+  );
+  const hasDeliveryAddress = hasHabitatAddress || hasCustomAddress;
+  const appliedDiscountCode =
+    discountAmount > 0 ? selectedDiscount?.code : undefined;
+  const discountLabel = appliedDiscountCode
+    ? `Discount (${appliedDiscountCode})`
+    : 'Discount';
+
+  const scrollToAddressSection = () => {
+    addressSectionRef.current?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
+  };
 
   const handleProceedToCheckout = async () => {
     // Validation based on delivery method
-    if (deliveryMethod === 'delivery') {
-      if (
-        (!tower || !flatNumber || flatNumber.trim() === '') &&
-        (!customAddress || customAddress.trim() === '')
-      ) {
-        alert('Please select Habitat, Tower and enter Flat Number');
-        return;
-      }
+    if (deliveryMethod === 'delivery' && !hasDeliveryAddress) {
+      setAddressError(
+        'Add either Habitat, Tower and Flat Number, or enter your full address to continue.'
+      );
+      scrollToAddressSection();
+      return;
     }
+
+    setAddressError('');
 
     setIsProcessing(true);
 
     try {
       let deliveryAddress = '';
       if (deliveryMethod === 'delivery') {
-        if (addressType === 'habitat') {
+        if (hasHabitatAddress) {
           deliveryAddress = `${habitat} - Tower ${tower}, Flat ${flatNumber}`;
         } else {
-          deliveryAddress = customAddress;
+          deliveryAddress = customAddress.trim();
         }
       }
 
@@ -133,7 +155,7 @@ const CheckoutPage: React.FC = () => {
         habitat: deliveryMethod === 'delivery' ? deliveryAddress : 'Pickup',
         tower:
           deliveryMethod === 'delivery'
-            ? addressType === 'habitat'
+            ? hasHabitatAddress
               ? tower
               : 'Custom'
             : 'N/A',
@@ -141,10 +163,21 @@ const CheckoutPage: React.FC = () => {
         phoneNumber: WHATSAPP_PHONE,
         instructions: customerInstructions,
         deliveryMethod: deliveryMethod as 'pickup' | 'delivery',
+        flatNumber: hasHabitatAddress ? flatNumber.trim() : undefined,
+        discountCode: appliedDiscountCode,
+        discountName: discountAmount > 0 ? selectedDiscount?.name : undefined,
+        discountAmount: discountAmount > 0 ? discountAmount : undefined,
+        tax,
       };
 
       // Format and send WhatsApp message
       const message = formatOrderMessage(orderMessage);
+      trackEvent('whatsapp_order_started', {
+        delivery_method: deliveryMethod,
+        item_count: cartItems.length,
+        value: finalTotal,
+        discount_id: selectedDiscountId || 'none',
+      });
       openWhatsApp(WHATSAPP_PHONE, message);
       setOrderConfirmationOpen(true);
     } catch (error) {
@@ -156,12 +189,23 @@ const CheckoutPage: React.FC = () => {
   };
 
   const handleOrderSentConfirmation = () => {
+    trackEvent('purchase_confirmed', {
+      delivery_method: deliveryMethod,
+      item_count: cartItems.length,
+      value: finalTotal,
+      currency: 'INR',
+    });
     setOrderConfirmationOpen(false);
     dispatch(clearCart());
     navigate('/');
   };
 
   const handleOrderNotSent = () => {
+    trackEvent('whatsapp_order_not_sent', {
+      delivery_method: deliveryMethod,
+      item_count: cartItems.length,
+      value: finalTotal,
+    });
     setOrderConfirmationOpen(false);
   };
 
@@ -247,10 +291,16 @@ const CheckoutPage: React.FC = () => {
 
                 {/* Address fields - Only show for delivery */}
                 {deliveryMethod === 'delivery' && (
-                  <>
+                  <Box ref={addressSectionRef}>
                     <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 3 }}>
                       📍 Delivery Address
                     </Typography>
+
+                    {addressError ? (
+                      <Alert severity="error" sx={{ mb: 3 }}>
+                        {addressError}
+                      </Alert>
+                    ) : null}
 
                     {/* Customer Name */}
                     <TextField
@@ -314,7 +364,10 @@ const CheckoutPage: React.FC = () => {
                                 <Select
                                   value={tower}
                                   label="Tower"
-                                  onChange={(e) => setTower(e.target.value)}
+                                  onChange={(e) => {
+                                    setTower(e.target.value);
+                                    setAddressError('');
+                                  }}
                                 >
                                   <MenuItem value="">Select</MenuItem>
                                   {availableTowers.map((t) => (
@@ -332,13 +385,16 @@ const CheckoutPage: React.FC = () => {
                                 label="Flat No."
                                 placeholder="e.g., 502"
                                 value={flatNumber}
-                                onChange={(e) => setFlatNumber(e.target.value)}
+                                onChange={(e) => {
+                                  setFlatNumber(e.target.value);
+                                  setAddressError('');
+                                }}
                               />
                             </Grid>
                           </Grid>
 
                           {/* Address Preview */}
-                          {tower && flatNumber && (
+                          {hasHabitatAddress && (
                             <Alert severity="success" sx={{ mt: 2 }}>
                               <Typography variant="caption">
                                 📦 {habitat} - Tower {tower}, Flat {flatNumber}
@@ -400,7 +456,10 @@ const CheckoutPage: React.FC = () => {
                             label="Enter Your Address"
                             placeholder="e.g., 123 Main Street, Apartment 4B"
                             value={customAddress}
-                            onChange={(e) => setCustomAddress(e.target.value)}
+                            onChange={(e) => {
+                              setCustomAddress(e.target.value);
+                              setAddressError('');
+                            }}
                             multiline
                             rows={3}
                             size="small"
@@ -417,7 +476,7 @@ const CheckoutPage: React.FC = () => {
                         </Box>
                       </Grid>
                     </Grid>
-                  </>
+                  </Box>
                 )}
 
                 {/* Pickup confirmation */}
@@ -470,17 +529,35 @@ const CheckoutPage: React.FC = () => {
                 </Typography>
               </CardContent>
             </Card>
+          </Grid>
 
-            {/* Order Items Summary */}
-            <Card>
+          {/* Order Review Sidebar */}
+          <Grid item xs={12} md={4}>
+            <Card sx={{ position: 'sticky', top: 20 }}>
               <CardContent>
-                <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2 }}>
-                  📋 Order Summary
-                </Typography>
-                <List sx={{ maxHeight: 300, overflow: 'auto' }}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    mb: 1.5,
+                  }}
+                >
+                  <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+                    📋 Review Order
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {cartItems.length} item{cartItems.length > 1 ? 's' : ''}
+                  </Typography>
+                </Box>
+                <Divider sx={{ my: 2 }} />
+
+                <List sx={{ maxHeight: 240, overflow: 'auto', mb: 1.5, py: 0 }}>
                   {cartItems.map((item, idx) => (
                     <React.Fragment key={idx}>
-                      <ListItem sx={{ py: 1 }}>
+                      <ListItem
+                        sx={{ py: 0.75, px: 0, alignItems: 'flex-start' }}
+                      >
                         <ListItemText
                           primary={`${item.name} ${
                             item.option?.size ? `(${item.option.size})` : ''
@@ -488,8 +565,18 @@ const CheckoutPage: React.FC = () => {
                           secondary={`Qty: ${item.quantity} × ₹${item.price.toFixed(
                             2
                           )}`}
+                          primaryTypographyProps={{
+                            variant: 'body2',
+                            fontWeight: 600,
+                          }}
+                          secondaryTypographyProps={{
+                            variant: 'caption',
+                          }}
                         />
-                        <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+                        <Typography
+                          variant="body2"
+                          sx={{ fontWeight: 'bold', pt: 0.25 }}
+                        >
                           ₹{(item.quantity * item.price).toFixed(2)}
                         </Typography>
                       </ListItem>
@@ -497,113 +584,112 @@ const CheckoutPage: React.FC = () => {
                     </React.Fragment>
                   ))}
                 </List>
-              </CardContent>
-            </Card>
-          </Grid>
 
-          {/* Discount Section */}
-          <Grid item xs={12} md={4}>
-            <Card sx={{ mb: 2 }}>
-              <CardContent>
-                <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2 }}>
-                  🎁 Apply Discount
-                </Typography>
-                <FormControl fullWidth sx={{ mb: 2 }}>
-                  <InputLabel>Select Discount</InputLabel>
-                  <Select
-                    value={selectedDiscountId}
-                    label="Select Discount"
-                    onChange={(e) => setSelectedDiscountId(e.target.value)}
-                  >
-                    <MenuItem value="">No Discount</MenuItem>
-                    {DISCOUNTS.filter((d) => d.active).map((discount) => (
-                      <MenuItem key={discount.id} value={discount.id}>
-                        {discount.name} -{' '}
-                        {discount.percent > 0
-                          ? `${discount.percent}%`
-                          : `₹${discount.fixedValue}`}
-                        {discount.code && ` (${discount.code})`}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-                {selectedDiscount && (
+                <Divider sx={{ my: 1.5 }} />
+
+                <Box sx={{ mb: 2 }}>
                   <Typography
-                    variant="caption"
-                    sx={{
-                      color:
-                        totalPrice < selectedDiscount.minValue
-                          ? '#ff0000'
-                          : 'textSecondary',
-                      fontWeight:
-                        totalPrice < selectedDiscount.minValue
-                          ? 'bold'
-                          : 'normal',
-                    }}
+                    variant="subtitle2"
+                    sx={{ fontWeight: 700, mb: 1 }}
                   >
-                    {totalPrice < selectedDiscount.minValue ? '⚠️ ' : '📌 '}
-                    {selectedDiscount.description}
-                    <br />
-                    Min: ₹{selectedDiscount.minValue} | Max Cap: ₹
-                    {selectedDiscount.maxCap}
-                    {totalPrice < selectedDiscount.minValue && (
-                      <>
-                        <br />❌ Not applicable - Add ₹
-                        {(selectedDiscount.minValue - totalPrice).toFixed(2)}{' '}
-                        more to unlock this discount
-                      </>
-                    )}
+                    🎁 Discount
                   </Typography>
-                )}
-              </CardContent>
-            </Card>
-          </Grid>
+                  <FormControl fullWidth size="small" sx={{ mb: 1 }}>
+                    <InputLabel>Select Discount</InputLabel>
+                    <Select
+                      value={selectedDiscountId}
+                      label="Select Discount"
+                      onChange={(e) => setSelectedDiscountId(e.target.value)}
+                    >
+                      <MenuItem value="">No Discount</MenuItem>
+                      {DISCOUNTS.filter((d) => d.active).map((discount) => (
+                        <MenuItem key={discount.id} value={discount.id}>
+                          {discount.name} -{' '}
+                          {discount.percent > 0
+                            ? `${discount.percent}%`
+                            : `₹${discount.fixedValue}`}
+                          {discount.code && ` (${discount.code})`}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  {selectedDiscount && (
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        color:
+                          totalPrice < selectedDiscount.minValue
+                            ? '#ff0000'
+                            : 'textSecondary',
+                        fontWeight:
+                          totalPrice < selectedDiscount.minValue
+                            ? 'bold'
+                            : 'normal',
+                        display: 'block',
+                      }}
+                    >
+                      {totalPrice < selectedDiscount.minValue ? '⚠️ ' : '📌 '}
+                      {selectedDiscount.description}
+                      <br />
+                      Min: ₹{selectedDiscount.minValue} | Max Cap: ₹
+                      {selectedDiscount.maxCap}
+                      {totalPrice < selectedDiscount.minValue && (
+                        <>
+                          <br />❌ Not applicable - Add ₹
+                          {(selectedDiscount.minValue - totalPrice).toFixed(2)}{' '}
+                          more to unlock this discount
+                        </>
+                      )}
+                    </Typography>
+                  )}
+                </Box>
 
-          {/* Price Summary Section */}
-          <Grid item xs={12} md={4}>
-            <Card sx={{ position: 'sticky', top: 20 }}>
-              <CardContent>
-                <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2 }}>
-                  💰 Price Summary
-                </Typography>
-                <Divider sx={{ my: 2 }} />
+                <Divider sx={{ my: 1.5 }} />
 
                 <Box sx={{ mb: 2 }}>
                   <Box
                     sx={{
                       display: 'flex',
                       justifyContent: 'space-between',
-                      mb: 1,
+                      mb: 0.75,
                     }}
                   >
-                    <Typography color="textSecondary">Subtotal:</Typography>
-                    <Typography>₹{totalPrice.toFixed(2)}</Typography>
+                    <Typography variant="body2" color="textSecondary">
+                      Subtotal
+                    </Typography>
+                    <Typography variant="body2">
+                      ₹{totalPrice.toFixed(2)}
+                    </Typography>
                   </Box>
                   <Box
                     sx={{
                       display: 'flex',
                       justifyContent: 'space-between',
-                      mb: 1,
+                      mb: 0.75,
                     }}
                   >
-                    <Typography color="textSecondary">Delivery:</Typography>
-                    <Typography color="#4CAF50">Free</Typography>
+                    <Typography variant="body2" color="textSecondary">
+                      Delivery
+                    </Typography>
+                    <Typography variant="body2" color="#4CAF50">
+                      Free
+                    </Typography>
                   </Box>
                   {discountAmount > 0 && (
                     <Box
                       sx={{
                         display: 'flex',
                         justifyContent: 'space-between',
-                        mb: 1,
+                        mb: 0.75,
                       }}
                     >
-                      <Typography
-                        color="textSecondary"
-                        sx={{ textDecoration: 'none' }}
-                      >
-                        Discount:
+                      <Typography variant="body2" color="textSecondary">
+                        {discountLabel}
                       </Typography>
-                      <Typography sx={{ fontWeight: 'bold', color: '#4CAF50' }}>
+                      <Typography
+                        variant="body2"
+                        sx={{ fontWeight: 'bold', color: '#4CAF50' }}
+                      >
                         -₹{discountAmount.toFixed(2)}
                       </Typography>
                     </Box>
@@ -612,20 +698,28 @@ const CheckoutPage: React.FC = () => {
                     sx={{
                       display: 'flex',
                       justifyContent: 'space-between',
-                      mb: 1,
+                      mb: 0.5,
                       opacity: 0.7,
                     }}
                   >
                     <Typography
+                      variant="body2"
                       color="textSecondary"
-                      sx={{ fontSize: '0.9rem' }}
+                      sx={{ textDecoration: 'line-through' }}
                     >
-                      Tax (5%):
+                      Tax (5%)
                     </Typography>
-                    <Typography sx={{ fontSize: '0.9rem' }}>
+                    <Typography
+                      variant="body2"
+                      sx={{ textDecoration: 'line-through' }}
+                    >
                       ₹{tax.toFixed(2)}
                     </Typography>
                   </Box>
+                  <Typography variant="caption" color="text.secondary">
+                    Tax is shown for reference and is not added to the payable
+                    total.
+                  </Typography>
                 </Box>
 
                 <Divider sx={{ my: 2 }} />
@@ -634,7 +728,7 @@ const CheckoutPage: React.FC = () => {
                   sx={{
                     display: 'flex',
                     justifyContent: 'space-between',
-                    mb: 3,
+                    mb: 2,
                   }}
                 >
                   <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
@@ -654,15 +748,7 @@ const CheckoutPage: React.FC = () => {
                   size="large"
                   startIcon={<WhatsAppIcon />}
                   onClick={handleProceedToCheckout}
-                  disabled={
-                    isProcessing ||
-                    (deliveryMethod === 'delivery'
-                      ? (tower && flatNumber && flatNumber.trim() !== '') ||
-                        (customAddress && customAddress.trim() !== '')
-                        ? false
-                        : true
-                      : false)
-                  }
+                  disabled={isProcessing}
                   sx={{
                     background:
                       'linear-gradient(135deg, #25D366 0%, #128C7E 100%)',
@@ -682,12 +768,10 @@ const CheckoutPage: React.FC = () => {
                   Back to Cart
                 </Button>
 
-                {deliveryMethod === 'delivery' &&
-                !tower &&
-                !flatNumber &&
-                !customAddress ? (
+                {deliveryMethod === 'delivery' && !hasDeliveryAddress ? (
                   <Alert severity="info" sx={{ mt: 2 }}>
-                    Select Tower & Flat OR enter your address to proceed
+                    Add a delivery address. If you tap the button first, the
+                    page will jump to the address section.
                   </Alert>
                 ) : null}
               </CardContent>

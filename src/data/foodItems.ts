@@ -246,8 +246,7 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image:
-        'https://bobsimages.blob.core.windows.net/dishesh/bread-keema-naan.jpeg',
+      image: 'https://bobsimages.blob.core.windows.net/dishesh/no-image.jpeg',
       category: FoodCategory.Breads,
       priceOptions: {
         wasPrice: { size: { Full: 261.45 } },
@@ -436,8 +435,7 @@ export default {
       description: '',
       veg: true,
       rating: 4,
-      image:
-        'https://bobsimages.blob.core.windows.net/dishesh/main-bobs-special-paneer-gravy.jpeg',
+      image: 'https://bobsimages.blob.core.windows.net/dishesh/no-image.jpeg',
       category: FoodCategory.MainCourse,
       priceOptions: {
         wasPrice: { size: { Full: 450.45 } },
@@ -595,8 +593,7 @@ export default {
       description: '',
       veg: false,
       rating: 4,
-      image:
-        'https://bobsimages.blob.core.windows.net/dishesh/main-bobs-special-chicken-gravy.jpeg',
+      image: 'https://bobsimages.blob.core.windows.net/dishesh/no-image.jpeg',
       category: FoodCategory.MainCourse,
       priceOptions: {
         wasPrice: { size: { Full: 880.95, Half: 586.95 } },
@@ -959,8 +956,8 @@ export default {
         'https://bobsimages.blob.core.windows.net/dishesh/roll-chaap-malai.jpeg',
       category: FoodCategory.Rolls,
       priceOptions: {
-        wasPrice: { size: { Full: 177.45 } },
-        nowPrice: { size: { Full: 99 } },
+        wasPrice: { size: { Full: 177.45 }, base: { Paratha: 0, Roomali: 0 } },
+        nowPrice: { size: { Full: 99 }, base: { Paratha: 0, Roomali: 0 } },
       },
     },
     {
@@ -995,16 +992,17 @@ export default {
     {
       id: '70',
       name: 'Veg Manchurian',
-
       description: '',
       veg: true,
       rating: 4,
-      image:
-        'https://bobsimages.blob.core.windows.net/dishesh/chinese-veg-manchurian.jpeg',
+      image: 'https://bobsimages.blob.core.windows.net/dishesh/no-image.jpeg',
       category: 'Chinese',
       priceOptions: {
         wasPrice: { size: { Full: 313.95, Half: 208.95 } },
-        nowPrice: { size: { Full: 139, Half: 199 } },
+        nowPrice: {
+          size: { Full: 139, Half: 199 },
+          type: { Gravy: 20, Dry: 0 },
+        },
       },
     },
     {
@@ -1059,7 +1057,7 @@ export default {
       veg: false,
       rating: 4,
       image:
-        'https://bobsimages.blob.core.windows.net/dishesh/main-chicken-lababdar.jpeg',
+        'https://bobsimages.blob.core.windows.net/dishesh/main-chicken-lababdaar.jpeg',
       category: FoodCategory.MainCourse,
       priceOptions: {
         wasPrice: { size: { Full: 754.95, Half: 481.95, Quarter: 313.95 } },

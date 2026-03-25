@@ -5,8 +5,6 @@ import {
   Box,
   Button,
   Typography,
-  Select,
-  MenuItem,
   Drawer,
   IconButton,
   FormControl,
@@ -19,6 +17,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { FoodItem, ItemOptions } from '../types';
 import { createCartItem } from '../utils/cartUtils';
 import PriceDisplay from './PriceDisplay';
+import { trackEvent } from '../utils/analytics';
 
 interface ProductDetailModalProps {
   open: boolean;
@@ -99,6 +98,16 @@ const ProductDetailModal = ({
       selectedType,
       selectedBase
     );
+    trackEvent('add_to_cart', {
+      item_id: newCartItem.id,
+      item_name: newCartItem.name,
+      item_category: newCartItem.product.category,
+      quantity: newCartItem.quantity,
+      value: newCartItem.price * newCartItem.quantity,
+      size: newCartItem.option.size,
+      style: newCartItem.option.style,
+      base: newCartItem.option.base,
+    });
     dispatch(addToCart(newCartItem));
     setQuantity(1);
     onClose();
@@ -175,17 +184,36 @@ const ProductDetailModal = ({
                 borderRadius: 2,
                 px: 1.5,
                 py: 1.25,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 0.75,
+                flexWrap: 'wrap',
               }}
             >
-              <Typography variant="subtitle1" sx={{ mb: 0.75 }}>
+              <Typography
+                variant="subtitle1"
+                sx={{ minWidth: 52, flexShrink: 0 }}
+              >
                 Size
               </Typography>
-              <FormControl component="fieldset">
+              <Box
+                sx={{
+                  width: { xs: 4, sm: 1 },
+                  height: { xs: 4, sm: 'auto' },
+                  minHeight: { sm: 20 },
+                  alignSelf: 'center',
+                  borderRadius: '50%',
+                  bgcolor: 'divider',
+                }}
+              />
+              <FormControl component="fieldset" sx={{ flex: 1, minWidth: 0 }}>
                 <RadioGroup
+                  row
                   value={selectedSize}
                   onChange={(e) =>
                     setSelectedSize(e.target.value as ItemOptions['size'])
                   }
+                  sx={{ columnGap: 1, rowGap: 0.25, flexWrap: 'wrap' }}
                 >
                   {Object.entries(product.priceOptions.nowPrice.size).map(
                     ([size, price]) => (
@@ -200,6 +228,7 @@ const ProductDetailModal = ({
                             size as ItemOptions['size']
                           ]
                         )}
+                        sx={{ mr: 0.75, ml: 0 }}
                       />
                     )
                   )}
@@ -217,33 +246,56 @@ const ProductDetailModal = ({
                 borderRadius: 2,
                 px: 1.5,
                 py: 1.25,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 0.75,
+                flexWrap: 'wrap',
               }}
             >
-              <Typography variant="subtitle1" sx={{ mb: 0.75 }}>
+              <Typography
+                variant="subtitle1"
+                sx={{ minWidth: 52, flexShrink: 0 }}
+              >
                 Type
               </Typography>
-              <Select
-                value={selectedType}
-                onChange={(e) =>
-                  setSelectedType(e.target.value as ItemOptions['style'])
-                }
-                fullWidth
-                size="small"
-              >
-                {Object.entries(product.priceOptions.nowPrice.type).map(
-                  ([type, price]) => (
-                    <MenuItem key={type} value={type}>
-                      {renderOptionPriceLabel(
-                        type,
-                        price,
-                        product.priceOptions.wasPrice?.type?.[
-                          type as NonNullable<ItemOptions['style']>
-                        ]
-                      )}
-                    </MenuItem>
-                  )
-                )}
-              </Select>
+              <Box
+                sx={{
+                  width: { xs: 4, sm: 1 },
+                  height: { xs: 4, sm: 'auto' },
+                  minHeight: { sm: 20 },
+                  alignSelf: 'center',
+                  borderRadius: '50%',
+                  bgcolor: 'divider',
+                }}
+              />
+              <FormControl component="fieldset" sx={{ flex: 1, minWidth: 0 }}>
+                <RadioGroup
+                  row
+                  value={selectedType}
+                  onChange={(e) =>
+                    setSelectedType(e.target.value as ItemOptions['style'])
+                  }
+                  sx={{ columnGap: 1, rowGap: 0.25, flexWrap: 'wrap' }}
+                >
+                  {Object.entries(product.priceOptions.nowPrice.type).map(
+                    ([type, price]) => (
+                      <FormControlLabel
+                        key={type}
+                        value={type}
+                        control={<Radio />}
+                        label={renderOptionPriceLabel(
+                          type,
+                          price,
+                          product.priceOptions.wasPrice?.type?.[
+                            type as NonNullable<ItemOptions['style']>
+                          ]
+                        )}
+                        sx={{ mr: 0.75, ml: 0 }}
+                      />
+                    )
+                  )}
+                </RadioGroup>
+              </FormControl>
             </Box>
           )}
 
@@ -256,17 +308,36 @@ const ProductDetailModal = ({
                 borderRadius: 2,
                 px: 1.5,
                 py: 1.25,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 0.75,
+                flexWrap: 'wrap',
               }}
             >
-              <Typography variant="subtitle1" sx={{ mb: 0.75 }}>
+              <Typography
+                variant="subtitle1"
+                sx={{ minWidth: 52, flexShrink: 0 }}
+              >
                 Base
               </Typography>
-              <FormControl component="fieldset">
+              <Box
+                sx={{
+                  width: { xs: 4, sm: 1 },
+                  height: { xs: 4, sm: 'auto' },
+                  minHeight: { sm: 20 },
+                  alignSelf: 'center',
+                  borderRadius: '50%',
+                  bgcolor: 'divider',
+                }}
+              />
+              <FormControl component="fieldset" sx={{ flex: 1, minWidth: 0 }}>
                 <RadioGroup
+                  row
                   value={selectedBase}
                   onChange={(e) =>
                     setSelectedBase(e.target.value as ItemOptions['base'])
                   }
+                  sx={{ columnGap: 1, rowGap: 0.25, flexWrap: 'wrap' }}
                 >
                   {Object.entries(product.priceOptions.nowPrice.base).map(
                     ([base, price]) => (
@@ -281,6 +352,7 @@ const ProductDetailModal = ({
                             base as NonNullable<ItemOptions['base']>
                           ]
                         )}
+                        sx={{ mr: 0.75, ml: 0 }}
                       />
                     )
                   )}

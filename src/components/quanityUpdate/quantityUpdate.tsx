@@ -16,6 +16,7 @@ import { removeFromCart, updateQuantity } from '../../redux/store';
 import { RootState } from '../../redux/store';
 import { useEffect, useMemo, useState } from 'react';
 import { selectFoodItemById } from '../../redux/selectors';
+import { trackEvent } from '../../utils/analytics';
 
 interface QuantityUpdateProps {
   open: boolean;
@@ -67,9 +68,23 @@ const QuantityUpdate = ({ open, onClose, itemID }: QuantityUpdateProps) => {
     const nextQuantity = Math.max(0, variant.quantity + delta);
 
     if (nextQuantity === 0) {
+      trackEvent('remove_from_cart', {
+        item_id: variant.id,
+        item_name: variant.name,
+        quantity: variant.quantity,
+        source: 'quantity_update',
+      });
       dispatch(removeFromCart({ id: variant.id, option: variant.option }));
       return;
     }
+
+    trackEvent('update_cart_quantity', {
+      item_id: variant.id,
+      item_name: variant.name,
+      previous_quantity: variant.quantity,
+      quantity: nextQuantity,
+      source: 'quantity_update',
+    });
 
     dispatch(
       updateQuantity({
@@ -165,7 +180,13 @@ const QuantityUpdate = ({ open, onClose, itemID }: QuantityUpdateProps) => {
               color="primary"
               fullWidth
               sx={{ textTransform: 'none' }}
-              onClick={() => setShowProductDetail(true)}
+              onClick={() => {
+                trackEvent('open_new_customization', {
+                  item_id: product?.id,
+                  item_name: product?.name,
+                });
+                setShowProductDetail(true);
+              }}
             >
               Add New Customization
             </Button>

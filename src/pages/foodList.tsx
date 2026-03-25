@@ -37,6 +37,7 @@ import FoodItemCard from '../components/listing/foodItemCard';
 import ProductDetailModal from '../components/productDetail';
 import QuantityUpdate from '../components/quanityUpdate/quantityUpdate';
 import VariantRemovalModal from '../components/variantRemovalModal';
+import { trackEvent } from '../utils/analytics';
 import { getLowestNowPrice } from '../utils/priceUtils';
 
 const FoodListPage: React.FC = () => {
@@ -145,9 +146,19 @@ const FoodListPage: React.FC = () => {
     const foodItem = items.find((el) => el.id === id);
     if (action === 'Add') {
       if (cartItem) {
+        trackEvent('view_cart_variants', {
+          item_id: cartItem.id,
+          item_name: cartItem.name,
+          variant_count: cartItems.filter((el) => el.id === id).length,
+        });
         setQuantityUpdateModal(true);
         setquantityUpdateItemID(cartItem.id);
       } else {
+        trackEvent('view_item', {
+          item_id: foodItem?.id,
+          item_name: foodItem?.name,
+          category: foodItem?.category,
+        });
         setProductDetailModal(true);
         setProduct(foodItem);
       }
@@ -156,11 +167,19 @@ const FoodListPage: React.FC = () => {
       const itemVariants = cartItems.filter((el) => el.id === id);
 
       if (itemVariants.length > 1) {
+        trackEvent('open_variant_removal', {
+          item_id: id,
+          variant_count: itemVariants.length,
+        });
         // Multiple variants exist - show modal to select which one to remove
         setVariantRemovalItemID(id);
         setVariantRemovalModal(true);
       } else if (itemVariants.length === 1 && option) {
         // Single variant - remove directly
+        trackEvent('remove_from_cart', {
+          item_id: id,
+          quantity: itemVariants[0].quantity,
+        });
         dispatch(removeFromCart({ id, option }));
       }
     }
@@ -168,6 +187,11 @@ const FoodListPage: React.FC = () => {
 
   const handleVariantRemovalSelect = (variant: any) => {
     if (variant.option) {
+      trackEvent('remove_from_cart', {
+        item_id: variant.id,
+        item_name: variant.name,
+        quantity: variant.quantity,
+      });
       dispatch(removeFromCart({ id: variant.id, option: variant.option }));
     }
     setVariantRemovalModal(false);

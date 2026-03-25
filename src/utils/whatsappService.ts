@@ -17,6 +17,11 @@ export interface OrderMessage {
   phoneNumber?: string;
   instructions?: string;
   deliveryMethod?: 'pickup' | 'delivery';
+  flatNumber?: string;
+  discountCode?: string;
+  discountName?: string;
+  discountAmount?: number;
+  tax?: number;
 }
 
 /**
@@ -32,6 +37,8 @@ export const formatOrderMessage = (order: OrderMessage): string => {
 
   let message = `🍕 *Order from Bob's Restaurant*
 
+*Customer:* ${order.customerName || 'Guest'}
+
 *Items:*
 ${itemsList}`;
 
@@ -44,7 +51,22 @@ ${itemsList}`;
     message += `
 
 *Delivery Address:*
-${order.habitat} - Tower ${order.tower}`;
+${order.habitat}`;
+  }
+
+  if (order.discountAmount && order.discountAmount > 0) {
+    message += `
+
+*Discount Applied:* ${order.discountName || 'Offer'}${
+      order.discountCode ? ` (${order.discountCode})` : ''
+    }
+*Discount Value:* -₹${order.discountAmount.toFixed(2)}`;
+  }
+
+  if (order.tax && order.tax > 0) {
+    message += `
+
+*Tax (shown only, not charged):* ~~₹${order.tax.toFixed(2)}~~`;
   }
 
   message += `

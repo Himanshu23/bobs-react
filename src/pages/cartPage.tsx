@@ -18,6 +18,7 @@ import { CartItem, ItemOptions } from '../types';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { trackEvent } from '../utils/analytics';
 
 interface RootState {
   cart: {
@@ -36,15 +37,36 @@ const CartPage: React.FC = () => {
     newQuantity: number
   ) => {
     if (newQuantity > 0) {
+      trackEvent('update_cart_quantity', {
+        item_id: id,
+        quantity: newQuantity,
+        source: 'cart_page',
+      });
       dispatch(updateQuantity({ id, option, quantity: newQuantity }));
     } else if (newQuantity === 0) {
       // Remove item when quantity reaches 0
+      trackEvent('remove_from_cart', {
+        item_id: id,
+        source: 'cart_page',
+      });
       dispatch(removeFromCart({ id, option }));
     }
   };
 
   const handleRemove = (id: string, option: ItemOptions) => {
+    trackEvent('remove_from_cart', {
+      item_id: id,
+      source: 'cart_page',
+    });
     dispatch(removeFromCart({ id, option }));
+  };
+
+  const handleProceedToCheckout = () => {
+    trackEvent('begin_checkout', {
+      item_count: cartItems.length,
+      value: totalPrice,
+    });
+    navigate('/checkout');
   };
 
   const totalPrice = cartItems.reduce(
@@ -271,7 +293,7 @@ const CartPage: React.FC = () => {
                 variant="contained"
                 fullWidth
                 size="large"
-                onClick={() => navigate('/checkout')}
+                onClick={handleProceedToCheckout}
                 sx={{
                   mb: 1,
                   background:

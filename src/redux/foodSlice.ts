@@ -14,7 +14,7 @@ const fetchFoodItems = createAsyncThunk('food/fetchFoodItems', async () => {
     (resolve) =>
       setTimeout(() => {
         resolve(foodItems.foodItems);
-      }, 1000) // Mocking API delay
+      }, 0) // Mocking API delay
   );
 });
 
