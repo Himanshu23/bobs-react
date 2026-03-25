@@ -5,7 +5,7 @@ declare global {
   }
 }
 
-const measurementId = process.env.REACT_APP_GA_MEASUREMENT_ID;
+const measurementId = process.env.REACT_APP_GA_MEASUREMENT_ID ?? 'G-2WN4J8KR01';
 
 let analyticsInitialized = false;
 
