@@ -1976,7 +1976,7 @@ export default {
       veg: false,
       rating: 4,
       image:
-        'https://bobsimages.blob.core.windows.net/dishesh/starter-chicken-peri-peri-fried.jpg',
+        'https://bobsimages.blob.core.windows.net/dishesh/starter-chicken-peri-peri-fried.jpeg',
       category: FoodCategory.Starters,
       priceOptions: {
         wasPrice: { size: { Full: 733.95, Half: 418.95 } },
@@ -2034,7 +2034,7 @@ export default {
       veg: false,
       rating: 4,
       image:
-        'https://bobsimages.blob.core.windows.net/dishesh/starter-chicken-peri-peri-tikka.jpg',
+        'https://bobsimages.blob.core.windows.net/dishesh/starter-chicken-peri-peri-tikka.jpeg',
       category: FoodCategory.Starters,
       priceOptions: {
         wasPrice: { size: { Full: 376.95 } },
