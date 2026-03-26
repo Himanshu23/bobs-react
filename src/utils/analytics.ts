@@ -1,9 +1,4 @@
-declare global {
-  interface Window {
-    dataLayer: unknown[];
-    gtag?: (...args: unknown[]) => void;
-  }
-}
+import ReactGA from 'react-ga4';
 
 const measurementId = 'G-2WN4J8KR01';
 let analyticsInitialized = false;
@@ -16,59 +11,18 @@ type EventParams = Record<string, string | number | boolean | undefined>;
 
 const isAnalyticsEnabled = () => Boolean(measurementId);
 
-const ensureGtagQueue = () => {
-  window.dataLayer = window.dataLayer || [];
-
-  if (!window.gtag) {
-    window.gtag = function gtag(...args: unknown[]) {
-      window.dataLayer.push(args);
-
-      if (isDebugMode) {
-        console.info('[analytics] gtag push', args);
-      }
-    };
-  }
-};
+const removeUndefinedParams = (params: EventParams) =>
+  Object.fromEntries(
+    Object.entries(params).filter(([, value]) => value !== undefined)
+  );
 
 export const initializeAnalytics = () => {
   if (!isAnalyticsEnabled() || analyticsInitialized) {
     return;
   }
 
-  ensureGtagQueue();
-
-  const existingScript = document.querySelector<HTMLScriptElement>(
-    `script[data-ga-measurement-id="${measurementId}"]`
-  );
-
-  if (!existingScript) {
-    const script = document.createElement('script');
-    script.async = true;
-    script.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
-    script.dataset.gaMeasurementId = measurementId;
-
-    if (isDebugMode) {
-      script.onload = () => {
-        console.info('[analytics] gtag script loaded', {
-          measurementId,
-          src: script.src,
-        });
-      };
-
-      script.onerror = () => {
-        console.error('[analytics] gtag script failed to load', {
-          measurementId,
-          src: script.src,
-        });
-      };
-    }
-
-    document.head.appendChild(script);
-  }
-
-  window.gtag?.('js', new Date());
-  window.gtag?.('config', measurementId, {
-    debug_mode: isDebugMode,
+  ReactGA.initialize(measurementId, {
+    gtagOptions: isDebugMode ? { debug_mode: true } : undefined,
   });
 
   analyticsInitialized = true;
@@ -83,13 +37,10 @@ export const trackPageView = (path: string, title?: string) => {
     return;
   }
 
-  ensureGtagQueue();
-
-  window.gtag?.('event', 'page_view', {
-    page_path: path,
-    page_title: title ?? document.title,
-    page_location: `${window.location.origin}${path}`,
-    debug_mode: isDebugMode,
+  ReactGA.send({
+    hitType: 'pageview',
+    page: path,
+    title: title ?? document.title,
   });
 
   if (isDebugMode) {
@@ -102,12 +53,7 @@ export const trackEvent = (eventName: string, params: EventParams = {}) => {
     return;
   }
 
-  ensureGtagQueue();
-
-  window.gtag?.('event', eventName, {
-    ...params,
-    debug_mode: isDebugMode,
-  });
+  ReactGA.event(eventName, removeUndefinedParams(params));
 
   if (isDebugMode) {
     console.info('[analytics] event', eventName, params);
