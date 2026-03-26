@@ -15,7 +15,7 @@ export const DISCOUNTS: Discount[] = [
     id: 'welcome-10',
     name: 'Online Discount',
     description: 'Get 10% off on your online order',
-    minValue: 0,
+    minValue: 200,
     percent: 10,
     fixedValue: 0,
     maxCap: 100,
