@@ -45,6 +45,36 @@ import { trackEvent } from '../utils/analytics';
 
 const WHATSAPP_PHONE = '9643310092'; // Replace with your number
 
+const formatScheduledTime = (time: string): string => {
+  const [hoursText, minutes] = time.split(':');
+  const hours = Number(hoursText);
+
+  if (Number.isNaN(hours) || !minutes) {
+    return time;
+  }
+
+  const period = hours >= 12 ? 'PM' : 'AM';
+  const normalizedHours = hours % 12 || 12;
+
+  return `${normalizedHours}:${minutes} ${period}`;
+};
+
+const createScheduleTimeOptions = (): string[] => {
+  const options: string[] = [];
+
+  for (let hour = 12; hour < 24; hour += 1) {
+    for (const minutes of ['00', '30']) {
+      options.push(`${String(hour).padStart(2, '0')}:${minutes}`);
+    }
+  }
+
+  options.push('00:00');
+
+  return options;
+};
+
+const SCHEDULE_TIME_OPTIONS = createScheduleTimeOptions();
+
 interface HabitatTowers {
   [key: string]: string[];
 }
@@ -67,10 +97,13 @@ const CheckoutPage: React.FC = () => {
   const [customAddress, setCustomAddress] = useState<string>('');
   const [customerName, setCustomerName] = useState<string>('');
   const [customerInstructions, setCustomerInstructions] = useState<string>('');
+  const [orderTiming, setOrderTiming] = useState<'asap' | 'scheduled'>('asap');
+  const [scheduledTime, setScheduledTime] = useState<string>('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [selectedDiscountId, setSelectedDiscountId] = useState<string>('');
   const [orderConfirmationOpen, setOrderConfirmationOpen] = useState(false);
   const [addressError, setAddressError] = useState<string>('');
+  const [scheduleError, setScheduleError] = useState<string>('');
 
   // Reset tower when habitat changes
   const handleHabitatChange = (event: SelectChangeEvent<string>) => {
@@ -111,6 +144,10 @@ const CheckoutPage: React.FC = () => {
   const discountLabel = appliedDiscountCode
     ? `Discount (${appliedDiscountCode})`
     : 'Discount';
+  const scheduledTimeLabel = scheduledTime
+    ? formatScheduledTime(scheduledTime)
+    : '';
+  const isScheduledTimeValid = SCHEDULE_TIME_OPTIONS.includes(scheduledTime);
 
   const scrollToAddressSection = () => {
     addressSectionRef.current?.scrollIntoView({
@@ -129,7 +166,13 @@ const CheckoutPage: React.FC = () => {
       return;
     }
 
+    if (orderTiming === 'scheduled' && !isScheduledTimeValid) {
+      setScheduleError('Choose a time between 12:00 PM and 12:00 AM.');
+      return;
+    }
+
     setAddressError('');
+    setScheduleError('');
 
     setIsProcessing(true);
 
@@ -168,6 +211,7 @@ const CheckoutPage: React.FC = () => {
         discountName: discountAmount > 0 ? selectedDiscount?.name : undefined,
         discountAmount: discountAmount > 0 ? discountAmount : undefined,
         tax,
+        scheduledTime: orderTiming === 'scheduled' ? scheduledTime : undefined,
       };
 
       // Format and send WhatsApp message
@@ -250,6 +294,7 @@ const CheckoutPage: React.FC = () => {
               flexGrow: 1,
               textAlign: 'center',
               fontWeight: 700,
+              color: '#fff',
             }}
           >
             Checkout
@@ -508,6 +553,82 @@ const CheckoutPage: React.FC = () => {
             <Card sx={{ mb: 3 }}>
               <CardContent>
                 <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 3 }}>
+                  ⏰ Order Timing
+                </Typography>
+                <FormControl component="fieldset" sx={{ mb: 2 }}>
+                  <RadioGroup
+                    row
+                    value={orderTiming}
+                    onChange={(e) => {
+                      const nextTiming = e.target.value as 'asap' | 'scheduled';
+                      setOrderTiming(nextTiming);
+                      if (nextTiming === 'asap') {
+                        setScheduleError('');
+                      }
+                    }}
+                  >
+                    <FormControlLabel
+                      value="asap"
+                      control={<Radio />}
+                      label="ASAP"
+                    />
+                    <FormControlLabel
+                      value="scheduled"
+                      control={<Radio />}
+                      label="Schedule for later"
+                    />
+                  </RadioGroup>
+                </FormControl>
+
+                {orderTiming === 'scheduled' ? (
+                  <>
+                    <FormControl fullWidth>
+                      <InputLabel>Choose Time</InputLabel>
+                      <Select
+                        value={scheduledTime}
+                        label="Choose Time"
+                        onChange={(e) => {
+                          setScheduledTime(e.target.value);
+                          setScheduleError('');
+                        }}
+                      >
+                        <MenuItem value="">Select time</MenuItem>
+                        {SCHEDULE_TIME_OPTIONS.map((timeOption) => (
+                          <MenuItem key={timeOption} value={timeOption}>
+                            {formatScheduledTime(timeOption)}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      sx={{ mt: 1, display: 'block' }}
+                    >
+                      Available scheduling window: 12:00 PM to 12:00 AM.
+                    </Typography>
+                    {scheduledTimeLabel ? (
+                      <Alert severity="info" sx={{ mt: 2 }}>
+                        Scheduled for {scheduledTimeLabel}
+                      </Alert>
+                    ) : null}
+                    {scheduleError ? (
+                      <Alert severity="error" sx={{ mt: 2 }}>
+                        {scheduleError}
+                      </Alert>
+                    ) : null}
+                  </>
+                ) : (
+                  <Typography variant="body2" color="text.secondary">
+                    Your order will be treated as immediate.
+                  </Typography>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card sx={{ mb: 3 }}>
+              <CardContent>
+                <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 3 }}>
                   📝 Special Instructions
                 </Typography>
                 <TextField
@@ -673,6 +794,22 @@ const CheckoutPage: React.FC = () => {
                     </Typography>
                     <Typography variant="body2" color="#4CAF50">
                       Free
+                    </Typography>
+                  </Box>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      mb: 0.75,
+                    }}
+                  >
+                    <Typography variant="body2" color="textSecondary">
+                      Order Timing
+                    </Typography>
+                    <Typography variant="body2">
+                      {orderTiming === 'scheduled' && scheduledTimeLabel
+                        ? scheduledTimeLabel
+                        : 'ASAP'}
                     </Typography>
                   </Box>
                   {discountAmount > 0 && (

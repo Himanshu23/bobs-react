@@ -22,7 +22,22 @@ export interface OrderMessage {
   discountName?: string;
   discountAmount?: number;
   tax?: number;
+  scheduledTime?: string;
 }
+
+const formatScheduledTime = (time: string): string => {
+  const [hoursText, minutes] = time.split(':');
+  const hours = Number(hoursText);
+
+  if (Number.isNaN(hours) || !minutes) {
+    return time;
+  }
+
+  const period = hours >= 12 ? 'PM' : 'AM';
+  const normalizedHours = hours % 12 || 12;
+
+  return `${normalizedHours}:${minutes} ${period}`;
+};
 
 /**
  * Format order message for WhatsApp
@@ -52,6 +67,12 @@ ${itemsList}`;
 
 *Delivery Address:*
 ${order.habitat}`;
+  }
+
+  if (order.scheduledTime) {
+    message += `
+
+*Scheduled For:* ${formatScheduledTime(order.scheduledTime)}`;
   }
 
   if (order.discountAmount && order.discountAmount > 0) {
