@@ -69,7 +69,7 @@ export default {
       category: FoodCategory.MainCourse,
       priceOptions: {
         wasPrice: { size: { Full: 754.95, Half: 481.95, Quarter: 313.95 } },
-        nowPrice: { size: { Full: 499, Half: 349, Quarter: 199 } },
+        nowPrice: { size: { Full: 549, Half: 399, Quarter: 249 } },
       },
     },
     {
@@ -166,7 +166,7 @@ export default {
       category: FoodCategory.Starters,
       priceOptions: {
         wasPrice: { size: { Full: 681.45, Half: 366.45 } },
-        nowPrice: { size: { Full: 349, Half: 199 } },
+        nowPrice: { size: { Full: 399, Half: 249 } },
       },
     },
     {
@@ -181,7 +181,7 @@ export default {
       category: FoodCategory.MainCourse,
       priceOptions: {
         wasPrice: { size: { Full: 754.95, Half: 481.95, Quarter: 313.95 } },
-        nowPrice: { size: { Full: 499, Half: 349, Quarter: 199 } },
+        nowPrice: { size: { Full: 549, Half: 399, Quarter: 249 } },
       },
     },
     {
@@ -308,7 +308,7 @@ export default {
       category: FoodCategory.Starters,
       priceOptions: {
         wasPrice: { size: { Full: 733.95, Half: 418.95 } },
-        nowPrice: { size: { Full: 399, Half: 249 } },
+        nowPrice: { size: { Full: 449, Half: 299 } },
       },
     },
     {
@@ -425,7 +425,7 @@ export default {
       category: FoodCategory.MainCourse,
       priceOptions: {
         wasPrice: { size: { Full: 838.95, Half: 576.45 } },
-        nowPrice: { size: { Full: 549, Half: 399 } },
+        nowPrice: { size: { Full: 649, Half: 449 } },
       },
     },
     {
@@ -468,7 +468,7 @@ export default {
       category: FoodCategory.MainCourse,
       priceOptions: {
         wasPrice: { size: { Full: 838.95, Half: 576.45 } },
-        nowPrice: { size: { Full: 549, Half: 399 } },
+        nowPrice: { size: { Full: 649, Half: 449 } },
       },
     },
     {
@@ -525,7 +525,7 @@ export default {
       category: FoodCategory.MainCourse,
       priceOptions: {
         wasPrice: { size: { Full: 765.45, Half: 492.45, Quarter: 313.95 } },
-        nowPrice: { size: { Full: 499, Half: 349, Quarter: 199 } },
+        nowPrice: { size: { Full: 549, Half: 399, Quarter: 249 } },
       },
     },
     {
@@ -597,7 +597,7 @@ export default {
       category: FoodCategory.MainCourse,
       priceOptions: {
         wasPrice: { size: { Full: 880.95, Half: 586.95 } },
-        nowPrice: { size: { Full: 549, Half: 399 } },
+        nowPrice: { size: { Full: 649, Half: 449 } },
       },
     },
     {
@@ -639,7 +639,7 @@ export default {
       category: FoodCategory.MainCourse,
       priceOptions: {
         wasPrice: { size: { Full: 838.95, Half: 576.45 } },
-        nowPrice: { size: { Full: 549, Half: 399 } },
+        nowPrice: { size: { Full: 649, Half: 449 } },
       },
     },
     {
@@ -849,7 +849,7 @@ export default {
       category: FoodCategory.Starters,
       priceOptions: {
         wasPrice: { size: { Full: 271.95 } },
-        nowPrice: { size: { Full: 149 } },
+        nowPrice: { size: { Full: 169 } },
       },
     },
     {
@@ -864,7 +864,7 @@ export default {
       category: FoodCategory.Starters,
       priceOptions: {
         wasPrice: { size: { Full: 397.95 } },
-        nowPrice: { size: { Full: 199 } },
+        nowPrice: { size: { Full: 219 } },
       },
     },
     {
@@ -908,7 +908,7 @@ export default {
       category: FoodCategory.Starters,
       priceOptions: {
         wasPrice: { size: { Full: 418.95 } },
-        nowPrice: { size: { Full: 219 } },
+        nowPrice: { size: { Full: 249 } },
       },
     },
     {
@@ -1023,7 +1023,7 @@ export default {
       category: FoodCategory.MainCourse,
       priceOptions: {
         wasPrice: { size: { Full: 754.95, Half: 481.95, Quarter: 313.95 } },
-        nowPrice: { size: { Full: 499, Half: 349, Quarter: 199 } },
+        nowPrice: { size: { Full: 549, Half: 399, Quarter: 249 } },
       },
     },
     {
@@ -1068,7 +1068,7 @@ export default {
       category: FoodCategory.MainCourse,
       priceOptions: {
         wasPrice: { size: { Full: 754.95, Half: 481.95, Quarter: 313.95 } },
-        nowPrice: { size: { Full: 499, Half: 349, Quarter: 199 } },
+        nowPrice: { size: { Full: 549, Half: 399, Quarter: 249 } },
       },
     },
     {
@@ -1224,7 +1224,7 @@ export default {
       category: FoodCategory.Starters,
       priceOptions: {
         wasPrice: { size: { Full: 397.95 } },
-        nowPrice: { size: { Full: 199 } },
+        nowPrice: { size: { Full: 219 } },
       },
     },
     {
@@ -1376,7 +1376,7 @@ export default {
       category: FoodCategory.MainCourse,
       priceOptions: {
         wasPrice: { size: { Full: 754.95, Half: 481.95, Quarter: 313.95 } },
-        nowPrice: { size: { Full: 499, Half: 349, Quarter: 199 } },
+        nowPrice: { size: { Full: 549, Half: 399, Quarter: 249 } },
       },
     },
     {
@@ -1420,7 +1420,7 @@ export default {
       category: FoodCategory.Starters,
       priceOptions: {
         wasPrice: { size: { Full: 313.95 } },
-        nowPrice: { size: { Full: 259, Half: 159 } },
+        nowPrice: { size: { Full: 269, Half: 159 } },
       },
     },
     {
@@ -1435,7 +1435,7 @@ export default {
       category: FoodCategory.Starters,
       priceOptions: {
         wasPrice: { size: { Full: 366.45 } },
-        nowPrice: { size: { Full: 279, Half: 179 } },
+        nowPrice: { size: { Full: 299, Half: 179 } },
       },
     },
     {
@@ -1506,8 +1506,8 @@ export default {
         'https://bobsimages.blob.core.windows.net/dishesh/chinese-rice-egg-chilli-garlic.jpeg',
       category: FoodCategory.ChineseRice,
       priceOptions: {
-        wasPrice: { size: { Full: 334.95, Quarter: 177.45 } },
-        nowPrice: { size: { ull: 169, Half: 119 } },
+        wasPrice: { size: { Full: 334.95, Half: 177.45 } },
+        nowPrice: { size: { Full: 169, Half: 119 } },
       },
     },
     {
@@ -1596,8 +1596,8 @@ export default {
         'https://bobsimages.blob.core.windows.net/dishesh/chinese-noodels-chilli-garlic.jpeg',
       category: FoodCategory.Noodles,
       priceOptions: {
-        wasPrice: { size: { Full: 334.95, Quarter: 187.95 } },
-        nowPrice: { size: { Full: 169, Quarter: 119 } },
+        wasPrice: { size: { Full: 334.95, Half: 187.95 } },
+        nowPrice: { size: { Full: 169, Half: 119 } },
       },
     },
     {
@@ -1611,8 +1611,8 @@ export default {
         'https://bobsimages.blob.core.windows.net/dishesh/chinese-noodels-schezwan-egg.jpeg',
       category: FoodCategory.Noodles,
       priceOptions: {
-        wasPrice: { size: { Full: 334.95, Quarter: 187.95 } },
-        nowPrice: { size: { Full: 169, Quarter: 119 } },
+        wasPrice: { size: { Full: 334.95, Half: 187.95 } },
+        nowPrice: { size: { Full: 169, Half: 119 } },
       },
     },
     {
@@ -1992,7 +1992,7 @@ export default {
       category: FoodCategory.Starters,
       priceOptions: {
         wasPrice: { size: { Full: 733.95, Half: 418.95 } },
-        nowPrice: { size: { Full: 499, Half: 249 } },
+        nowPrice: { size: { Full: 549, Half: 299 } },
       },
     },
     {
