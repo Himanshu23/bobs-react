@@ -1238,7 +1238,7 @@ export default {
       category: FoodCategory.Breads,
       priceOptions: {
         wasPrice: { size: { Full: 26.25 } },
-        nowPrice: { size: { Full: 10 } },
+        nowPrice: { size: { Full: 12 } },
       },
     },
     {
