@@ -1186,7 +1186,7 @@ export default {
     },
     {
       id: '83',
-      name: 'Tandoori Afghani Chaap',
+      name: 'Afghani Chaap',
       description: '',
       veg: true,
       rating: 4,
@@ -2283,7 +2283,7 @@ export default {
     },
     {
       id: '158',
-      name: 'Tandoori Malai Chaap',
+      name: 'Malai Chaap',
       description: '',
       veg: true,
       rating: 4,
