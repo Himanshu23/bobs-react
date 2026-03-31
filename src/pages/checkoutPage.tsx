@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -40,6 +40,10 @@ import {
   openWhatsApp,
   OrderMessage,
 } from '../utils/whatsappService';
+import {
+  getCheckoutFormFromLocalStorage,
+  saveCheckoutFormToLocalStorage,
+} from '../utils/checkoutStorage';
 import { DISCOUNTS, calculateDiscountAmount } from '../data/discounts';
 import { trackEvent } from '../utils/analytics';
 
@@ -84,26 +88,78 @@ const HABITAT_TOWERS: HabitatTowers = {
   'Habitat New': ['D1', 'D2', 'D3', 'D4', 'D5', 'D6', 'D7', 'E'],
 };
 
+const getInitialCheckoutForm = () =>
+  getCheckoutFormFromLocalStorage() ?? {
+    deliveryMethod: 'delivery' as const,
+    habitat: '',
+    tower: '',
+    flatNumber: '',
+    customAddress: '',
+    customerName: '',
+    customerInstructions: '',
+    orderTiming: 'asap' as const,
+    scheduledTime: '',
+  };
+
 const CheckoutPage: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const addressSectionRef = useRef<HTMLDivElement | null>(null);
+  const initialCheckoutForm = getInitialCheckoutForm();
 
-  const [deliveryMethod, setDeliveryMethod] = useState<string>('delivery');
-  const [habitat, setHabitat] = useState<string>('');
-  const [tower, setTower] = useState<string>('');
-  const [flatNumber, setFlatNumber] = useState<string>('');
-  const [customAddress, setCustomAddress] = useState<string>('');
-  const [customerName, setCustomerName] = useState<string>('');
-  const [customerInstructions, setCustomerInstructions] = useState<string>('');
-  const [orderTiming, setOrderTiming] = useState<'asap' | 'scheduled'>('asap');
-  const [scheduledTime, setScheduledTime] = useState<string>('');
+  const [deliveryMethod, setDeliveryMethod] = useState<'delivery' | 'pickup'>(
+    initialCheckoutForm.deliveryMethod
+  );
+  const [habitat, setHabitat] = useState<string>(initialCheckoutForm.habitat);
+  const [tower, setTower] = useState<string>(initialCheckoutForm.tower);
+  const [flatNumber, setFlatNumber] = useState<string>(
+    initialCheckoutForm.flatNumber
+  );
+  const [customAddress, setCustomAddress] = useState<string>(
+    initialCheckoutForm.customAddress
+  );
+  const [customerName, setCustomerName] = useState<string>(
+    initialCheckoutForm.customerName
+  );
+  const [customerInstructions, setCustomerInstructions] = useState<string>(
+    initialCheckoutForm.customerInstructions
+  );
+  const [orderTiming, setOrderTiming] = useState<'asap' | 'scheduled'>(
+    initialCheckoutForm.orderTiming
+  );
+  const [scheduledTime, setScheduledTime] = useState<string>(
+    initialCheckoutForm.scheduledTime
+  );
   const [isProcessing, setIsProcessing] = useState(false);
   const [selectedDiscountId, setSelectedDiscountId] = useState<string>('');
   const [orderConfirmationOpen, setOrderConfirmationOpen] = useState(false);
   const [addressError, setAddressError] = useState<string>('');
   const [scheduleError, setScheduleError] = useState<string>('');
+
+  useEffect(() => {
+    saveCheckoutFormToLocalStorage({
+      deliveryMethod,
+      habitat,
+      tower,
+      flatNumber,
+      customAddress,
+      customerName,
+      customerInstructions,
+      orderTiming,
+      scheduledTime,
+    });
+  }, [
+    customAddress,
+    customerInstructions,
+    customerName,
+    deliveryMethod,
+    flatNumber,
+    habitat,
+    orderTiming,
+    scheduledTime,
+    tower,
+  ]);
 
   // Reset tower when habitat changes
   const handleHabitatChange = (event: SelectChangeEvent<string>) => {
@@ -286,7 +342,7 @@ const CheckoutPage: React.FC = () => {
               mr: 2,
             }}
           >
-            Cart
+            Review Cart
           </Button>
           <Typography
             variant="h6"
@@ -314,12 +370,20 @@ const CheckoutPage: React.FC = () => {
                   � Delivery Method
                 </Typography>
 
+                <Alert severity="info" sx={{ mb: 3 }}>
+                  Your address details and special instructions are saved on
+                  this device, so you can review the cart and come back without
+                  re-entering them.
+                </Alert>
+
                 {/* Pickup vs Delivery Radio Buttons */}
                 <FormControl component="fieldset" sx={{ mb: 3 }}>
                   <RadioGroup
                     row
                     value={deliveryMethod}
-                    onChange={(e) => setDeliveryMethod(e.target.value)}
+                    onChange={(e) =>
+                      setDeliveryMethod(e.target.value as 'delivery' | 'pickup')
+                    }
                   >
                     <FormControlLabel
                       value="delivery"
@@ -646,7 +710,8 @@ const CheckoutPage: React.FC = () => {
                   color="textSecondary"
                   sx={{ mt: 1, display: 'block' }}
                 >
-                  💡 Add any special instructions or dietary preferences here
+                  💡 Add any special instructions or dietary preferences here.
+                  Saved locally on this device.
                 </Typography>
               </CardContent>
             </Card>
@@ -900,9 +965,10 @@ const CheckoutPage: React.FC = () => {
                 <Button
                   variant="outlined"
                   fullWidth
+                  startIcon={<ArrowBackIcon />}
                   onClick={() => navigate('/cart')}
                 >
-                  Back to Cart
+                  Review Cart and Edit Items
                 </Button>
 
                 {deliveryMethod === 'delivery' && !hasDeliveryAddress ? (
