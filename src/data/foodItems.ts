@@ -1238,7 +1238,7 @@ export default {
       category: FoodCategory.Breads,
       priceOptions: {
         wasPrice: { size: { Full: 26.25 } },
-        nowPrice: { size: { Full: 10 } },
+        nowPrice: { size: { Full: 12 } },
       },
     },
     {
@@ -2279,6 +2279,20 @@ export default {
       priceOptions: {
         wasPrice: { size: { Full: 26.25 } },
         nowPrice: { size: { Full: 15 } },
+      },
+    },
+    {
+      id: '158',
+      name: 'Tandoori Malai Chaap',
+      description: '',
+      veg: true,
+      rating: 4,
+      image:
+        'https://bobsimages.blob.core.windows.net/dishesh/starter-chaap-tandoori.jpeg',
+      category: FoodCategory.Starters,
+      priceOptions: {
+        wasPrice: { size: { Full: 313.95, Half: 208.95 } },
+        nowPrice: { size: { Full: 179, Half: 119 } },
       },
     },
   ] as FoodItem[],
