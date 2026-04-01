@@ -40,6 +40,107 @@ import VariantRemovalModal from '../components/variantRemovalModal';
 import { trackEvent } from '../utils/analytics';
 import { getLowestNowPrice } from '../utils/priceUtils';
 
+const normalizeSearchText = (value: string) =>
+  value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+const tokenizeSearchText = (value: string) =>
+  normalizeSearchText(value).split(' ').filter(Boolean);
+
+const areTokensInOrder = (titleTokens: string[], queryTokens: string[]) => {
+  let searchIndex = 0;
+
+  for (const token of titleTokens) {
+    if (token === queryTokens[searchIndex]) {
+      searchIndex += 1;
+    }
+
+    if (searchIndex === queryTokens.length) {
+      return true;
+    }
+  }
+
+  return false;
+};
+
+const getTitleMatchRank = (title: string, query: string) => {
+  const normalizedTitle = normalizeSearchText(title);
+  const normalizedQuery = normalizeSearchText(query);
+  const titleTokens = tokenizeSearchText(title);
+  const queryTokens = tokenizeSearchText(query);
+
+  if (!normalizedQuery) {
+    return 0;
+  }
+
+  if (normalizedTitle === normalizedQuery) {
+    return 100;
+  }
+
+  if (normalizedTitle.startsWith(normalizedQuery)) {
+    return 95;
+  }
+
+  if (normalizedTitle.includes(normalizedQuery)) {
+    return 90;
+  }
+
+  if (
+    queryTokens.length > 1 &&
+    queryTokens.every((token) => titleTokens.includes(token))
+  ) {
+    if (areTokensInOrder(titleTokens, queryTokens)) {
+      return 85;
+    }
+
+    return 80;
+  }
+
+  const exactTokenMatches = queryTokens.filter((token) =>
+    titleTokens.includes(token)
+  ).length;
+
+  if (exactTokenMatches > 0) {
+    return 60 + exactTokenMatches;
+  }
+
+  const prefixTokenMatches = queryTokens.filter((queryToken) =>
+    titleTokens.some((titleToken) => titleToken.startsWith(queryToken))
+  ).length;
+
+  if (prefixTokenMatches > 0) {
+    return 40 + prefixTokenMatches;
+  }
+
+  return 0;
+};
+
+const compareSearchResults = (
+  left: FoodItem,
+  right: FoodItem,
+  query: string,
+  scoreById: Map<string, number>
+) => {
+  const leftRank = getTitleMatchRank(left.name, query);
+  const rightRank = getTitleMatchRank(right.name, query);
+
+  if (leftRank !== rightRank) {
+    return rightRank - leftRank;
+  }
+
+  const leftScore = scoreById.get(left.id) ?? Number.POSITIVE_INFINITY;
+  const rightScore = scoreById.get(right.id) ?? Number.POSITIVE_INFINITY;
+
+  if (leftScore !== rightScore) {
+    return leftScore - rightScore;
+  }
+
+  return left.name.localeCompare(right.name);
+};
+
 const FoodListPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
@@ -97,6 +198,7 @@ const FoodListPage: React.FC = () => {
 
   // Filter items based on search query, selected category, and veg filter
   const filteredItems = useMemo(() => {
+    const trimmedSearchQuery = searchQuery.trim();
     let results = items;
 
     // Apply veg filter first
@@ -105,9 +207,29 @@ const FoodListPage: React.FC = () => {
     }
 
     // Apply search filter
-    if (searchQuery.trim() !== '') {
-      const searchResults = fuse.search(searchQuery);
-      results = searchResults.map((result) => result.item);
+    if (trimmedSearchQuery !== '') {
+      const searchResults = fuse
+        .search(trimmedSearchQuery)
+        .filter((result) => !vegOnly || result.item.veg);
+      const scoreById = new Map(
+        searchResults.map((result) => [result.item.id, result.score ?? 1])
+      );
+      const titlePriorityResults = results.filter(
+        (item) => getTitleMatchRank(item.name, trimmedSearchQuery) > 0
+      );
+      const dedupedResults = new Map<string, FoodItem>();
+
+      titlePriorityResults.forEach((item) => {
+        dedupedResults.set(item.id, item);
+      });
+
+      searchResults.forEach((result) => {
+        dedupedResults.set(result.item.id, result.item);
+      });
+
+      results = Array.from(dedupedResults.values()).sort((left, right) =>
+        compareSearchResults(left, right, trimmedSearchQuery, scoreById)
+      );
     } else {
       // If no search, filter by selected category
       results = results.filter((item) => item.category === selectedCategory);
@@ -118,10 +240,22 @@ const FoodListPage: React.FC = () => {
 
   const vegFilteredItems = filteredItems
     .filter((item) => item.veg)
-    .sort((a, b) => (getLowestNowPrice(a) ?? 0) - (getLowestNowPrice(b) ?? 0));
+    .sort((a, b) => {
+      if (searchQuery.trim() !== '') {
+        return 0;
+      }
+
+      return (getLowestNowPrice(a) ?? 0) - (getLowestNowPrice(b) ?? 0);
+    });
   const nonVegFilteredItems = filteredItems
     .filter((item) => !item.veg)
-    .sort((a, b) => (getLowestNowPrice(a) ?? 0) - (getLowestNowPrice(b) ?? 0));
+    .sort((a, b) => {
+      if (searchQuery.trim() !== '') {
+        return 0;
+      }
+
+      return (getLowestNowPrice(a) ?? 0) - (getLowestNowPrice(b) ?? 0);
+    });
 
   useEffect(() => {
     if (scrollToItemId && itemsContainerRef.current) {
@@ -409,7 +543,11 @@ const FoodListPage: React.FC = () => {
                           {food.category}
                         </Typography>
                       )}
-                      <FoodItemCard item={food} handleCart={handleCart} />
+                      <FoodItemCard
+                        item={food}
+                        handleCart={handleCart}
+                        searchQuery={searchQuery}
+                      />
                     </Box>
                   ))
                 ) : (
@@ -501,7 +639,11 @@ const FoodListPage: React.FC = () => {
                           {food.category}
                         </Typography>
                       )}
-                      <FoodItemCard item={food} handleCart={handleCart} />
+                      <FoodItemCard
+                        item={food}
+                        handleCart={handleCart}
+                        searchQuery={searchQuery}
+                      />
                     </Box>
                   ))
                 ) : (

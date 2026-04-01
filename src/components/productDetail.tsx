@@ -378,6 +378,44 @@ const ProductDetailModal = ({
               width: '100%',
             }}
           >
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1,
+                px: 0.75,
+                py: 0.25,
+                border: '1px solid',
+                borderColor: 'divider',
+                borderRadius: 2,
+                flexShrink: 0,
+              }}
+            >
+              <Button
+                size="small"
+                onClick={() =>
+                  setQuantity((current) => Math.max(1, current - 1))
+                }
+                sx={{ minWidth: 32 }}
+                aria-label="Decrease quantity"
+              >
+                -
+              </Button>
+              <Typography
+                variant="body1"
+                sx={{ minWidth: 20, textAlign: 'center', fontWeight: 600 }}
+              >
+                {quantity}
+              </Typography>
+              <Button
+                size="small"
+                onClick={() => setQuantity((current) => current + 1)}
+                sx={{ minWidth: 32 }}
+                aria-label="Increase quantity"
+              >
+                +
+              </Button>
+            </Box>
             <Button
               variant="contained"
               color="primary"
@@ -389,7 +427,7 @@ const ProductDetailModal = ({
                 (product.priceOptions.nowPrice.base && !selectedBase)
               }
             >
-              Add Item • ₹{totalPrice}
+              Add {quantity > 1 ? `${quantity} Items` : 'Item'} • ₹{totalPrice}
             </Button>
           </Box>
         </Paper>
