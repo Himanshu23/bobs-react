@@ -1,4 +1,3 @@
-import './App.css';
 import {
   BrowserRouter as Router,
   Navigate,
@@ -52,7 +51,14 @@ function AppLayout() {
         <Route path="/bobs/menu" element={<FoodList />} />
         <Route path="/cart" element={<CartPage />} />
         <Route path="/checkout" element={<CheckoutPage />} />
-        <Route path="/bobs/admin/login" element={<LoginPage onLoginSuccess={() => window.location.href = '/bobs/admin'} />} />
+        <Route
+          path="/bobs/admin/login"
+          element={
+            <LoginPage
+              onLoginSuccess={() => (window.location.href = '/bobs/admin')}
+            />
+          }
+        />
         <Route
           path="/bobs/admin"
           element={<ProtectedRoute element={<AdminPage />} />}

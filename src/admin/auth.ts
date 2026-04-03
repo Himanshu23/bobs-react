@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { ENDPOINTS } from '../config/api';
 
 const AUTH_TOKEN_KEY = 'admin_auth_token';

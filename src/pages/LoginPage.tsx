@@ -44,11 +44,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
         }}
       >
         <Paper elevation={3} sx={{ p: 4, width: '100%' }}>
-          <Stack
-            spacing={3}
-            alignItems="center"
-            sx={{ mb: 3 }}
-          >
+          <Stack spacing={3} alignItems="center" sx={{ mb: 3 }}>
             <Box
               sx={{
                 display: 'flex',
@@ -101,9 +97,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                 variant="contained"
                 fullWidth
                 size="large"
-                disabled={
-                  loginMutation.isPending || !username || !password
-                }
+                disabled={loginMutation.isPending || !username || !password}
               >
                 {loginMutation.isPending ? 'Logging in...' : 'Login'}
               </Button>
