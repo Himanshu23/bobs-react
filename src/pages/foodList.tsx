@@ -454,209 +454,60 @@ const FoodListPage: React.FC = () => {
           </Tabs>
         </Box>
 
-        {/* Veg and Non-Veg Accordions */}
+        {/* Results Display */}
         <Box sx={{ mt: 2, mb: totalItems > 0 ? 15 : 2 }}>
-          {/* Vegetarian Accordion */}
-          <Accordion
-            slotProps={{ heading: { component: 'h4' } }}
-            defaultExpanded
-            expanded={vegAccordionExpanded}
-            onChange={() => setVegAccordionExpanded(!vegAccordionExpanded)}
-            sx={{
-              width: '100%',
-              backgroundColor: 'transparent',
-              boxShadow: 'none',
-              border: 'none',
-              transition: 'all 0.3s ease-in-out',
-              '&:before': {
-                display: 'none',
-              },
-            }}
-          >
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              sx={{
-                padding: '0px 16px',
-                minHeight: '20px !important',
-                height: '20px',
-                alignItems: 'center',
-                transition: 'all 0.3s ease-in-out',
-                '&.Mui-expanded': {
-                  minHeight: '20px !important',
-                },
-              }}
-            >
-              <Typography variant="subtitle1" sx={{ lineHeight: 1 }}>
-                Vegetarian ({vegFilteredItems.length})
-              </Typography>
-            </AccordionSummary>
-            <AccordionDetails
-              sx={{
-                backgroundColor: 'transparent',
-                padding: 1,
-                transition: 'all 0.3s ease-in-out',
-              }}
-            >
-              <Box
-                ref={itemsContainerRef}
-                sx={{
-                  display: 'flex',
-                  flexWrap: 'wrap',
-                  gap: 2,
-                  justifyContent: 'center',
-                  padding: 1,
-                  width: '100%',
-                }}
-              >
-                {vegFilteredItems.length > 0 ? (
-                  vegFilteredItems.map((food: FoodItem) => (
+          {searchQuery.trim() !== '' ? (
+            // Search Results - Show all items together, ignore veg/non-veg
+            <>
+              {filteredItems.length > 0 ? (
+                <Box
+                  ref={itemsContainerRef}
+                  sx={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    gap: 2,
+                    justifyContent: 'center',
+                    padding: 1,
+                    width: '100%',
+                  }}
+                >
+                  {filteredItems.map((food: FoodItem) => (
                     <Box
                       key={`list_${food.id}`}
                       data-item-id={food.id}
                       sx={{ position: 'relative' }}
                     >
-                      {searchQuery && (
-                        <Typography
-                          variant="caption"
-                          sx={{
-                            position: 'absolute',
-                            top: 8,
-                            right: 8,
-                            backgroundColor: '#e3f2fd',
-                            color: '#1976d2',
-                            px: 1,
-                            py: 0.5,
-                            borderRadius: '4px',
-                            fontSize: '10px',
-                            fontWeight: 600,
-                            zIndex: 10,
-                          }}
-                        >
-                          {food.category}
-                        </Typography>
-                      )}
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          position: 'absolute',
+                          top: 8,
+                          right: 8,
+                          backgroundColor: '#e3f2fd',
+                          color: '#1976d2',
+                          px: 1,
+                          py: 0.5,
+                          borderRadius: '4px',
+                          fontSize: '10px',
+                          fontWeight: 600,
+                          zIndex: 10,
+                        }}
+                      >
+                        {food.veg ? '🥬 Veg' : '🍗 Non-Veg'}
+                      </Typography>
                       <FoodItemCard
                         item={food}
                         handleCart={handleCart}
                         searchQuery={searchQuery}
                       />
                     </Box>
-                  ))
-                ) : (
-                  <Typography color="textSecondary">
-                    No vegetarian items found
+                  ))}
+                </Box>
+              ) : (
+                <Box sx={{ textAlign: 'center', py: 6 }}>
+                  <Typography variant="h6" color="textSecondary" sx={{ mb: 1 }}>
+                    No items found matching your search
                   </Typography>
-                )}
-              </Box>
-            </AccordionDetails>
-          </Accordion>
-          <Divider sx={{ my: 1 }} />
-          {/* Non-Vegetarian Accordion */}
-          <Accordion
-            slotProps={{ heading: { component: 'h4' } }}
-            defaultExpanded
-            expanded={nonVegAccordionExpanded}
-            onChange={() =>
-              setNonVegAccordionExpanded(!nonVegAccordionExpanded)
-            }
-            sx={{
-              width: '100%',
-              backgroundColor: 'transparent',
-              boxShadow: 'none',
-              border: 'none',
-              transition: 'all 0.3s ease-in-out',
-              '&:before': {
-                display: 'none',
-              },
-            }}
-          >
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              sx={{
-                padding: '0px 16px',
-                minHeight: '20px !important',
-                height: '20px',
-                alignItems: 'center',
-                transition: 'all 0.3s ease-in-out',
-                '&.Mui-expanded': {
-                  minHeight: '20px !important',
-                },
-              }}
-            >
-              <Typography variant="subtitle1" sx={{ lineHeight: 1 }}>
-                Non-Vegetarian ({nonVegFilteredItems.length})
-              </Typography>
-            </AccordionSummary>
-            <AccordionDetails
-              sx={{
-                backgroundColor: 'transparent',
-                padding: 1,
-                transition: 'all 0.3s ease-in-out',
-              }}
-            >
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexWrap: 'wrap',
-                  gap: 2,
-                  justifyContent: 'center',
-                  padding: 1,
-                  width: '100%',
-                }}
-              >
-                {nonVegFilteredItems.length > 0 ? (
-                  nonVegFilteredItems.map((food: FoodItem) => (
-                    <Box
-                      key={`list_${food.id}`}
-                      data-item-id={food.id}
-                      sx={{ position: 'relative' }}
-                    >
-                      {searchQuery && (
-                        <Typography
-                          variant="caption"
-                          sx={{
-                            position: 'absolute',
-                            top: 8,
-                            right: 8,
-                            backgroundColor: '#e3f2fd',
-                            color: '#1976d2',
-                            px: 1,
-                            py: 0.5,
-                            borderRadius: '4px',
-                            fontSize: '10px',
-                            fontWeight: 600,
-                            zIndex: 10,
-                          }}
-                        >
-                          {food.category}
-                        </Typography>
-                      )}
-                      <FoodItemCard
-                        item={food}
-                        handleCart={handleCart}
-                        searchQuery={searchQuery}
-                      />
-                    </Box>
-                  ))
-                ) : (
-                  <Typography color="textSecondary">
-                    No non-vegetarian items found
-                  </Typography>
-                )}
-              </Box>
-            </AccordionDetails>
-          </Accordion>
-
-          {/* Empty state message */}
-          {vegFilteredItems.length === 0 &&
-            nonVegFilteredItems.length === 0 && (
-              <Box sx={{ textAlign: 'center', py: 6 }}>
-                <Typography variant="h6" color="textSecondary" sx={{ mb: 1 }}>
-                  {searchQuery
-                    ? 'No items found matching your search'
-                    : 'No items in this category'}
-                </Typography>
-                {searchQuery && (
                   <Button
                     variant="text"
                     onClick={() => setSearchQuery('')}
@@ -664,9 +515,178 @@ const FoodListPage: React.FC = () => {
                   >
                     Clear Search
                   </Button>
+                </Box>
+              )}
+            </>
+          ) : (
+            // Category View - Show veg/non-veg accordions
+            <>
+              {/* Vegetarian Accordion */}
+              <Accordion
+                slotProps={{ heading: { component: 'h4' } }}
+                defaultExpanded
+                expanded={vegAccordionExpanded}
+                onChange={() => setVegAccordionExpanded(!vegAccordionExpanded)}
+                sx={{
+                  width: '100%',
+                  backgroundColor: 'transparent',
+                  boxShadow: 'none',
+                  border: 'none',
+                  transition: 'all 0.3s ease-in-out',
+                  '&:before': {
+                    display: 'none',
+                  },
+                }}
+              >
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  sx={{
+                    padding: '0px 16px',
+                    minHeight: '20px !important',
+                    height: '20px',
+                    alignItems: 'center',
+                    transition: 'all 0.3s ease-in-out',
+                    '&.Mui-expanded': {
+                      minHeight: '20px !important',
+                    },
+                  }}
+                >
+                  <Typography variant="subtitle1" sx={{ lineHeight: 1 }}>
+                    Vegetarian ({vegFilteredItems.length})
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails
+                  sx={{
+                    backgroundColor: 'transparent',
+                    padding: 1,
+                    transition: 'all 0.3s ease-in-out',
+                  }}
+                >
+                  <Box
+                    ref={itemsContainerRef}
+                    sx={{
+                      display: 'flex',
+                      flexWrap: 'wrap',
+                      gap: 2,
+                      justifyContent: 'center',
+                      padding: 1,
+                      width: '100%',
+                    }}
+                  >
+                    {vegFilteredItems.length > 0 ? (
+                      vegFilteredItems.map((food: FoodItem) => (
+                        <Box
+                          key={`list_${food.id}`}
+                          data-item-id={food.id}
+                          sx={{ position: 'relative' }}
+                        >
+                          <FoodItemCard
+                            item={food}
+                            handleCart={handleCart}
+                            searchQuery={searchQuery}
+                          />
+                        </Box>
+                      ))
+                    ) : (
+                      <Typography color="textSecondary">
+                        No vegetarian items found
+                      </Typography>
+                    )}
+                  </Box>
+                </AccordionDetails>
+              </Accordion>
+              <Divider sx={{ my: 1 }} />
+              {/* Non-Vegetarian Accordion */}
+              <Accordion
+                slotProps={{ heading: { component: 'h4' } }}
+                defaultExpanded
+                expanded={nonVegAccordionExpanded}
+                onChange={() =>
+                  setNonVegAccordionExpanded(!nonVegAccordionExpanded)
+                }
+                sx={{
+                  width: '100%',
+                  backgroundColor: 'transparent',
+                  boxShadow: 'none',
+                  border: 'none',
+                  transition: 'all 0.3s ease-in-out',
+                  '&:before': {
+                    display: 'none',
+                  },
+                }}
+              >
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  sx={{
+                    padding: '0px 16px',
+                    minHeight: '20px !important',
+                    height: '20px',
+                    alignItems: 'center',
+                    transition: 'all 0.3s ease-in-out',
+                    '&.Mui-expanded': {
+                      minHeight: '20px !important',
+                    },
+                  }}
+                >
+                  <Typography variant="subtitle1" sx={{ lineHeight: 1 }}>
+                    Non-Vegetarian ({nonVegFilteredItems.length})
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails
+                  sx={{
+                    backgroundColor: 'transparent',
+                    padding: 1,
+                    transition: 'all 0.3s ease-in-out',
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexWrap: 'wrap',
+                      gap: 2,
+                      justifyContent: 'center',
+                      padding: 1,
+                      width: '100%',
+                    }}
+                  >
+                    {nonVegFilteredItems.length > 0 ? (
+                      nonVegFilteredItems.map((food: FoodItem) => (
+                        <Box
+                          key={`list_${food.id}`}
+                          data-item-id={food.id}
+                          sx={{ position: 'relative' }}
+                        >
+                          <FoodItemCard
+                            item={food}
+                            handleCart={handleCart}
+                            searchQuery={searchQuery}
+                          />
+                        </Box>
+                      ))
+                    ) : (
+                      <Typography color="textSecondary">
+                        No non-vegetarian items found
+                      </Typography>
+                    )}
+                  </Box>
+                </AccordionDetails>
+              </Accordion>
+
+              {/* Empty state message for category view */}
+              {vegFilteredItems.length === 0 &&
+                nonVegFilteredItems.length === 0 && (
+                  <Box sx={{ textAlign: 'center', py: 6 }}>
+                    <Typography
+                      variant="h6"
+                      color="textSecondary"
+                      sx={{ mb: 1 }}
+                    >
+                      No items in this category
+                    </Typography>
+                  </Box>
                 )}
-              </Box>
-            )}
+            </>
+          )}
         </Box>
       </Container>
 
