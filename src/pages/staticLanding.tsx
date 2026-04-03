@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import landingData from '../data/landingData';
+
 
 interface LandingItem {
   category: string;
@@ -314,7 +314,7 @@ const StaticLanding: React.FC = () => {
   const [items, setItems] = useState<LandingItem[]>([]);
 
   useEffect(() => {
-    setItems(landingData.items);
+    setItems([]);
   }, []);
 
   return (

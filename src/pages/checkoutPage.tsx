@@ -30,9 +30,12 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
+  IconButton,
+  Tooltip,
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+import PrintIcon from '@mui/icons-material/Print';
 import { RootState } from '../redux/store';
 import { clearCart } from '../redux/store';
 import {
@@ -46,6 +49,8 @@ import {
 } from '../utils/checkoutStorage';
 import { DISCOUNTS, calculateDiscountAmount } from '../data/discounts';
 import { trackEvent } from '../utils/analytics';
+import Receipt from '../components/Receipt';
+import { printReceipt } from '../utils/printService';
 
 const WHATSAPP_PHONE = '9643310092'; // Replace with your number
 
@@ -106,6 +111,8 @@ const CheckoutPage: React.FC = () => {
   const dispatch = useDispatch();
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const addressSectionRef = useRef<HTMLDivElement | null>(null);
+  const receiptRef = useRef<HTMLDivElement | null>(null);
+  const receiptPreviewRef = useRef<HTMLDivElement | null>(null);
   const initialCheckoutForm = getInitialCheckoutForm();
 
   const [deliveryMethod, setDeliveryMethod] = useState<'delivery' | 'pickup'>(
@@ -134,6 +141,7 @@ const CheckoutPage: React.FC = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [selectedDiscountId, setSelectedDiscountId] = useState<string>('');
   const [orderConfirmationOpen, setOrderConfirmationOpen] = useState(false);
+  const [printModalOpen, setPrintModalOpen] = useState(false);
   const [addressError, setAddressError] = useState<string>('');
   const [scheduleError, setScheduleError] = useState<string>('');
 
@@ -307,6 +315,24 @@ const CheckoutPage: React.FC = () => {
       value: finalTotal,
     });
     setOrderConfirmationOpen(false);
+  };
+
+  const handlePrintBill = () => {
+    setPrintModalOpen(true);
+  };
+
+  const handleConfirmPrint = () => {
+    trackEvent('bill_printed', {
+      delivery_method: deliveryMethod,
+      item_count: cartItems.length,
+      value: finalTotal,
+    });
+    setPrintModalOpen(false);
+    printReceipt(receiptRef.current);
+  };
+
+  const handleCancelPrint = () => {
+    setPrintModalOpen(false);
   };
 
   if (cartItems.length === 0) {
@@ -930,18 +956,38 @@ const CheckoutPage: React.FC = () => {
                   sx={{
                     display: 'flex',
                     justifyContent: 'space-between',
+                    alignItems: 'center',
                     mb: 2,
                   }}
                 >
-                  <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-                    Total:
-                  </Typography>
-                  <Typography
-                    variant="h6"
-                    sx={{ fontWeight: 'bold', color: '#ff6b6b' }}
-                  >
-                    ₹{finalTotal.toFixed(2)}
-                  </Typography>
+                  <Box>
+                    <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+                      Total:
+                    </Typography>
+                  </Box>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Typography
+                      variant="h6"
+                      sx={{ fontWeight: 'bold', color: '#ff6b6b' }}
+                    >
+                      ₹{finalTotal.toFixed(2)}
+                    </Typography>
+                    <Tooltip title="Print Label">
+                      <IconButton
+                        onClick={handlePrintBill}
+                        size="small"
+                        sx={{
+                          backgroundColor: '#1976d2',
+                          color: 'white',
+                          '&:hover': {
+                            backgroundColor: '#1565c0',
+                          },
+                        }}
+                      >
+                        <PrintIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </Box>
                 </Box>
 
                 <Button
@@ -1020,6 +1066,93 @@ const CheckoutPage: React.FC = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Print Preview Modal */}
+      <Dialog
+        open={printModalOpen}
+        onClose={handleCancelPrint}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle sx={{ fontWeight: 'bold' }}>Print Receipt</DialogTitle>
+        <DialogContent
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            backgroundColor: '#f5f5f5',
+            py: 3,
+            minHeight: '500px',
+            overflowY: 'auto',
+          }}
+        >
+          <Box
+            sx={{
+              backgroundColor: '#fff',
+              borderRadius: '4px',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+            }}
+          >
+            <Receipt
+              ref={receiptPreviewRef}
+              cartItems={cartItems}
+              totalPrice={totalPrice}
+              discountAmount={discountAmount}
+              finalTotal={finalTotal}
+              customerName={customerName}
+              deliveryMethod={deliveryMethod}
+              deliveryAddress={
+                deliveryMethod === 'delivery'
+                  ? hasHabitatAddress
+                    ? `${habitat} - Tower ${tower}, Flat ${flatNumber}`
+                    : customAddress.trim()
+                  : "Pickup from Bob's Kitchen"
+              }
+              customerInstructions={customerInstructions}
+              scheduledTime={
+                orderTiming === 'scheduled' ? scheduledTime : undefined
+              }
+              discountCode={appliedDiscountCode}
+            />
+          </Box>
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2 }}>
+          <Button onClick={handleCancelPrint} variant="outlined">
+            Cancel
+          </Button>
+          <Button
+            onClick={handleConfirmPrint}
+            variant="contained"
+            startIcon={<PrintIcon />}
+          >
+            Print Now
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Hidden Receipt for Printing */}
+      <Box sx={{ display: 'none' }}>
+        <Receipt
+          ref={receiptRef}
+          cartItems={cartItems}
+          totalPrice={totalPrice}
+          discountAmount={discountAmount}
+          finalTotal={finalTotal}
+          customerName={customerName}
+          deliveryMethod={deliveryMethod}
+          deliveryAddress={
+            deliveryMethod === 'delivery'
+              ? hasHabitatAddress
+                ? `${habitat} - Tower ${tower}, Flat ${flatNumber}`
+                : customAddress.trim()
+              : "Pickup from Bob's Kitchen"
+          }
+          customerInstructions={customerInstructions}
+          scheduledTime={
+            orderTiming === 'scheduled' ? scheduledTime : undefined
+          }
+          discountCode={appliedDiscountCode}
+        />
+      </Box>
     </>
   );
 };

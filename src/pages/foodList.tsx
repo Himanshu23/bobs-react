@@ -31,7 +31,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { RootState, AppDispatch, removeFromCart } from '../redux/store';
-import { fetchFoodItems } from '../redux/foodSlice';
+import { useFoodItems } from '../data/hooks/useFoodItems';
 import { CartActions, CATEGORY_ORDER, FoodItem, ItemOptions } from '../types';
 import FoodItemCard from '../components/listing/foodItemCard';
 import ProductDetailModal from '../components/productDetail';
@@ -147,9 +147,7 @@ const FoodListPage: React.FC = () => {
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const totalItems = useSelector((state: RootState) => state.cart.totalItems);
 
-  const { items, status, error } = useSelector(
-    (state: RootState) => state.food
-  );
+  const { data: items = [], isLoading, error } = useFoodItems();
   const [productDetailModal, setProductDetailModal] = useState(false);
   const [quantityUpdateModal, setQuantityUpdateModal] = useState(false);
   const [quantityUpdateItemID, setquantityUpdateItemID] = useState<string>();
@@ -167,12 +165,6 @@ const FoodListPage: React.FC = () => {
   const [vegAccordionExpanded, setVegAccordionExpanded] = useState(true);
   const [nonVegAccordionExpanded, setNonVegAccordionExpanded] = useState(true);
   const itemsContainerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (status === 'idle') {
-      dispatch(fetchFoodItems());
-    }
-  }, [status, dispatch]);
 
   // Fuse.js configuration for intelligent fuzzy search
   const fuseOptions = useMemo(
@@ -368,12 +360,12 @@ const FoodListPage: React.FC = () => {
   // Get unique categories
   const categories = CATEGORY_ORDER;
 
-  if (status === 'loading') {
+  if (isLoading) {
     return <CircularProgress />;
   }
 
-  if (status === 'failed') {
-    return <Typography color="error">{error}</Typography>;
+  if (error) {
+    return <Typography color="error">{error.message}</Typography>;
   }
 
   return (

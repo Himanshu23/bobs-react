@@ -8,6 +8,7 @@ import {
 } from 'react-router-dom';
 import { useEffect } from 'react';
 import { AppBar } from '@mui/material';
+import { QueryClientProvider } from '@tanstack/react-query';
 
 import StaticLanding from './pages/staticLanding';
 import FoodList from './pages/foodList';
@@ -15,7 +16,11 @@ import FoodList from './pages/foodList';
 import Header from './pages/header';
 import CartPage from './pages/cartPage';
 import CheckoutPage from './pages/checkoutPage';
+import AdminPage from './pages/adminPage';
+import LoginPage from './pages/LoginPage';
+import ProtectedRoute from './components/ProtectedRoute';
 import { initializeAnalytics, trackPageView } from './utils/analytics';
+import { queryClient } from './admin/api/queryClient';
 
 function AppLayout() {
   const location = useLocation();
@@ -47,6 +52,11 @@ function AppLayout() {
         <Route path="/bobs/menu" element={<FoodList />} />
         <Route path="/cart" element={<CartPage />} />
         <Route path="/checkout" element={<CheckoutPage />} />
+        <Route path="/bobs/admin/login" element={<LoginPage onLoginSuccess={() => window.location.href = '/bobs/admin'} />} />
+        <Route
+          path="/bobs/admin"
+          element={<ProtectedRoute element={<AdminPage />} />}
+        />
       </Routes>
     </>
   );
@@ -54,9 +64,11 @@ function AppLayout() {
 
 function App() {
   return (
-    <Router>
-      <AppLayout />
-    </Router>
+    <QueryClientProvider client={queryClient}>
+      <Router>
+        <AppLayout />
+      </Router>
+    </QueryClientProvider>
   );
 }
 

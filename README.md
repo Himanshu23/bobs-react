@@ -1,5 +1,19 @@
 # Getting Started with Create React App
 
+## Environment Variables
+
+Create a `.env` file in the project root if you want Google Analytics enabled:
+
+```env
+REACT_APP_GA_MEASUREMENT_ID=G-XXXXXXXXXX
+```
+
+Notes:
+
+- This app reads the value from `REACT_APP_GA_MEASUREMENT_ID` in `src/utils/analytics.ts`.
+- If the variable is missing, analytics stays disabled.
+- Restart the dev server after adding or changing env values.
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
