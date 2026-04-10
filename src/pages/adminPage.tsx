@@ -15,10 +15,12 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import RestaurantMenuIcon from '@mui/icons-material/RestaurantMenu';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
+import SpeedIcon from '@mui/icons-material/Speed';
 import { FoodItem } from '../types';
 import { useFoodItems, useUpdateFoodItem } from '../data/hooks/useFoodItems';
 import MenuTab from './admin/MenuTab';
 import OrdersTab from './admin/OrdersTab';
+import CurrentOrdersTab from './admin/CurrentOrdersTab';
 import DiscountsTab from './admin/DiscountsTab';
 import EditItemDrawer from './admin/EditItemDrawer';
 
@@ -97,9 +99,14 @@ const AdminPage: React.FC = () => {
             sx={{ mb: 2 }}
           >
             <Tab
+              icon={<SpeedIcon />}
+              iconPosition="start"
+              label="Active Orders"
+            />
+            <Tab
               icon={<ReceiptLongIcon />}
               iconPosition="start"
-              label="Orders"
+              label="All Orders"
             />
             <Tab
               icon={<RestaurantMenuIcon />}
@@ -113,11 +120,12 @@ const AdminPage: React.FC = () => {
             />
           </Tabs>
 
-          {tab === 0 && <OrdersTab />}
-          {tab === 1 && foodItems && (
+          {tab === 0 && <CurrentOrdersTab />}
+          {tab === 1 && <OrdersTab />}
+          {tab === 2 && foodItems && (
             <MenuTab items={foodItems} onEditItem={handleEditItem} />
           )}
-          {tab === 2 && <DiscountsTab />}
+          {tab === 3 && <DiscountsTab />}
         </CardContent>
       </Card>
 

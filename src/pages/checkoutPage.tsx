@@ -51,6 +51,8 @@ import { DISCOUNTS, calculateDiscountAmount } from '../data/discounts';
 import { trackEvent } from '../utils/analytics';
 import Receipt from '../components/Receipt';
 import { printReceipt } from '../utils/printService';
+import { useCreateOrder } from '../data/hooks/useOrders';
+import { OrderFulfillmentType, OrderItem } from '../types';
 
 const WHATSAPP_PHONE = '9643310092'; // Replace with your number
 
@@ -101,15 +103,13 @@ const getInitialCheckoutForm = () =>
     flatNumber: '',
     customAddress: '',
     customerName: '',
-    customerInstructions: '',
-    orderTiming: 'asap' as const,
-    scheduledTime: '',
   };
 
 const CheckoutPage: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const cartItems = useSelector((state: RootState) => state.cart.items);
+  const { mutate: createOrder } = useCreateOrder();
   const addressSectionRef = useRef<HTMLDivElement | null>(null);
   const receiptRef = useRef<HTMLDivElement | null>(null);
   const receiptPreviewRef = useRef<HTMLDivElement | null>(null);
@@ -129,15 +129,9 @@ const CheckoutPage: React.FC = () => {
   const [customerName, setCustomerName] = useState<string>(
     initialCheckoutForm.customerName
   );
-  const [customerInstructions, setCustomerInstructions] = useState<string>(
-    initialCheckoutForm.customerInstructions
-  );
-  const [orderTiming, setOrderTiming] = useState<'asap' | 'scheduled'>(
-    initialCheckoutForm.orderTiming
-  );
-  const [scheduledTime, setScheduledTime] = useState<string>(
-    initialCheckoutForm.scheduledTime
-  );
+  const [customerInstructions, setCustomerInstructions] = useState<string>('');
+  const [orderTiming, setOrderTiming] = useState<'asap' | 'scheduled'>('asap');
+  const [scheduledTime, setScheduledTime] = useState<string>('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [selectedDiscountId, setSelectedDiscountId] = useState<string>('');
   const [orderConfirmationOpen, setOrderConfirmationOpen] = useState(false);
@@ -153,21 +147,8 @@ const CheckoutPage: React.FC = () => {
       flatNumber,
       customAddress,
       customerName,
-      customerInstructions,
-      orderTiming,
-      scheduledTime,
     });
-  }, [
-    customAddress,
-    customerInstructions,
-    customerName,
-    deliveryMethod,
-    flatNumber,
-    habitat,
-    orderTiming,
-    scheduledTime,
-    tower,
-  ]);
+  }, [customAddress, customerName, deliveryMethod, flatNumber, habitat, tower]);
 
   // Reset tower when habitat changes
   const handleHabitatChange = (event: SelectChangeEvent<string>) => {
@@ -248,46 +229,126 @@ const CheckoutPage: React.FC = () => {
         } else {
           deliveryAddress = customAddress.trim();
         }
+      } else {
+        deliveryAddress = 'Pickup';
       }
 
-      // Format the order
-      const orderMessage: OrderMessage = {
-        items: cartItems.map((item) => ({
-          name: item.name,
-          quantity: item.quantity,
-          price: item.price * item.quantity,
-          size: item.option?.size,
-        })),
-        total: finalTotal,
-        habitat: deliveryMethod === 'delivery' ? deliveryAddress : 'Pickup',
-        tower:
-          deliveryMethod === 'delivery'
-            ? hasHabitatAddress
-              ? tower
-              : 'Custom'
-            : 'N/A',
+      // Create order items for database
+      const orderItems: OrderItem[] = cartItems.map((item) => ({
+        foodItemId: item.id,
+        name: item.name,
+        quantity: item.quantity,
+        unitPrice: item.price,
+        size: item.option?.size,
+        style: item.option?.style,
+        base: item.option?.base,
+      }));
+      let fulfillmentType = OrderFulfillmentType.DELIVERY;
+      if (orderTiming === 'scheduled') {
+        fulfillmentType = OrderFulfillmentType.SCHEDULED;
+      }
+      if (deliveryMethod == 'pickup') {
+        fulfillmentType = OrderFulfillmentType.PICKUP;
+      }
+
+      // Create order object to save to database
+      const orderToCreate = {
         customerName: customerName || 'Guest',
-        phoneNumber: WHATSAPP_PHONE,
-        instructions: customerInstructions,
-        deliveryMethod: deliveryMethod as 'pickup' | 'delivery',
-        flatNumber: hasHabitatAddress ? flatNumber.trim() : undefined,
-        discountCode: appliedDiscountCode,
-        discountName: discountAmount > 0 ? selectedDiscount?.name : undefined,
-        discountAmount: discountAmount > 0 ? discountAmount : undefined,
-        tax,
+        customerPhone: '9643310092', // TODO: Get from user input
+        deliveryAddress,
+        fulfillmentType,
         scheduledTime: orderTiming === 'scheduled' ? scheduledTime : undefined,
+        items: orderItems,
+        totalAmount: finalTotal,
       };
 
-      // Format and send WhatsApp message
-      const message = formatOrderMessage(orderMessage);
-      trackEvent('whatsapp_order_started', {
-        delivery_method: deliveryMethod,
-        item_count: cartItems.length,
-        value: finalTotal,
-        discount_id: selectedDiscountId || 'none',
+      // Save order to database
+      createOrder(orderToCreate, {
+        onSuccess: (savedOrder) => {
+          console.log('Order saved to database:', savedOrder);
+
+          // Format the order for WhatsApp message
+          const orderMessage: OrderMessage = {
+            items: cartItems.map((item) => ({
+              name: item.name,
+              quantity: item.quantity,
+              price: item.price * item.quantity,
+              size: item.option?.size,
+            })),
+            total: finalTotal,
+            habitat: deliveryMethod === 'delivery' ? deliveryAddress : 'Pickup',
+            tower:
+              deliveryMethod === 'delivery'
+                ? hasHabitatAddress
+                  ? tower
+                  : 'Custom'
+                : 'N/A',
+            customerName: customerName || 'Guest',
+            phoneNumber: WHATSAPP_PHONE,
+            instructions: customerInstructions,
+            deliveryMethod: deliveryMethod as 'pickup' | 'delivery',
+            flatNumber: hasHabitatAddress ? flatNumber.trim() : undefined,
+            discountCode: appliedDiscountCode,
+            discountName:
+              discountAmount > 0 ? selectedDiscount?.name : undefined,
+            discountAmount: discountAmount > 0 ? discountAmount : undefined,
+            tax,
+            scheduledTime:
+              orderTiming === 'scheduled' ? scheduledTime : undefined,
+          };
+
+          // Format and send WhatsApp message
+          const message = formatOrderMessage(orderMessage);
+          trackEvent('whatsapp_order_started', {
+            delivery_method: deliveryMethod,
+            item_count: cartItems.length,
+            value: finalTotal,
+            discount_id: selectedDiscountId || 'none',
+          });
+          openWhatsApp(WHATSAPP_PHONE, message);
+          setOrderConfirmationOpen(true);
+        },
+        onError: (error) => {
+          console.error('Failed to save order to database:', error);
+          alert(
+            'Error saving order to database. Order still created, please share via WhatsApp.'
+          );
+
+          // Still show WhatsApp option even if database save fails
+          const orderMessage: OrderMessage = {
+            items: cartItems.map((item) => ({
+              name: item.name,
+              quantity: item.quantity,
+              price: item.price * item.quantity,
+              size: item.option?.size,
+            })),
+            total: finalTotal,
+            habitat: deliveryMethod === 'delivery' ? deliveryAddress : 'Pickup',
+            tower:
+              deliveryMethod === 'delivery'
+                ? hasHabitatAddress
+                  ? tower
+                  : 'Custom'
+                : 'N/A',
+            customerName: customerName || 'Guest',
+            phoneNumber: WHATSAPP_PHONE,
+            instructions: customerInstructions,
+            deliveryMethod: deliveryMethod as 'pickup' | 'delivery',
+            flatNumber: hasHabitatAddress ? flatNumber.trim() : undefined,
+            discountCode: appliedDiscountCode,
+            discountName:
+              discountAmount > 0 ? selectedDiscount?.name : undefined,
+            discountAmount: discountAmount > 0 ? discountAmount : undefined,
+            tax,
+            scheduledTime:
+              orderTiming === 'scheduled' ? scheduledTime : undefined,
+          };
+
+          const message = formatOrderMessage(orderMessage);
+          openWhatsApp(WHATSAPP_PHONE, message);
+          setOrderConfirmationOpen(true);
+        },
       });
-      openWhatsApp(WHATSAPP_PHONE, message);
-      setOrderConfirmationOpen(true);
     } catch (error) {
       console.error('Error processing order:', error);
       alert('Error processing order. Please try again.');
@@ -397,9 +458,7 @@ const CheckoutPage: React.FC = () => {
                 </Typography>
 
                 <Alert severity="info" sx={{ mb: 3 }}>
-                  Your address details and special instructions are saved on
-                  this device, so you can review the cart and come back without
-                  re-entering them.
+                  Your address details are saved on this device.
                 </Alert>
 
                 {/* Pickup vs Delivery Radio Buttons */}

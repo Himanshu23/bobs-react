@@ -96,3 +96,43 @@ export interface CartState {
   items: CartItem[];
   totalItems: number;
 }
+
+// Order Types
+export enum OrderFulfillmentType {
+  PICKUP = 'PICKUP',
+  SCHEDULED = 'SCHEDULED',
+  DELIVERY = 'DELIVERY',
+}
+
+export enum OrderStatus {
+  PENDING = 'PENDING',
+  CONFIRMED = 'CONFIRMED',
+  PREPARING = 'PREPARING',
+  READY = 'READY',
+  COMPLETED = 'COMPLETED',
+  CANCELLED = 'CANCELLED',
+}
+
+export interface OrderItem {
+  foodItemId: string;
+  name: string;
+  quantity: number;
+  unitPrice: number;
+  size: string;
+  style?: string;
+  base?: string;
+}
+
+export interface Order {
+  id?: string;
+  customerName: string;
+  customerPhone: string;
+  deliveryAddress: string;
+  fulfillmentType: OrderFulfillmentType;
+  scheduledTime?: string;
+  items: OrderItem[];
+  totalAmount: number;
+  status?: OrderStatus;
+  createdAt?: string;
+  updatedAt?: string;
+}

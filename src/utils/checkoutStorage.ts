@@ -5,9 +5,9 @@ export interface CheckoutFormState {
   flatNumber: string;
   customAddress: string;
   customerName: string;
-  customerInstructions: string;
-  orderTiming: 'asap' | 'scheduled';
-  scheduledTime: string;
+  customerInstructions?: string;
+  orderTiming?: 'asap' | 'scheduled';
+  scheduledTime?: string;
 }
 
 const CHECKOUT_STORAGE_KEY = 'bob_checkout_form';

@@ -7,4 +7,5 @@ export const API_BASE_URL =
 export const ENDPOINTS = {
   FOOD_ITEMS: `${API_BASE_URL}/food-items`,
   AUTH_LOGIN: `${API_BASE_URL}/auth/login`,
+  CREATE_ORDER: `${API_BASE_URL}/orders`,
 } as const;

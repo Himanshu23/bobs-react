@@ -1,9 +1,12 @@
 import React from 'react';
 import { AppBar, Toolbar, Typography, Badge, IconButton } from '@mui/material';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import PhoneIcon from '@mui/icons-material/Phone';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { trackEvent } from '../utils/analytics';
+
+const PHONE_NUMBER = '9643310092';
 
 interface RootState {
   cart: {
@@ -30,6 +33,13 @@ const Header: React.FC = () => {
     navigate('/cart');
   };
 
+  const handleCallClick = () => {
+    trackEvent('header_call_click', {
+      phone_number: PHONE_NUMBER,
+    });
+    window.location.href = `tel:${PHONE_NUMBER}`;
+  };
+
   return (
     <AppBar position="static">
       <Toolbar>
@@ -46,6 +56,9 @@ const Header: React.FC = () => {
         >
           Bob&#39;s
         </Typography>
+        <IconButton color="inherit" onClick={handleCallClick}>
+          <PhoneIcon />
+        </IconButton>
         <IconButton color="inherit" onClick={handleCartClick}>
           <Badge badgeContent={totalItems} color="error">
             <ShoppingCartIcon />
