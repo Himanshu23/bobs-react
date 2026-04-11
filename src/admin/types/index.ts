@@ -2,8 +2,13 @@ import { Discount } from '../../data/discounts';
 import { FoodItem } from '../../types';
 
 export interface AdminOrderItem {
-  name: string;
+  foodItemId: string;
+  itemName: string;
   quantity: number;
+  unitPrice: number;
+  size: string;
+  style?: string;
+  base?: string;
 }
 
 export interface AdminOrder {
@@ -16,16 +21,6 @@ export interface AdminOrder {
   createdAt: string;
   items: AdminOrderItem[];
 }
-
-// export interface AdminMenuItem {
-//   id: string;
-//   name: string;
-//   category: string;
-//   veg: boolean;
-//   image: string;
-//   price: number;
-//   available: boolean;
-// }
 
 export interface AdminDashboardData {
   orders: AdminOrder[];

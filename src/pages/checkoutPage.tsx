@@ -236,7 +236,7 @@ const CheckoutPage: React.FC = () => {
       // Create order items for database
       const orderItems: OrderItem[] = cartItems.map((item) => ({
         foodItemId: item.id,
-        name: item.name,
+        itemName: item.name,
         quantity: item.quantity,
         unitPrice: item.price,
         size: item.option?.size,

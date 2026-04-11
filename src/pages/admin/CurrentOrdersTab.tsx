@@ -37,38 +37,6 @@ import {
   stopRepeatNotification,
 } from '../../utils/notificationSound';
 
-const getStatusColor = (
-  status?: OrderStatus
-):
-  | 'default'
-  | 'primary'
-  | 'secondary'
-  | 'error'
-  | 'info'
-  | 'success'
-  | 'warning' => {
-  switch (status) {
-    case OrderStatus.PENDING:
-      return 'warning';
-    case OrderStatus.CONFIRMED:
-      return 'info';
-    case OrderStatus.PREPARING:
-      return 'info';
-    case OrderStatus.READY:
-      return 'success';
-    case OrderStatus.COMPLETED:
-      return 'success';
-    case OrderStatus.CANCELLED:
-      return 'error';
-    default:
-      return 'default';
-  }
-};
-
-const getStatusLabel = (status?: OrderStatus): string => {
-  return status ? status.charAt(0) + status.slice(1).toLowerCase() : 'Pending';
-};
-
 const CurrentOrdersTab: React.FC = () => {
   const [subTab, setSubTab] = useState(0);
   const [soundEnabled, setSoundEnabled] = useState(true);
@@ -133,7 +101,7 @@ const CurrentOrdersTab: React.FC = () => {
         icon: '👨‍🍳',
       });
 
-      // Auto-switch to New Orders tab
+      // Auto-switch to Unaccepted Orders tab
       setSubTab(0);
     },
     [soundEnabled]
@@ -473,7 +441,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
       >
         <CardContent sx={{ flexGrow: 1 }}>
           {/* Header */}
-          <Box
+          {/* <Box
             sx={{
               mb: 2,
               display: 'flex',
@@ -496,7 +464,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
             />
           </Box>
 
-          <Divider sx={{ my: 1.5 }} />
+          <Divider sx={{ my: 1.5 }} /> */}
 
           {/* Customer Info */}
           <Box sx={{ mb: 2 }}>
@@ -531,21 +499,30 @@ const OrderCard: React.FC<OrderCardProps> = ({
               📦 Items ({order.items.length})
             </Typography>
             <List sx={{ py: 0, px: 0 }}>
-              {order.items.map((item, idx) => (
-                <ListItem
-                  key={idx}
-                  sx={{ py: 0.5, px: 0, fontSize: '0.875rem' }}
-                >
-                  <ListItemText
-                    primary={`${item.name} × ${item.quantity}`}
-                    secondary={`₹${(item.unitPrice * item.quantity).toFixed(2)}`}
-                    primaryTypographyProps={{ variant: 'body2' }}
-                    secondaryTypographyProps={{
-                      variant: 'caption',
-                    }}
-                  />
-                </ListItem>
-              ))}
+              {order.items.map((item, idx) => {
+                const variants = [];
+                if (item.size) variants.push(item.size);
+                if (item.style) variants.push(item.style);
+                if (item.base) variants.push(item.base);
+                const variantText =
+                  variants.length > 0 ? ` (${variants.join(', ')})` : '';
+
+                return (
+                  <ListItem
+                    key={idx}
+                    sx={{ py: 0.5, px: 0, fontSize: '0.875rem' }}
+                  >
+                    <ListItemText
+                      primary={`${item.itemName}${variantText} × ${item.quantity}`}
+                      secondary={`₹${(item.unitPrice * item.quantity).toFixed(2)}`}
+                      primaryTypographyProps={{ variant: 'body2' }}
+                      secondaryTypographyProps={{
+                        variant: 'caption',
+                      }}
+                    />
+                  </ListItem>
+                );
+              })}
             </List>
           </Box>
 
