@@ -115,7 +115,7 @@ export enum OrderStatus {
 
 export interface OrderItem {
   foodItemId: string;
-  name: string;
+  itemName: string;
   quantity: number;
   unitPrice: number;
   size: string;

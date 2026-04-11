@@ -5,24 +5,18 @@ import {
   CardContent,
   TextField,
   Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
   Typography,
   Box,
   CircularProgress,
   Alert,
-  Chip,
   IconButton,
   Tooltip,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
-import { OrderStatus, OrderFulfillmentType } from '../../types';
 import { useOrdersByDateRange } from '../../data/hooks/useOrders';
+import OrderCard from './OrderCard';
 
 const formatDate = (date: Date): string => {
   return date.toISOString().split('T')[0];
@@ -32,35 +26,11 @@ const getTodayDate = (): string => {
   return formatDate(new Date());
 };
 
-const getStatusColor = (
-  status?: OrderStatus
-):
-  | 'default'
-  | 'primary'
-  | 'secondary'
-  | 'error'
-  | 'info'
-  | 'success'
-  | 'warning' => {
-  switch (status) {
-    case OrderStatus.PENDING:
-      return 'warning';
-    case OrderStatus.CONFIRMED:
-      return 'info';
-    case OrderStatus.PREPARING:
-      return 'info';
-    case OrderStatus.READY:
-      return 'success';
-    case OrderStatus.COMPLETED:
-      return 'success';
-    case OrderStatus.CANCELLED:
-      return 'error';
-    default:
-      return 'default';
-  }
-};
-
 const OrdersTab: React.FC = () => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isTablet = useMediaQuery(theme.breakpoints.down('md'));
+
   const today = getTodayDate();
   const [fromDate, setFromDate] = useState<string>(today);
   const [toDate, setToDate] = useState<string>(today);
@@ -81,186 +51,172 @@ const OrdersTab: React.FC = () => {
   };
 
   return (
-    <Grid container spacing={3}>
-      {/* Date Range Filter Card */}
-      <Grid item xs={12}>
-        <Card>
-          <CardContent>
-            <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold' }}>
-              📅 Filter Orders by Date
-            </Typography>
-
-            <Box
+    <Box sx={{ p: isMobile ? 1 : 3, width: '100%' }}>
+      <Grid container spacing={isMobile ? 1 : 2}>
+        {/* Date Range Filter Card */}
+        <Grid item xs={12}>
+          <Card>
+            <CardContent
               sx={{
-                display: 'flex',
-                gap: 2,
-                alignItems: 'flex-end',
-                flexWrap: 'wrap',
+                p: isMobile ? 1.5 : 2,
+                '&:last-child': { pb: isMobile ? 1.5 : 2 },
               }}
             >
-              <TextField
-                label="From Date"
-                type="date"
-                value={fromDate}
-                onChange={(e) => setFromDate(e.target.value)}
-                InputLabelProps={{
-                  shrink: true,
+              <Typography
+                variant={isMobile ? 'body1' : 'h6'}
+                sx={{
+                  mb: isMobile ? 1 : 2,
+                  fontWeight: 'bold',
+                  fontSize: isMobile ? '1rem' : undefined,
                 }}
-                sx={{ minWidth: 150 }}
-              />
-              <TextField
-                label="To Date"
-                type="date"
-                value={toDate}
-                onChange={(e) => setToDate(e.target.value)}
-                InputLabelProps={{
-                  shrink: true,
+              >
+                📅 Filter Orders by Date
+              </Typography>
+
+              <Box
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: isMobile
+                    ? '1fr 1fr'
+                    : isTablet
+                      ? '1fr 1fr 1fr 0.1fr'
+                      : '1fr 1fr 1fr 0.1fr',
+                  gap: isMobile ? 0.8 : 1.5,
+                  alignItems: 'flex-end',
                 }}
-                sx={{ minWidth: 150 }}
-              />
-              <Button variant="outlined" onClick={handleResetToToday}>
-                Reset to Today
-              </Button>
-              <Tooltip title="Refresh Orders">
-                <IconButton
-                  onClick={handleRefresh}
-                  disabled={isLoading}
+              >
+                <TextField
+                  label="From"
+                  type="date"
+                  value={fromDate}
+                  onChange={(e) => setFromDate(e.target.value)}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  size="small"
+                  fullWidth
+                />
+                <TextField
+                  label="To"
+                  type="date"
+                  value={toDate}
+                  onChange={(e) => setToDate(e.target.value)}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  size="small"
+                  fullWidth
+                />
+                <Button
+                  variant="outlined"
+                  onClick={handleResetToToday}
+                  size="small"
+                  fullWidth
+                  sx={{ fontSize: isMobile ? '0.75rem' : '0.875rem' }}
+                >
+                  {isMobile ? 'Reset' : 'Reset to Today'}
+                </Button>
+                <Tooltip title="Refresh Orders">
+                  <IconButton
+                    onClick={handleRefresh}
+                    disabled={isLoading}
+                    size="small"
+                    sx={{
+                      color: '#1976d2',
+                      animation: isLoading ? 'spin 1s linear infinite' : 'none',
+                      '@keyframes spin': {
+                        '0%': { transform: 'rotate(0deg)' },
+                        '100%': { transform: 'rotate(360deg)' },
+                      },
+                    }}
+                  >
+                    <RefreshIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        {/* Orders Summary Card */}
+        <Grid item xs={12}>
+          <Card>
+            <CardContent
+              sx={{
+                p: isMobile ? 1.5 : 2,
+                '&:last-child': { pb: isMobile ? 1.5 : 2 },
+              }}
+            >
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  flexWrap: 'wrap',
+                  gap: 1,
+                }}
+              >
+                <Typography
+                  variant="body1"
                   sx={{
-                    color: '#1976d2',
-                    animation: isLoading ? 'spin 1s linear infinite' : 'none',
-                    '@keyframes spin': {
-                      '0%': { transform: 'rotate(0deg)' },
-                      '100%': { transform: 'rotate(360deg)' },
-                    },
+                    fontWeight: 'bold',
+                    fontSize: isMobile ? '1rem' : '1.25rem',
                   }}
                 >
-                  <RefreshIcon />
-                </IconButton>
-              </Tooltip>
+                  📦 Orders
+                </Typography>
+                <Typography
+                  sx={{
+                    color: '#1976d2',
+                    fontSize: isMobile ? '0.9rem' : '1.1rem',
+                    fontWeight: 500,
+                  }}
+                >
+                  Total: {orders.length}
+                </Typography>
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        {/* Loading State */}
+        {isLoading && (
+          <Grid item xs={12}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
+              <CircularProgress />
             </Box>
-          </CardContent>
-        </Card>
+          </Grid>
+        )}
+
+        {/* Error State */}
+        {error && (
+          <Grid item xs={12}>
+            <Alert severity="error">
+              Error loading orders: {error.message}
+            </Alert>
+          </Grid>
+        )}
+
+        {/* Empty State */}
+        {!isLoading && !error && orders.length === 0 && (
+          <Grid item xs={12}>
+            <Alert severity="info">
+              No orders found for the selected date range.
+            </Alert>
+          </Grid>
+        )}
+
+        {/* Orders Grid - Mobile Friendly Card Layout */}
+        {!isLoading &&
+          !error &&
+          orders.length > 0 &&
+          orders.map((order) => (
+            <Grid key={order.id} item xs={12} sm={6} md={4} lg={3}>
+              <OrderCard order={order} isMobile={isMobile} />
+            </Grid>
+          ))}
       </Grid>
-
-      {/* Orders Summary Card */}
-      <Grid item xs={12}>
-        <Card>
-          <CardContent>
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}
-            >
-              <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-                📦 Orders
-              </Typography>
-              <Typography variant="h6" sx={{ color: '#1976d2' }}>
-                Total: {orders.length}
-              </Typography>
-            </Box>
-          </CardContent>
-        </Card>
-      </Grid>
-
-      {/* Loading State */}
-      {isLoading && (
-        <Grid item xs={12}>
-          <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
-            <CircularProgress />
-          </Box>
-        </Grid>
-      )}
-
-      {/* Error State */}
-      {error && (
-        <Grid item xs={12}>
-          <Alert severity="error">Error loading orders: {error.message}</Alert>
-        </Grid>
-      )}
-
-      {/* Empty State */}
-      {!isLoading && !error && orders.length === 0 && (
-        <Grid item xs={12}>
-          <Alert severity="info">
-            No orders found for the selected date range.
-          </Alert>
-        </Grid>
-      )}
-
-      {/* Orders Table */}
-      {!isLoading && !error && orders.length > 0 && (
-        <Grid item xs={12}>
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead sx={{ backgroundColor: '#f5f5f5' }}>
-                <TableRow>
-                  <TableCell sx={{ fontWeight: 'bold' }}>Order ID</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>
-                    Customer Name
-                  </TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>Phone</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>Items</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>Total</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>Type</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>Address</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>Time</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {orders.map((order) => (
-                  <TableRow key={order.id} hover>
-                    <TableCell>{order.id}</TableCell>
-                    <TableCell>{order.customerName}</TableCell>
-                    <TableCell>{order.customerPhone}</TableCell>
-                    <TableCell>
-                      <Typography variant="body2">
-                        {order.items.length} item(s)
-                      </Typography>
-                    </TableCell>
-                    <TableCell>₹{order.totalAmount.toFixed(2)}</TableCell>
-                    <TableCell>
-                      <Chip
-                        label={order.status || 'PENDING'}
-                        color={getStatusColor(order.status)}
-                        size="small"
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Typography variant="body2">
-                        {order.fulfillmentType === OrderFulfillmentType.PICKUP
-                          ? 'Pickup'
-                          : order.fulfillmentType ===
-                              OrderFulfillmentType.SCHEDULED
-                            ? 'Scheduled'
-                            : 'Delivery'}
-                      </Typography>
-                    </TableCell>
-                    <TableCell sx={{ maxWidth: 200 }}>
-                      <Typography
-                        variant="body2"
-                        sx={{ wordBreak: 'break-word' }}
-                      >
-                        {order.deliveryAddress}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography variant="body2">
-                        {order.createdAt
-                          ? new Date(order.createdAt).toLocaleTimeString()
-                          : '-'}
-                      </Typography>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Grid>
-      )}
-    </Grid>
+    </Box>
   );
 };
 
