@@ -3,7 +3,7 @@ import SockJS from 'sockjs-client';
 import { Client, IMessage, StompSubscription } from '@stomp/stompjs';
 import { Order } from '../../types';
 import { playNotificationSound } from '../../utils/notificationSound';
-import { API_BASE_URL } from '../../config/api';
+import { API_BASE_SOCKET_URL } from '../../config/api';
 
 interface WebSocketMessage {
   type: 'new_order' | 'order_updated' | 'order_status';
@@ -11,7 +11,7 @@ interface WebSocketMessage {
   timestamp?: string;
 }
 
-const WS_BASE_URL = API_BASE_URL;
+const WS_BASE_URL = API_BASE_SOCKET_URL;
 
 export const useOrderWebSocket = (
   onNewOrder?: (order: Order) => void,

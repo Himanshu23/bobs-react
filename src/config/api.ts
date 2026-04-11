@@ -3,6 +3,9 @@
 export const API_BASE_URL =
   'https://bobsbackend-cndzehbydyf2gyb4.centralindia-01.azurewebsites.net/api';
 
+export const API_BASE_SOCKET_URL =
+  'https://bobsbackend-cndzehbydyf2gyb4.centralindia-01.azurewebsites.net';
+
 // API Endpoints
 export const ENDPOINTS = {
   FOOD_ITEMS: `${API_BASE_URL}/food-items`,
