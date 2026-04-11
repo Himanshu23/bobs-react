@@ -107,7 +107,7 @@ ${order.instructions}`;
 };
 
 /**
- * Generate WhatsApp link with pre-filled message
+ * Generate WhatsApp link with pre-filled message (iOS-compatible)
  */
 export const getWhatsAppLink = (
   phoneNumber: string,
@@ -120,16 +120,29 @@ export const getWhatsAppLink = (
     ? cleanPhone
     : `+91${cleanPhone}`;
 
-  // Encode message for URL
+  // Encode message for URL - handle special characters properly
   const encodedMessage = encodeURIComponent(message);
 
+  // Use the wa.me URL which works on both iOS and Android
   return `https://wa.me/${formattedPhone}?text=${encodedMessage}`;
 };
 
 /**
- * Open WhatsApp with order message
+ * Open WhatsApp with order message (PopUp blocker bypass)
+ * Strategy:
+ * 1. Try window.open() first (works on most devices)
+ * 2. If blocked on iOS, use window.location as fallback
  */
 export const openWhatsApp = (phoneNumber: string, message: string): void => {
   const link = getWhatsAppLink(phoneNumber, message);
-  window.open(link, '_blank');
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+
+  // Try to open in new tab (most reliable, preserves app context)
+  const newWindow = window.open(link, '_blank');
+
+  // Fallback for iOS popup blockers: redirect to WhatsApp
+  // This only triggers if window.open() was blocked and didn't return a window object
+  if (!newWindow && isIOS) {
+    window.location.href = link;
+  }
 };
