@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useTheme, useMediaQuery } from '@mui/material';
 import {
   Grid,
   Card,
@@ -35,7 +36,9 @@ import {
   sendBrowserNotification,
   startRepeatNotification,
   stopRepeatNotification,
+  initializeAudio,
 } from '../../utils/notificationSound';
+import { initializeFCM } from '../../utils/firebaseMessaging';
 
 const CurrentOrdersTab: React.FC = () => {
   const [subTab, setSubTab] = useState(0);
@@ -45,8 +48,12 @@ const CurrentOrdersTab: React.FC = () => {
   const [alertingOrderId, setAlertingOrderId] = useState<string | null>(null);
   const alertTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Responsive hook for mobile detection
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   const {
-    data: fetchedOrders = [],
+    data: fetchedOrders = { orders: [], total: 0 },
     isLoading,
     error,
     refetch,
@@ -58,7 +65,9 @@ const CurrentOrdersTab: React.FC = () => {
   // Merge WebSocket orders with fetched orders, removing duplicates
   const orders = [
     ...wsOrders,
-    ...fetchedOrders.filter((fo) => !wsOrders.some((wo) => wo.id === fo.id)),
+    ...fetchedOrders.orders.filter(
+      (fo) => !wsOrders.some((wo) => wo.id === fo.id)
+    ),
   ];
 
   console.log({ fetchedOrders });
@@ -107,9 +116,28 @@ const CurrentOrdersTab: React.FC = () => {
     [soundEnabled]
   );
 
-  // Request notification permission on mount
+  // Request notification permission on mount and initialize audio + FCM
   useEffect(() => {
     requestNotificationPermission();
+    // Initialize audio context with user gesture (required for iOS)
+    initializeAudio();
+    // Initialize Firebase Cloud Messaging for push notifications
+    void initializeFCM();
+
+    // Also setup one-time click handler as additional initialization
+    const handleFirstInteraction = () => {
+      initializeAudio();
+      document.removeEventListener('click', handleFirstInteraction);
+      document.removeEventListener('touchstart', handleFirstInteraction);
+    };
+
+    document.addEventListener('click', handleFirstInteraction);
+    document.addEventListener('touchstart', handleFirstInteraction);
+
+    return () => {
+      document.removeEventListener('click', handleFirstInteraction);
+      document.removeEventListener('touchstart', handleFirstInteraction);
+    };
   }, []);
 
   // Setup WebSocket listener
@@ -138,7 +166,7 @@ const CurrentOrdersTab: React.FC = () => {
     console.log('[ORDERS-DEBUG]', {
       totalOrders: orders.length,
       wsOrders: wsOrders.length,
-      fetchedOrders: fetchedOrders.length,
+      fetchedOrders: fetchedOrders.orders.length,
       newOrders: newOrders.length,
       preparingOrders: preparingOrders.length,
       doneOrders: doneOrders.length,
@@ -147,7 +175,7 @@ const CurrentOrdersTab: React.FC = () => {
   }, [
     orders,
     wsOrders.length,
-    fetchedOrders.length,
+    fetchedOrders.orders.length,
     newOrders.length,
     preparingOrders.length,
     doneOrders.length,
@@ -242,7 +270,7 @@ const CurrentOrdersTab: React.FC = () => {
     subTab === 0 ? newOrders : subTab === 1 ? preparingOrders : doneOrders;
 
   return (
-    <Box sx={{ p: 2 }}>
+    <Box sx={{ p: isMobile ? 1 : 2 }}>
       {/* New Order Alert - PROMINENT */}
       {newOrderAlert && (
         <Alert
@@ -257,34 +285,47 @@ const CurrentOrdersTab: React.FC = () => {
               '50%': { opacity: 0.7 },
               '100%': { opacity: 1 },
             },
+            padding: isMobile ? '12px' : '16px',
           }}
         >
           <Box
             sx={{
               display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              gap: 2,
+              flexDirection: isMobile ? 'column' : 'row',
+              justifyContent: isMobile ? 'flex-start' : 'space-between',
+              alignItems: isMobile ? 'stretch' : 'center',
+              gap: isMobile ? 1 : 2,
             }}
           >
             <Box sx={{ flex: 1 }}>
               <Typography
                 variant="body1"
-                sx={{ fontWeight: 'bold', fontSize: '1.1em' }}
+                sx={{
+                  fontWeight: 'bold',
+                  fontSize: isMobile ? '0.95em' : '1.1em',
+                }}
               >
-                🔔🔔 🚨 NEW ORDER ALERT! 🚨 🔔🔔
-              </Typography>
-              <Typography variant="body2" sx={{ fontWeight: 'bold', mt: 0.5 }}>
-                Order #{newOrderAlert.id} from {newOrderAlert.customerName}
+                🔔 NEW ORDER ALERT!
               </Typography>
               <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{ mt: 0.5 }}
+                variant={isMobile ? 'caption' : 'body2'}
+                sx={{ fontWeight: 'bold', mt: 0.5 }}
               >
-                {' '}
-                Total: ₹{newOrderAlert.totalAmount.toFixed(2)} | Items:{' '}
-                {newOrderAlert.items?.length || 0}
+                Order #{newOrderAlert.id}
+              </Typography>
+              <Typography
+                variant={isMobile ? 'caption' : 'body2'}
+                sx={{ mt: 0.25 }}
+              >
+                {newOrderAlert.customerName}
+              </Typography>
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{ mt: 0.25, display: 'block' }}
+              >
+                Total: ₹{newOrderAlert.totalAmount.toFixed(2)} (
+                {newOrderAlert.items?.length || 0} items)
               </Typography>
               {soundEnabled && (
                 <Typography
@@ -296,21 +337,22 @@ const CurrentOrdersTab: React.FC = () => {
                     fontWeight: 'bold',
                   }}
                 >
-                  🔊 Sound repeating every 2 seconds until accepted
+                  🔊 Sound repeating every 2s
                 </Typography>
               )}
             </Box>
             <Button
               variant="contained"
               color="error"
-              size="large"
+              size={isMobile ? 'medium' : 'large'}
+              fullWidth={isMobile}
               onClick={() => {
                 const order = newOrderAlert;
                 handleAcceptOrder(order);
               }}
-              sx={{ mt: 1 }}
+              sx={{ mt: isMobile ? 1 : 0 }}
             >
-              ✅ ACCEPT ORDER
+              {isMobile ? '✅ Accept' : '✅ ACCEPT ORDER'}
             </Button>
           </Box>
         </Alert>
@@ -321,24 +363,44 @@ const CurrentOrdersTab: React.FC = () => {
         sx={{
           mb: 3,
           display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
+          flexDirection: isMobile ? 'column' : 'row',
+          justifyContent: isMobile ? 'flex-start' : 'space-between',
+          alignItems: isMobile ? 'stretch' : 'center',
+          gap: isMobile ? 1 : 2,
         }}
       >
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-            🔵 Active Orders: {orders.length}
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: isMobile ? 1 : 2,
+            flexWrap: 'wrap',
+          }}
+        >
+          <Typography
+            variant={isMobile ? 'body2' : 'h6'}
+            sx={{ fontWeight: 'bold' }}
+          >
+            🔵 {isMobile ? 'Orders' : 'Active Orders'}: {orders.length}
           </Typography>
           <Chip
-            label={wsConnected ? 'WS Connected' : 'WS Disconnected'}
+            label={
+              wsConnected
+                ? isMobile
+                  ? 'Connected'
+                  : 'WS Connected'
+                : 'Disconnected'
+            }
             color={wsConnected ? 'success' : 'error'}
-            size="small"
+            size={isMobile ? 'small' : 'medium'}
           />
         </Box>
-        <Box sx={{ display: 'flex', gap: 1 }}>
+        <Box
+          sx={{ display: 'flex', gap: 1, width: isMobile ? '100%' : 'auto' }}
+        >
           <Tooltip title={soundEnabled ? 'Sound On' : 'Sound Off'}>
             <IconButton
-              size="small"
+              size={isMobile ? 'medium' : 'small'}
               onClick={() => setSoundEnabled(!soundEnabled)}
               color={soundEnabled ? 'success' : 'default'}
             >
@@ -347,11 +409,12 @@ const CurrentOrdersTab: React.FC = () => {
           </Tooltip>
           <Button
             variant="outlined"
-            size="small"
+            size={isMobile ? 'small' : 'small'}
             onClick={() => refetch()}
             title="Refresh orders list"
+            sx={{ flex: isMobile ? 1 : 'auto' }}
           >
-            Refresh
+            {isMobile ? '🔄' : 'Refresh'}
           </Button>
         </Box>
       </Box>
@@ -360,17 +423,29 @@ const CurrentOrdersTab: React.FC = () => {
       <Box sx={{ mb: 3, borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={subTab} onChange={(_, nextTab) => setSubTab(nextTab)}>
           <Tab
-            label={`📥 New Orders (${newOrders.length})`}
+            label={
+              isMobile
+                ? `📥 (${newOrders.length})`
+                : `📥 New Orders (${newOrders.length})`
+            }
             icon={<ThumbUpIcon />}
             iconPosition="start"
           />
           <Tab
-            label={`🍳 Preparing (${preparingOrders.length})`}
+            label={
+              isMobile
+                ? `🍳 (${preparingOrders.length})`
+                : `🍳 Preparing (${preparingOrders.length})`
+            }
             icon={<LocalShippingIcon />}
             iconPosition="start"
           />
           <Tab
-            label={`✅ Done (${doneOrders.length})`}
+            label={
+              isMobile
+                ? `✅ (${doneOrders.length})`
+                : `✅ Done (${doneOrders.length})`
+            }
             icon={<CheckCircleIcon />}
             iconPosition="start"
           />
@@ -387,7 +462,7 @@ const CurrentOrdersTab: React.FC = () => {
       )}
 
       {/* Orders Grid */}
-      <Grid container spacing={2}>
+      <Grid container spacing={isMobile ? 1 : 2}>
         {displayOrders.map((order) => (
           <OrderCard
             key={order.id}
@@ -397,6 +472,7 @@ const CurrentOrdersTab: React.FC = () => {
             updatingOrderId={updatingOrderId}
             onAccept={handleAcceptOrder}
             onMarkDone={handleMarkDone}
+            isMobile={isMobile}
           />
         ))}
       </Grid>
@@ -411,6 +487,7 @@ interface OrderCardProps {
   updatingOrderId: string | null;
   onAccept: (order: Order) => void;
   onMarkDone: (order: Order) => void;
+  isMobile: boolean;
 }
 
 const OrderCard: React.FC<OrderCardProps> = ({
@@ -420,6 +497,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
   updatingOrderId,
   onAccept,
   onMarkDone,
+  isMobile,
 }) => {
   const borderColor =
     order.status === OrderStatus.COMPLETED
@@ -439,7 +517,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
           borderColor,
         }}
       >
-        <CardContent sx={{ flexGrow: 1 }}>
+        <CardContent sx={{ flexGrow: 1, p: isMobile ? 1.5 : 2 }}>
           {/* Header */}
           {/* <Box
             sx={{
@@ -467,21 +545,23 @@ const OrderCard: React.FC<OrderCardProps> = ({
           <Divider sx={{ my: 1.5 }} /> */}
 
           {/* Customer Info */}
-          <Box sx={{ mb: 2 }}>
+          <Box sx={{ mb: isMobile ? 1.5 : 2 }}>
             <Typography
-              variant="subtitle2"
+              variant={isMobile ? 'caption' : 'subtitle2'}
               sx={{ fontWeight: 'bold', mb: 0.5 }}
             >
               👤 Customer
             </Typography>
-            <Typography variant="body2">{order.customerName}</Typography>
-            <Typography variant="body2">{order.customerPhone}</Typography>
+            <Typography variant={isMobile ? 'caption' : 'body2'}>
+              {order.customerName}
+            </Typography>
+            <Typography variant="caption">{order.customerPhone}</Typography>
           </Box>
 
           {/* Fulfillment Type */}
-          <Box sx={{ mb: 2 }}>
+          <Box sx={{ mb: isMobile ? 1.5 : 2 }}>
             <Typography
-              variant="subtitle2"
+              variant={isMobile ? 'caption' : 'subtitle2'}
               sx={{ fontWeight: 'bold', mb: 0.5 }}
             >
               {order.fulfillmentType === OrderFulfillmentType.PICKUP
@@ -490,12 +570,15 @@ const OrderCard: React.FC<OrderCardProps> = ({
                   ? '⏰ Scheduled'
                   : '🚚 Delivery'}
             </Typography>
-            <Typography variant="body2">{order.deliveryAddress}</Typography>
+            <Typography variant="caption">{order.deliveryAddress}</Typography>
           </Box>
 
           {/* Items */}
-          <Box sx={{ mb: 2 }}>
-            <Typography variant="subtitle2" sx={{ fontWeight: 'bold', mb: 1 }}>
+          <Box sx={{ mb: isMobile ? 1.5 : 2 }}>
+            <Typography
+              variant={isMobile ? 'caption' : 'subtitle2'}
+              sx={{ fontWeight: 'bold', mb: 1 }}
+            >
               📦 Items ({order.items.length})
             </Typography>
             <List sx={{ py: 0, px: 0 }}>
@@ -510,12 +593,18 @@ const OrderCard: React.FC<OrderCardProps> = ({
                 return (
                   <ListItem
                     key={idx}
-                    sx={{ py: 0.5, px: 0, fontSize: '0.875rem' }}
+                    sx={{
+                      py: isMobile ? 0.25 : 0.5,
+                      px: 0,
+                      fontSize: isMobile ? '0.75rem' : '0.875rem',
+                    }}
                   >
                     <ListItemText
-                      primary={`${item.itemName}${variantText} × ${item.quantity}`}
+                      primary={`${item.itemName}${variantText.length > 20 && isMobile ? '' : variantText} ×${item.quantity}`}
                       secondary={`₹${(item.unitPrice * item.quantity).toFixed(2)}`}
-                      primaryTypographyProps={{ variant: 'body2' }}
+                      primaryTypographyProps={{
+                        variant: isMobile ? 'caption' : 'body2',
+                      }}
                       secondaryTypographyProps={{
                         variant: 'caption',
                       }}
@@ -526,15 +615,18 @@ const OrderCard: React.FC<OrderCardProps> = ({
             </List>
           </Box>
 
-          <Divider sx={{ my: 1.5 }} />
+          <Divider sx={{ my: isMobile ? 1 : 1.5 }} />
 
           {/* Total */}
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Typography variant="subtitle2" sx={{ fontWeight: 'bold' }}>
+            <Typography
+              variant={isMobile ? 'caption' : 'subtitle2'}
+              sx={{ fontWeight: 'bold' }}
+            >
               Total:
             </Typography>
             <Typography
-              variant="subtitle2"
+              variant={isMobile ? 'caption' : 'subtitle2'}
               sx={{ fontWeight: 'bold', color: '#ff6b6b' }}
             >
               ₹{order.totalAmount.toFixed(2)}
@@ -543,17 +635,29 @@ const OrderCard: React.FC<OrderCardProps> = ({
         </CardContent>
 
         {/* Action Buttons */}
-        <CardActions sx={{ pt: 0, flexDirection: 'column', gap: 1 }}>
+        <CardActions
+          sx={{
+            pt: isMobile ? 1 : 0,
+            flexDirection: 'column',
+            gap: 1,
+            p: isMobile ? 1.5 : 2,
+          }}
+        >
           {subTab === 0 && (
             <Button
               fullWidth
               variant="contained"
               color="success"
-              startIcon={<ThumbUpIcon />}
+              size={isMobile ? 'small' : 'medium'}
+              startIcon={isMobile ? undefined : <ThumbUpIcon />}
               onClick={() => onAccept(order)}
               disabled={isUpdating || updatingOrderId === order.id}
             >
-              {updatingOrderId === order.id ? 'Accepting...' : 'Accept Order'}
+              {updatingOrderId === order.id
+                ? 'Accepting...'
+                : isMobile
+                  ? '✅ Accept'
+                  : 'Accept Order'}
             </Button>
           )}
 
@@ -562,16 +666,26 @@ const OrderCard: React.FC<OrderCardProps> = ({
               fullWidth
               variant="contained"
               color="success"
-              startIcon={<CheckCircleIcon />}
+              size={isMobile ? 'small' : 'medium'}
+              startIcon={isMobile ? undefined : <CheckCircleIcon />}
               onClick={() => onMarkDone(order)}
               disabled={isUpdating || updatingOrderId === order.id}
             >
-              {updatingOrderId === order.id ? 'Marking Done...' : 'Mark Done'}
+              {updatingOrderId === order.id
+                ? 'Marking...'
+                : isMobile
+                  ? '✅ Done'
+                  : 'Mark Done'}
             </Button>
           )}
 
           {subTab === 2 && (
-            <Button fullWidth variant="outlined" disabled>
+            <Button
+              fullWidth
+              variant="outlined"
+              disabled
+              size={isMobile ? 'small' : 'medium'}
+            >
               ✓ Completed
             </Button>
           )}

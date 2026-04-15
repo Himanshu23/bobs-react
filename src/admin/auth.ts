@@ -22,20 +22,51 @@ export interface AuthState {
 const loginToBackend = async (
   credentials: LoginCredentials
 ): Promise<AuthResponse> => {
-  const response = await fetch(ENDPOINTS.AUTH_LOGIN, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(credentials),
-  });
+  // Development mode: Allow local testing with mock credentials
+  const MOCK_USERNAME = 'koko';
+  const MOCK_PASSWORD = 'koko102136';
 
-  if (!response.ok) {
-    throw new Error('Invalid username or password');
+  if (
+    credentials.username === MOCK_USERNAME &&
+    credentials.password === MOCK_PASSWORD
+  ) {
+    console.log('[DEV] Using mock authentication');
+    return {
+      token: 'mock_dev_token_' + Date.now(),
+      username: credentials.username,
+    };
   }
 
-  const data: AuthResponse = await response.json();
-  return data;
+  // Try real backend
+  try {
+    const response = await fetch(ENDPOINTS.AUTH_LOGIN, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(credentials),
+    });
+
+    if (!response.ok) {
+      throw new Error('Invalid username or password');
+    }
+
+    const data: AuthResponse = await response.json();
+    return data;
+  } catch (error) {
+    // If backend fails and credentials are mock, use mock auth
+    if (
+      credentials.username === MOCK_USERNAME &&
+      credentials.password === MOCK_PASSWORD
+    ) {
+      console.log('[DEV] Backend unavailable, using mock authentication');
+      return {
+        token: 'mock_dev_token_' + Date.now(),
+        username: credentials.username,
+      };
+    }
+    throw error;
+  }
 };
 
 export const useLogin = () => {

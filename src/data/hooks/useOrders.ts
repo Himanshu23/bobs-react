@@ -1,33 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Order, OrderStatus } from '../../types';
+import { Order, OrderRespnse, OrderStatus } from '../../types';
 import { ENDPOINTS } from '../../config/api';
-
-/**
- * Get auth token from localStorage
- */
-const getAuthToken = (): string | null => {
-  const stored = localStorage.getItem('admin_auth_token');
-  if (stored) {
-    try {
-      const data = JSON.parse(stored);
-      return data.token;
-    } catch {
-      return null;
-    }
-  }
-  return null;
-};
-
-/**
- * Get headers with auth token
- */
-const getHeaders = (): Record<string, string> => {
-  const token = getAuthToken();
-  return {
-    'Content-Type': 'application/json',
-    ...(token && { Authorization: `Bearer ${token}` }),
-  };
-};
+import { getHeaders } from '../../utils/authHelpers';
 
 const createOrder = async (order: Order): Promise<Order> => {
   const response = await fetch(ENDPOINTS.CREATE_ORDER, {
@@ -47,7 +21,7 @@ const createOrder = async (order: Order): Promise<Order> => {
 const fetchOrdersByDateRange = async (
   fromDate: string,
   toDate: string
-): Promise<Order[]> => {
+): Promise<OrderRespnse> => {
   const response = await fetch(
     `${ENDPOINTS.CREATE_ORDER}?fromDate=${fromDate}&toDate=${toDate}`,
     {
@@ -60,13 +34,13 @@ const fetchOrdersByDateRange = async (
     throw new Error(`Failed to fetch orders: ${response.statusText}`);
   }
 
-  const data: Order[] = await response.json();
+  const data: OrderRespnse = await response.json();
   return data;
 };
 
 const fetchOrdersByStatus = async (
   statuses: OrderStatus[]
-): Promise<Order[]> => {
+): Promise<OrderRespnse> => {
   const statusParams = statuses
     .map((status) => `status=${encodeURIComponent(status)}`)
     .join('&');
@@ -79,7 +53,7 @@ const fetchOrdersByStatus = async (
     throw new Error(`Failed to fetch orders by status: ${response.statusText}`);
   }
 
-  const data: Order[] = await response.json();
+  const data: OrderRespnse = await response.json();
   return data;
 };
 
@@ -116,7 +90,7 @@ export const useCreateOrder = () => {
 };
 
 export const useOrdersByDateRange = (fromDate: string, toDate: string) => {
-  return useQuery<Order[], Error>({
+  return useQuery<OrderRespnse, Error>({
     queryKey: ['orders', fromDate, toDate],
     queryFn: () => fetchOrdersByDateRange(fromDate, toDate),
     enabled: !!fromDate && !!toDate,
@@ -126,7 +100,7 @@ export const useOrdersByDateRange = (fromDate: string, toDate: string) => {
 };
 
 export const useCurrentOrders = () => {
-  return useQuery<Order[], Error>({
+  return useQuery<OrderRespnse, Error>({
     queryKey: ['currentOrders'],
     queryFn: () =>
       fetchOrdersByStatus([

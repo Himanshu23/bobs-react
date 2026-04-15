@@ -1,10 +1,12 @@
 // API Configuration
-//export const API_BASE_URL = 'http://localhost:8080/api';
-export const API_BASE_URL =
-  'https://bobsbackend-cndzehbydyf2gyb4.centralindia-01.azurewebsites.net/api';
+export const API_BASE_URL = 'http://localhost:8080/api';
+// export const API_BASE_URL =
+//   'https://bobsbackend-cndzehbydyf2gyb4.centralindia-01.azurewebsites.net/api';
 
-export const API_BASE_SOCKET_URL =
-  'https://bobsbackend-cndzehbydyf2gyb4.centralindia-01.azurewebsites.net';
+// export const API_BASE_SOCKET_URL =
+//   'https://bobsbackend-cndzehbydyf2gyb4.centralindia-01.azurewebsites.net';
+
+export const API_BASE_SOCKET_URL = 'http://localhost:8080';
 
 // API Endpoints
 export const ENDPOINTS = {

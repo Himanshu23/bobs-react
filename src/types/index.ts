@@ -136,3 +136,8 @@ export interface Order {
   createdAt?: string;
   updatedAt?: string;
 }
+
+export interface OrderRespnse {
+  orders: Order[];
+  total: number;
+}

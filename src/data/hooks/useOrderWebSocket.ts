@@ -20,7 +20,13 @@ export const useOrderWebSocket = (
   const clientRef = useRef<Client | null>(null);
   const subscriptionsRef = useRef<StompSubscription[]>([]);
   const seenOrderIdsRef = useRef<Set<string>>(new Set());
+  const reconnectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null
+  );
+  const pollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [isConnected, setIsConnected] = useState(false);
+  const isPageVisibleRef = useRef(true);
+  const lastMessageTimeRef = useRef<number>(Date.now());
 
   const handleMessage = useCallback(
     (message: WebSocketMessage) => {
@@ -46,6 +52,16 @@ export const useOrderWebSocket = (
   );
 
   const disconnect = useCallback(() => {
+    // Clear any pending timeouts
+    if (reconnectTimeoutRef.current) {
+      clearTimeout(reconnectTimeoutRef.current);
+      reconnectTimeoutRef.current = null;
+    }
+    if (pollTimeoutRef.current) {
+      clearTimeout(pollTimeoutRef.current);
+      pollTimeoutRef.current = null;
+    }
+
     subscriptionsRef.current.forEach((s) => {
       try {
         s.unsubscribe();
@@ -71,6 +87,11 @@ export const useOrderWebSocket = (
       return;
     }
 
+    if (!isPageVisibleRef.current) {
+      console.log('[WS-HOOK] page not visible, deferring connection');
+      return;
+    }
+
     console.log('[WS-HOOK] HOOK_ACTIVE: useOrderWebSocket');
     console.log('[WS-HOOK] connecting', {
       sockJsUrl: `${WS_BASE_URL}/ws`,
@@ -79,11 +100,13 @@ export const useOrderWebSocket = (
 
     const client = new Client({
       webSocketFactory: () => new SockJS(`${WS_BASE_URL}/ws`),
-      reconnectDelay: 5000,
+      reconnectDelay: 3000, // Faster reconnection attempts
+      // maxReconnectAttempts: 10, // More reconnection attempts
 
       onConnect: () => {
         console.log('[WS-HOOK] ✅ STOMP Connected');
         setIsConnected(true);
+        lastMessageTimeRef.current = Date.now();
 
         const subOrders = client.subscribe(
           '/topic/orders.created',
@@ -91,6 +114,7 @@ export const useOrderWebSocket = (
             try {
               const parsed: WebSocketMessage = JSON.parse(frame.body);
               console.log('[WS-HOOK] message received:', parsed.type);
+              lastMessageTimeRef.current = Date.now();
               handleMessage(parsed);
             } catch (err) {
               console.error('[WS-HOOK] message parse error:', err, frame.body);
@@ -118,6 +142,7 @@ export const useOrderWebSocket = (
 
       onWebSocketError: (event) => {
         console.error('[WS-HOOK] ❌ WebSocket error:', event);
+        setIsConnected(false);
       },
 
       onWebSocketClose: (event) => {
@@ -127,6 +152,15 @@ export const useOrderWebSocket = (
           reason: event.reason,
           wasClean: event.wasClean,
         });
+
+        // Attempt immediate reconnect if page is visible (after short delay)
+        if (isPageVisibleRef.current && !reconnectTimeoutRef.current) {
+          reconnectTimeoutRef.current = setTimeout(() => {
+            reconnectTimeoutRef.current = null;
+            console.log('[WS-HOOK] attempting reconnect after close...');
+            connect();
+          }, 1000);
+        }
       },
 
       onDisconnect: () => {
@@ -154,8 +188,56 @@ export const useOrderWebSocket = (
   }, []);
 
   useEffect(() => {
+    // Handle visibility change (page goes to background/foreground)
+    const handleVisibilityChange = () => {
+      const isVisible = document.visibilityState === 'visible';
+      console.log('[WS-HOOK] visibility change:', isVisible);
+      isPageVisibleRef.current = isVisible;
+
+      if (isVisible) {
+        // Page came back to foreground - reconnect immediately
+        console.log('[WS-HOOK] page visible, reconnecting WebSocket...');
+        if (!clientRef.current?.active) {
+          connect();
+        } else {
+          // Already connected, just log it
+          console.log('[WS-HOOK] WebSocket already active');
+        }
+      } else {
+        // Page going to background - disconnect to save resources
+        console.log('[WS-HOOK] page hidden, disconnecting WebSocket...');
+        disconnect();
+      }
+    };
+
+    // Handle focus/blur events (tab visibility)
+    const handleFocus = () => {
+      console.log('[WS-HOOK] window focus event');
+      isPageVisibleRef.current = true;
+      if (!clientRef.current?.active) {
+        connect();
+      }
+    };
+
+    const handleBlur = () => {
+      console.log('[WS-HOOK] window blur event');
+      isPageVisibleRef.current = false;
+      disconnect();
+    };
+
+    // Listen for visibility changes
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('focus', handleFocus);
+    window.addEventListener('blur', handleBlur);
+
     connect();
-    return () => disconnect();
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('focus', handleFocus);
+      window.removeEventListener('blur', handleBlur);
+      disconnect();
+    };
   }, [connect, disconnect]);
 
   return {

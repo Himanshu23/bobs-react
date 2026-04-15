@@ -1,6 +1,6 @@
 /**
  * Utility for playing notification sounds with queuing and deduplication
- * Uses Web Audio API for better browser compatibility
+ * Includes mobile-friendly audio handling with user gesture requirement
  */
 
 interface NotificationOpts {
@@ -17,42 +17,8 @@ interface RepeatingSoundConfig {
 }
 
 /**
- * Create a bell/chime sound using Web Audio API
- */
-const playBellSound = (): void => {
-  try {
-    const AudioContextClass =
-      window.AudioContext || (window as any).webkitAudioContext;
-    const audioContext = new AudioContextClass();
-    const oscillator = audioContext.createOscillator();
-    const gainNode = audioContext.createGain();
-
-    oscillator.connect(gainNode);
-    gainNode.connect(audioContext.destination);
-
-    // Create bell-like sound: 800Hz then 600Hz
-    oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
-    oscillator.frequency.exponentialRampToValueAtTime(
-      600,
-      audioContext.currentTime + 0.2
-    );
-
-    // Volume envelope
-    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(
-      0.01,
-      audioContext.currentTime + 0.5
-    );
-
-    oscillator.start(audioContext.currentTime);
-    oscillator.stop(audioContext.currentTime + 0.5);
-  } catch (error) {
-    console.error('Failed to play bell sound:', error);
-  }
-};
-
-/**
  * Sound notification manager with queue and deduplication
+ * Includes mobile-friendly audio handling with user gesture requirement
  */
 class SoundNotificationManager {
   private isPlaying = false;
@@ -62,11 +28,63 @@ class SoundNotificationManager {
   private audioCache = new Map<string, HTMLAudioElement>();
   private repeatingSound: RepeatingSoundConfig = { enabled: false };
   private masterVolume = 1.0; // 0 to 1, default max volume
+  private audioContext: AudioContext | null = null;
+  private audioContextInitialized = false;
+  private audioEnabled = true;
+  private isMobile = this.detectMobileDevice();
+
+  /**
+   * Detect if running on mobile device
+   */
+  private detectMobileDevice(): boolean {
+    const userAgent =
+      navigator.userAgent || navigator.vendor || (window as any).opera;
+    const mobileRegex =
+      /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i;
+    return mobileRegex.test(userAgent.toLowerCase());
+  }
+
+  /**
+   * Initialize AudioContext with user gesture (required for iOS)
+   * Must be called from a user interaction handler
+   */
+  initializeAudioContext(): void {
+    if (this.audioContextInitialized) return;
+
+    try {
+      const AudioContextClass =
+        window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioContextClass) {
+        console.warn('AudioContext not supported in this browser');
+        this.audioEnabled = false;
+        return;
+      }
+
+      // Create a dummy oscillator to "wake up" the audio context
+      this.audioContext = new AudioContextClass();
+
+      // Create and stop a dummy sound to initialize the context
+      const osc = this.audioContext.createOscillator();
+      const gain = this.audioContext.createGain();
+      osc.connect(gain);
+      gain.connect(this.audioContext.destination);
+      osc.start(this.audioContext.currentTime);
+      osc.stop(this.audioContext.currentTime + 0.001);
+
+      this.audioContextInitialized = true;
+      console.log('[AUDIO] AudioContext initialized (mobile-friendly)');
+    } catch (error) {
+      console.warn('[AUDIO] Failed to initialize AudioContext:', error);
+      this.audioEnabled = false;
+    }
+  }
 
   /**
    * Play a sound, either from queue or immediately
    */
   async play(soundUrl?: string): Promise<void> {
+    if (!this.audioEnabled) return;
+
     const now = Date.now();
 
     // Add to queue
@@ -114,14 +132,14 @@ class SoundNotificationManager {
   }
 
   /**
-   * Play audio file
+   * Play audio file with proper mobile handling
    */
   private playAudio(soundUrl?: string): Promise<void> {
     return new Promise((resolve) => {
       try {
         if (!soundUrl) {
           // Use Web Audio API for default sound
-          playBellSound();
+          this.playBellSoundLoud();
           resolve();
           return;
         }
@@ -129,12 +147,13 @@ class SoundNotificationManager {
         // Use cached audio or create new
         if (!this.audioCache.has(soundUrl)) {
           const newAudio = new Audio(soundUrl);
-          newAudio.volume = 0.7; // Set volume to 70%
+          // Lower volume for file-based audio (already pre-recorded at higher level)
+          newAudio.volume = this.isMobile ? 1.0 : 0.7;
           this.audioCache.set(soundUrl, newAudio);
         }
         const cachedAudio = this.audioCache.get(soundUrl);
         if (!cachedAudio) {
-          console.warn('Failed to get cached audio');
+          console.warn('[AUDIO] Failed to get cached audio');
           resolve();
           return;
         }
@@ -150,7 +169,7 @@ class SoundNotificationManager {
         };
 
         const onError = (): void => {
-          console.error('Audio playback error');
+          console.warn('[AUDIO] Audio playback error');
           audio.removeEventListener('ended', onEnded);
           audio.removeEventListener('error', onError);
           resolve(); // Resolve even on error
@@ -163,7 +182,7 @@ class SoundNotificationManager {
         const timeout = setTimeout(() => {
           audio.removeEventListener('ended', onEnded);
           audio.removeEventListener('error', onError);
-          console.debug('Audio playback timeout reached');
+          console.debug('[AUDIO] Audio playback timeout reached');
           resolve();
         }, 3000);
 
@@ -173,19 +192,21 @@ class SoundNotificationManager {
         if (playPromise !== undefined) {
           playPromise
             .then(() => {
-              console.debug('Audio playback started successfully');
+              console.debug('[AUDIO] Audio playback started successfully');
               clearTimeout(timeout);
             })
             .catch((error: Error) => {
               clearTimeout(timeout);
-              console.error('Audio play rejected:', error.message);
+              console.warn('[AUDIO] Audio play rejected:', error.message);
               audio.removeEventListener('ended', onEnded);
               audio.removeEventListener('error', onError);
+              // Fallback to bell or vibration
+              this.playBellSoundLoud();
               resolve();
             });
         }
       } catch (error) {
-        console.error('Error in playAudio:', error);
+        console.warn('[AUDIO] Error in playAudio:', error);
         resolve();
       }
     });
@@ -251,38 +272,63 @@ class SoundNotificationManager {
   }
 
   /**
-   * Play bell sound at high volume
+   * Play bell sound at high volume (loud and persistent for notifications)
    */
   private playBellSoundLoud(): void {
     try {
-      const AudioContextClass =
-        window.AudioContext || (window as any).webkitAudioContext;
-      const audioContext = new AudioContextClass();
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
+      // Initialize AudioContext if needed (first time)
+      if (!this.audioContextInitialized) {
+        this.initializeAudioContext();
+      }
+
+      if (!this.audioContext || !this.audioEnabled) {
+        // Fallback to vibration on mobile
+        this.tryVibration();
+        return;
+      }
+
+      // Reuse existing AudioContext (avoid creating new ones which can fail on iOS)
+      const oscillator = this.audioContext.createOscillator();
+      const gainNode = this.audioContext.createGain();
 
       oscillator.connect(gainNode);
-      gainNode.connect(audioContext.destination);
+      gainNode.connect(this.audioContext.destination);
 
       // Create loud bell-like sound: 800Hz then 600Hz
-      oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+      oscillator.frequency.setValueAtTime(800, this.audioContext.currentTime);
       oscillator.frequency.exponentialRampToValueAtTime(
         600,
-        audioContext.currentTime + 0.2
+        this.audioContext.currentTime + 0.2
       );
 
       // LOUD volume with decay (0.8 max volume)
       const loudVolume = Math.min(0.8 * this.masterVolume, 1.0);
-      gainNode.gain.setValueAtTime(loudVolume, audioContext.currentTime);
+      gainNode.gain.setValueAtTime(loudVolume, this.audioContext.currentTime);
       gainNode.gain.exponentialRampToValueAtTime(
         0.05,
-        audioContext.currentTime + 0.5
+        this.audioContext.currentTime + 0.5
       );
 
-      oscillator.start(audioContext.currentTime);
-      oscillator.stop(audioContext.currentTime + 0.5);
+      oscillator.start(this.audioContext.currentTime);
+      oscillator.stop(this.audioContext.currentTime + 0.5);
     } catch (error) {
-      console.error('Failed to play loud bell sound:', error);
+      console.warn('[AUDIO] Failed to play loud bell sound:', error);
+      // Fallback to vibration
+      this.tryVibration();
+    }
+  }
+
+  /**
+   * Try to vibrate device (Android fallback)
+   */
+  private tryVibration(): void {
+    try {
+      if ('vibrate' in navigator) {
+        // Pattern: vibrate 100ms, pause 50ms, vibrate 200ms
+        navigator.vibrate([100, 50, 200]);
+      }
+    } catch (error) {
+      console.debug('[VIBRATION] Vibration not available:', error);
     }
   }
 
@@ -305,6 +351,14 @@ class SoundNotificationManager {
 }
 
 const soundManager = new SoundNotificationManager();
+
+/**
+ * Initialize audio context with user gesture (required for iOS)
+ * Must be called from a user interaction handler (click, tap, etc.)
+ */
+export const initializeAudio = (): void => {
+  soundManager.initializeAudioContext();
+};
 
 /**
  * Play notification sound with automatic queuing
