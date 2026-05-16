@@ -38,6 +38,7 @@ export interface FoodItem {
   description: string;
   veg: boolean;
   rating: number;
+  reorderCount?: number;
   image: string;
   category: FoodCategory;
   priceOptions: {

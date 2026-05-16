@@ -33,6 +33,8 @@ import { useNavigate } from 'react-router-dom';
 import { RootState, AppDispatch, removeFromCart } from '../redux/store';
 import { useFoodItems } from '../data/hooks/useFoodItems';
 import { CartActions, CATEGORY_ORDER, FoodItem, ItemOptions } from '../types';
+import { DISCOUNTS } from '../data/discounts';
+import ActiveDiscountsDropdown from '../components/ActiveDiscountsDropdown';
 import FoodItemCard from '../components/listing/foodItemCard';
 import ProductDetailModal from '../components/productDetail';
 import QuantityUpdate from '../components/quanityUpdate/quantityUpdate';
@@ -348,6 +350,30 @@ const FoodListPage: React.FC = () => {
     setExpandedCategory(expandedCategory === category ? null : category);
   };
 
+  const mostReorderedItems = useMemo(() => {
+    if (items.length === 0) {
+      return [];
+    }
+
+    return [...items]
+      .sort((a, b) => {
+        const leftScore = a.reorderCount ?? a.rating * 10;
+        const rightScore = b.reorderCount ?? b.rating * 10;
+
+        if (rightScore !== leftScore) {
+          return rightScore - leftScore;
+        }
+
+        return b.rating - a.rating;
+      })
+      .slice(0, 6);
+  }, [items]);
+
+  const activeDiscounts = useMemo(
+    () => DISCOUNTS.filter((discount) => discount.active),
+    []
+  );
+
   const handleItemSelect = (category: string, itemId?: string) => {
     setSelectedCategory(category);
     if (itemId) {
@@ -372,7 +398,69 @@ const FoodListPage: React.FC = () => {
     <>
       <Container maxWidth="lg">
         {/* Search Bar and Category Tabs */}
-        <Box sx={{ pt: 2, pb: 1 }}>
+        {searchQuery.trim() === '' && mostReorderedItems.length > 0 && (
+          <Box sx={{ mb: 3 }}>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                flexWrap: 'wrap',
+                gap: 1,
+                mb: 1,
+              }}
+            >
+              <Box>
+                <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                  Most reordered
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Popular dishes customers keep coming back for.
+                </Typography>
+              </Box>
+            </Box>
+            <Box
+              sx={{
+                display: 'flex',
+                overflowX: 'auto',
+                gap: 2,
+                px: 1,
+                py: 1,
+                '&::-webkit-scrollbar': {
+                  height: 8,
+                },
+                '&::-webkit-scrollbar-thumb': {
+                  backgroundColor: 'rgba(0, 0, 0, 0.2)',
+                  borderRadius: 4,
+                },
+              }}
+            >
+              {mostReorderedItems.map((food) => (
+                <Box
+                  key={`top_${food.id}`}
+                  sx={{ minWidth: 360, flex: '0 0 auto' }}
+                >
+                  <FoodItemCard
+                    item={food}
+                    handleCart={handleCart}
+                    searchQuery={searchQuery}
+                  />
+                </Box>
+              ))}
+            </Box>
+          </Box>
+        )}
+        <Box
+          sx={{
+            position: 'sticky',
+            top: 0,
+            zIndex: 20,
+            backgroundColor: 'background.paper',
+            pt: 2,
+            pb: 1,
+          }}
+        >
+          <ActiveDiscountsDropdown discounts={activeDiscounts} />
           <Box sx={{ display: 'flex', gap: 1, mb: 1.5, alignItems: 'center' }}>
             <TextField
               fullWidth
