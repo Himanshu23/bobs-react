@@ -137,7 +137,7 @@ export interface Order {
   updatedAt?: string;
 }
 
-export interface OrderRespnse {
+export interface OrderResponse {
   orders: Order[];
-  total: number;
+  totalAmount: number;
 }

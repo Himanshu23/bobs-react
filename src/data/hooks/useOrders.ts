@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Order, OrderRespnse, OrderStatus } from '../../types';
+import { Order, OrderResponse, OrderStatus } from '../../types';
 import { ENDPOINTS } from '../../config/api';
 import { getHeaders } from '../../utils/authHelpers';
 
@@ -21,7 +21,7 @@ const createOrder = async (order: Order): Promise<Order> => {
 const fetchOrdersByDateRange = async (
   fromDate: string,
   toDate: string
-): Promise<OrderRespnse> => {
+): Promise<OrderResponse> => {
   const response = await fetch(
     `${ENDPOINTS.CREATE_ORDER}?fromDate=${fromDate}&toDate=${toDate}`,
     {
@@ -34,13 +34,13 @@ const fetchOrdersByDateRange = async (
     throw new Error(`Failed to fetch orders: ${response.statusText}`);
   }
 
-  const data: OrderRespnse = await response.json();
+  const data: OrderResponse = await response.json();
   return data;
 };
 
 const fetchOrdersByStatus = async (
   statuses: OrderStatus[]
-): Promise<OrderRespnse> => {
+): Promise<OrderResponse> => {
   const statusParams = statuses
     .map((status) => `status=${encodeURIComponent(status)}`)
     .join('&');
@@ -53,7 +53,7 @@ const fetchOrdersByStatus = async (
     throw new Error(`Failed to fetch orders by status: ${response.statusText}`);
   }
 
-  const data: OrderRespnse = await response.json();
+  const data: OrderResponse = await response.json();
   return data;
 };
 
@@ -90,7 +90,7 @@ export const useCreateOrder = () => {
 };
 
 export const useOrdersByDateRange = (fromDate: string, toDate: string) => {
-  return useQuery<OrderRespnse, Error>({
+  return useQuery<OrderResponse, Error>({
     queryKey: ['orders', fromDate, toDate],
     queryFn: () => fetchOrdersByDateRange(fromDate, toDate),
     enabled: !!fromDate && !!toDate,
@@ -100,7 +100,7 @@ export const useOrdersByDateRange = (fromDate: string, toDate: string) => {
 };
 
 export const useCurrentOrders = () => {
-  return useQuery<OrderRespnse, Error>({
+  return useQuery<OrderResponse, Error>({
     queryKey: ['currentOrders'],
     queryFn: () =>
       fetchOrdersByStatus([

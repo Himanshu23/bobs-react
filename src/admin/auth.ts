@@ -22,22 +22,6 @@ export interface AuthState {
 const loginToBackend = async (
   credentials: LoginCredentials
 ): Promise<AuthResponse> => {
-  // Development mode: Allow local testing with mock credentials
-  const MOCK_USERNAME = 'koko';
-  const MOCK_PASSWORD = 'koko102136';
-
-  if (
-    credentials.username === MOCK_USERNAME &&
-    credentials.password === MOCK_PASSWORD
-  ) {
-    console.log('[DEV] Using mock authentication');
-    return {
-      token: 'mock_dev_token_' + Date.now(),
-      username: credentials.username,
-    };
-  }
-
-  // Try real backend
   try {
     const response = await fetch(ENDPOINTS.AUTH_LOGIN, {
       method: 'POST',
@@ -54,19 +38,9 @@ const loginToBackend = async (
     const data: AuthResponse = await response.json();
     return data;
   } catch (error) {
-    // If backend fails and credentials are mock, use mock auth
-    if (
-      credentials.username === MOCK_USERNAME &&
-      credentials.password === MOCK_PASSWORD
-    ) {
-      console.log('[DEV] Backend unavailable, using mock authentication');
-      return {
-        token: 'mock_dev_token_' + Date.now(),
-        username: credentials.username,
-      };
-    }
-    throw error;
+    console.log({ error });
   }
+  return Promise.reject(new Error('Login failed. Please try again.'));
 };
 
 export const useLogin = () => {

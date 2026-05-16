@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { trackEvent } from '../utils/analytics';
 import { recordAudioForMs } from '../utils/voiceRecorder';
+import { useSendAudio } from '../hooks/useSendAudio';
 
 const PHONE_NUMBER = '9643310092';
 const RECORDING_MS = 5000;
@@ -23,6 +24,7 @@ const Header: React.FC = () => {
   const navigate = useNavigate();
   const [isRecording, setIsRecording] = useState(false);
   const [voiceError, setVoiceError] = useState<string | null>(null);
+  const sendAudio = useSendAudio();
 
   const supportsVoice = useMemo(() => {
     return (
@@ -52,31 +54,6 @@ const Header: React.FC = () => {
       phone_number: PHONE_NUMBER,
     });
     window.location.href = `tel:${PHONE_NUMBER}`;
-  };
-
-  const sendAudio = async (blob: Blob) => {
-    const formData = new FormData();
-    formData.append('file', blob, 'voice.webm');
-
-    const res = await fetch('/api/voice/transcribe', {
-      method: 'POST',
-      body: formData,
-    });
-
-    if (!res.ok) {
-      throw new Error(`Voice upload failed (${res.status})`);
-    }
-
-    const data = (await res.json()) as { text?: string };
-    trackEvent('voice_transcribe_result', {
-      has_text: Boolean(data.text),
-    });
-
-    if (data.text) {
-      window.dispatchEvent(
-        new CustomEvent('voice:text', { detail: { text: data.text } })
-      );
-    }
   };
 
   const handleVoiceClick = async () => {
@@ -139,7 +116,15 @@ const Header: React.FC = () => {
                 : 'Record voice'
           }
         >
-          {supportsVoice ? (isRecording ? <MicOffIcon /> : <MicIcon />) : <MicOffIcon />}
+          {supportsVoice ? (
+            isRecording ? (
+              <MicOffIcon />
+            ) : (
+              <MicIcon />
+            )
+          ) : (
+            <MicOffIcon />
+          )}
         </IconButton>
         <IconButton color="inherit" onClick={handleCallClick}>
           <PhoneIcon />

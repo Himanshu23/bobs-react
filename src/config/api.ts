@@ -13,4 +13,5 @@ export const ENDPOINTS = {
   FOOD_ITEMS: `${API_BASE_URL}/food-items`,
   AUTH_LOGIN: `${API_BASE_URL}/auth/login`,
   CREATE_ORDER: `${API_BASE_URL}/orders`,
+  SEND_VOICE: `${API_BASE_URL}/voice`,
 } as const;

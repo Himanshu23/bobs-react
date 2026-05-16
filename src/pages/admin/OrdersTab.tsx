@@ -15,6 +15,7 @@ import {
   useTheme,
 } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import { formatPrice } from '../../utils/priceUtils';
 import { useOrdersByDateRange } from '../../data/hooks/useOrders';
 import OrderCard from './OrderCard';
 
@@ -35,7 +36,7 @@ const OrdersTab: React.FC = () => {
   const [fromDate, setFromDate] = useState<string>(today);
   const [toDate, setToDate] = useState<string>(today);
   const {
-    data: orders = [],
+    data: allOrders = { orders: [], totalAmount: 0 },
     isLoading,
     error,
     refetch,
@@ -172,7 +173,16 @@ const OrdersTab: React.FC = () => {
                     fontWeight: 500,
                   }}
                 >
-                  Total: {orders.length}
+                  Total: {allOrders.orders.length}
+                </Typography>
+                <Typography
+                  sx={{
+                    color: '#1976d2',
+                    fontSize: isMobile ? '0.9rem' : '1.1rem',
+                    fontWeight: 500,
+                  }}
+                >
+                  Total Amount: {formatPrice(allOrders.totalAmount ?? 0)}
                 </Typography>
               </Box>
             </CardContent>
@@ -198,7 +208,7 @@ const OrdersTab: React.FC = () => {
         )}
 
         {/* Empty State */}
-        {!isLoading && !error && orders.length === 0 && (
+        {!isLoading && !error && allOrders.orders.length === 0 && (
           <Grid item xs={12}>
             <Alert severity="info">
               No orders found for the selected date range.
@@ -209,8 +219,8 @@ const OrdersTab: React.FC = () => {
         {/* Orders Grid - Mobile Friendly Card Layout */}
         {!isLoading &&
           !error &&
-          orders.length > 0 &&
-          orders.map((order) => (
+          allOrders.orders.length > 0 &&
+          allOrders.orders.map((order) => (
             <Grid key={order.id} item xs={12} sm={6} md={4} lg={3}>
               <OrderCard order={order} isMobile={isMobile} />
             </Grid>
