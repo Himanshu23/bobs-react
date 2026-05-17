@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Bob\'s Restaurant</string>
+    <string name="title_activity_main">Bob\'s Restaurant</string>
+    <string name="package_name">com.bobs.restaurant</string>
+    <string name="custom_url_scheme">com.bobs.restaurant</string>
+</resources>

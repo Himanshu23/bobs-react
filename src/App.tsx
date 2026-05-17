@@ -20,6 +20,7 @@ import LoginPage from './pages/LoginPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import { initializeAnalytics, trackPageView } from './utils/analytics';
 import { queryClient } from './admin/api/queryClient';
+import { initPushNotifications } from './pushNotification';
 
 function AppLayout() {
   const location = useLocation();
@@ -35,6 +36,9 @@ function AppLayout() {
   useEffect(() => {
     trackPageView(`${location.pathname}${location.search}`);
   }, [location.pathname, location.search]);
+  useEffect(() => {
+    initPushNotifications();
+  }, []);
 
   return (
     <>
@@ -44,7 +48,7 @@ function AppLayout() {
         </AppBar>
       )}
       <Routes>
-        <Route path="/" element={<Navigate to="/bobs" replace />} />
+        <Route path="/" element={<Navigate to="/bobs/admin/login" replace />} />
         <Route path="/bobs/landing" element={<StaticLanding />} />
         <Route path="/bobs/foodList" element={<FoodList />} />
         <Route path="/bobs" element={<FoodList />} />

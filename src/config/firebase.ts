@@ -1,6 +1,6 @@
 // Firebase configuration - Initialize before using any Firebase services
-import { initializeApp } from 'firebase/app';
-import { getMessaging, onMessage, getToken } from 'firebase/messaging';
+import { initializeApp, type FirebaseApp } from 'firebase/app';
+import { getMessaging, onMessage, getToken, type Messaging } from 'firebase/messaging';
 
 /**
  * Firebase configuration
@@ -32,8 +32,8 @@ if (!isFirebaseConfigured) {
 }
 
 // Initialize Firebase
-let app;
-let messaging;
+let app: FirebaseApp | null = null;
+let messaging: Messaging | null = null;
 
 try {
   if (isFirebaseConfigured) {
