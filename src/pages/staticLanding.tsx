@@ -1,13 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
-interface LandingItem {
-  category: string;
-  name: string;
-  nonVeg: boolean;
-  image: string;
-  originalPrice: number;
-  discountedPrice: number;
-}
+import landingItems from '../data/landingData';
 
 const landingStyles = `
   :root {
@@ -310,12 +303,12 @@ const landingStyles = `
 `;
 
 const StaticLanding: React.FC = () => {
-  const [items, setItems] = useState<LandingItem[]>([]);
+  //const [items, setItems] = useState<LandingItem[]>();
 
-  useEffect(() => {
-    setItems([]);
-  }, []);
-
+  // useEffect(() => {
+  //   setItems(landingItems.items);
+  // }, []);
+  // console.log({ items });
   return (
     <>
       <style>{landingStyles}</style>
@@ -346,7 +339,7 @@ const StaticLanding: React.FC = () => {
 
           {/* Tiles */}
           <main className="tiles">
-            {items.map((item, index) => (
+            {landingItems.items.map((item, index) => (
               <article className="tile" key={index}>
                 {/* Tile Image Wrap */}
                 <div className="tile-image-wrap">
