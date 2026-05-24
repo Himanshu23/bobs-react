@@ -48,7 +48,7 @@ function AppLayout() {
         </AppBar>
       )}
       <Routes>
-        <Route path="/" element={<Navigate to="/bobs/admin/login" replace />} />
+        <Route path="/" element={<Navigate to="/bobs/foodList" replace />} />
         <Route path="/bobs/landing" element={<StaticLanding />} />
         <Route path="/bobs/foodList" element={<FoodList />} />
         <Route path="/bobs" element={<FoodList />} />

@@ -14,10 +14,12 @@ export enum FoodCategory {
   Burgers = 'Burgers',
   Soups = 'Soups',
   Rice = 'Rice',
+  COMBO = 'COMBO',
 }
 
 // Category order for display
 export const CATEGORY_ORDER = [
+  FoodCategory.COMBO,
   FoodCategory.Starters,
   FoodCategory.MainCourse,
   FoodCategory.Chinese,
