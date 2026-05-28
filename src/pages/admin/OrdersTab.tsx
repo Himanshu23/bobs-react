@@ -222,7 +222,11 @@ const OrdersTab: React.FC = () => {
           allOrders.orders.length > 0 &&
           allOrders.orders.map((order) => (
             <Grid key={order.id} item xs={12} sm={6} md={4} lg={3}>
-              <OrderCard order={order} isMobile={isMobile} />
+              <OrderCard
+                order={order}
+                isMobile={isMobile}
+                onDeleteSuccess={() => refetch()}
+              />
             </Grid>
           ))}
       </Grid>

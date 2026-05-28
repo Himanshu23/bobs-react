@@ -9,12 +9,15 @@ import {
   Divider,
   useMediaQuery,
   useTheme,
+  Stack,
 } from '@mui/material';
 import { Order, OrderStatus, OrderFulfillmentType } from '../../types';
+import OrderDeleteButton from '../../components/OrderDeleteButton';
 
 interface OrderCardProps {
   order: Order;
   onViewDetails?: (order: Order) => void;
+  onDeleteSuccess?: () => void;
   isMobile?: boolean;
 }
 
@@ -49,6 +52,7 @@ const getStatusColor = (
 const OrderCard: React.FC<OrderCardProps> = ({
   order,
   onViewDetails,
+  onDeleteSuccess,
   isMobile: propIsMobile,
 }) => {
   const theme = useTheme();
@@ -355,21 +359,32 @@ const OrderCard: React.FC<OrderCardProps> = ({
         )}
       </CardContent>
 
-      {/* Action Button */}
-      {onViewDetails && (
+      {/* Action Buttons */}
+      {(onViewDetails || onDeleteSuccess !== undefined) && (
         <Box sx={{ px: isMobile ? 1.25 : 2, pb: isMobile ? 1.25 : 2 }}>
-          <Button
-            variant="contained"
-            size="small"
-            fullWidth
-            onClick={() => onViewDetails(order)}
-            sx={{
-              fontSize: isMobile ? '0.75rem' : '0.875rem',
-              py: isMobile ? 0.75 : 1,
-            }}
-          >
-            View Details
-          </Button>
+          <Stack direction="row" spacing={1}>
+            {onViewDetails && (
+              <Button
+                variant="contained"
+                size="small"
+                fullWidth
+                onClick={() => onViewDetails(order)}
+                sx={{
+                  fontSize: isMobile ? '0.75rem' : '0.875rem',
+                  py: isMobile ? 0.75 : 1,
+                }}
+              >
+                View Details
+              </Button>
+            )}
+            <OrderDeleteButton
+              orderId={order.id}
+              orderNumber={order.id?.slice(-4)}
+              onDeleteSuccess={onDeleteSuccess}
+              variant="icon"
+              size="small"
+            />
+          </Stack>
         </Box>
       )}
     </Card>

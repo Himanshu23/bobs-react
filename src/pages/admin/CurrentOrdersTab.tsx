@@ -19,6 +19,7 @@ import {
   Tabs,
   IconButton,
   Tooltip,
+  Stack,
 } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
@@ -39,6 +40,7 @@ import {
   initializeAudio,
 } from '../../utils/notificationSound';
 import { initializeFCM } from '../../utils/firebaseMessaging';
+import OrderDeleteButton from '../../components/OrderDeleteButton';
 
 const CurrentOrdersTab: React.FC = () => {
   const [subTab, setSubTab] = useState(0);
@@ -689,6 +691,16 @@ const OrderCard: React.FC<OrderCardProps> = ({
               ✓ Completed
             </Button>
           )}
+
+          {/* Delete Button */}
+          <Stack direction={isMobile ? 'row' : 'column'} spacing={1} width="100%">
+            <OrderDeleteButton
+              orderId={order.id}
+              orderNumber={order.id?.slice(-4)}
+              variant="button"
+              size={isMobile ? 'small' : 'medium'}
+            />
+          </Stack>
         </CardActions>
       </Card>
     </Grid>

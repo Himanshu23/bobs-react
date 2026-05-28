@@ -14,7 +14,6 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  SelectChangeEvent,
   Divider,
   List,
   ListItem,
@@ -86,14 +85,9 @@ const createScheduleTimeOptions = (): string[] => {
 
 const SCHEDULE_TIME_OPTIONS = createScheduleTimeOptions();
 
-interface HabitatTowers {
-  [key: string]: string[];
-}
-
-const HABITAT_TOWERS: HabitatTowers = {
-  'Habitat Old': ['A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'B1', 'B2', 'C'],
-  'Habitat New': ['D1', 'D2', 'D3', 'D4', 'D5', 'D6', 'D7', 'E'],
-};
+// interface HabitatTowers {
+//   [key: string]: string[];
+// }
 
 const getInitialCheckoutForm = () =>
   getCheckoutFormFromLocalStorage() ?? {
@@ -151,12 +145,6 @@ const CheckoutPage: React.FC = () => {
   }, [customAddress, customerName, deliveryMethod, flatNumber, habitat, tower]);
 
   // Reset tower when habitat changes
-  const handleHabitatChange = (event: SelectChangeEvent<string>) => {
-    const newHabitat = event.target.value as string;
-    setHabitat(newHabitat);
-    setTower(''); // Reset tower selection
-    setAddressError('');
-  };
 
   const totalPrice = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
@@ -176,7 +164,6 @@ const CheckoutPage: React.FC = () => {
   const tax = totalAfterDiscount * 0.05;
   const finalTotal = totalAfterDiscount;
 
-  const availableTowers = habitat ? HABITAT_TOWERS[habitat] || [] : [];
   const hasHabitatAddress = Boolean(
     habitat && tower && flatNumber && flatNumber.trim() !== ''
   );
@@ -507,7 +494,7 @@ const CheckoutPage: React.FC = () => {
                     />
 
                     {/* Habitat Selection */}
-                    <FormControl fullWidth sx={{ mb: 3 }}>
+                    {/* <FormControl fullWidth sx={{ mb: 3 }}>
                       <InputLabel>Select Habitat</InputLabel>
                       <Select
                         value={habitat}
@@ -521,21 +508,21 @@ const CheckoutPage: React.FC = () => {
                           </MenuItem>
                         ))}
                       </Select>
-                    </FormControl>
+                    </FormControl> */}
 
                     {/* Two Options Side by Side */}
                     <Grid container spacing={2} sx={{ mb: 3 }}>
                       {/* Option 1: Tower + Flat Number */}
                       <Grid item xs={12} md={5}>
-                        <Box
+                        {/* <Box
                           sx={{
                             border: '2px solid #e0e0e0',
                             borderRadius: '12px',
                             padding: 3,
                             backgroundColor: '#fafafa',
                           }}
-                        >
-                          <Typography
+                        > */}
+                        {/* <Typography
                             variant="subtitle2"
                             sx={{
                               fontWeight: 'bold',
@@ -544,10 +531,10 @@ const CheckoutPage: React.FC = () => {
                             }}
                           >
                             🏢 Tower & Flat
-                          </Typography>
+                          </Typography> */}
 
-                          {/* Tower and Flat - Side by Side */}
-                          <Grid container spacing={2}>
+                        {/* Tower and Flat - Side by Side */}
+                        {/* <Grid container spacing={2}>
                             <Grid item xs={6}>
                               <FormControl
                                 fullWidth
@@ -585,21 +572,21 @@ const CheckoutPage: React.FC = () => {
                                 }}
                               />
                             </Grid>
-                          </Grid>
+                          </Grid> */}
 
-                          {/* Address Preview */}
-                          {hasHabitatAddress && (
+                        {/* Address Preview */}
+                        {/* {hasHabitatAddress && (
                             <Alert severity="success" sx={{ mt: 2 }}>
                               <Typography variant="caption">
                                 📦 {habitat} - Tower {tower}, Flat {flatNumber}
                               </Typography>
                             </Alert>
-                          )}
-                        </Box>
+                          )} */}
+                        {/* </Box> */}
                       </Grid>
 
                       {/* OR Divider */}
-                      <Grid item xs={12} md={2}>
+                      {/* <Grid item xs={12} md={2}>
                         <Box
                           sx={{
                             display: 'flex',
@@ -622,19 +609,19 @@ const CheckoutPage: React.FC = () => {
                             </Typography>
                           </Box>
                         </Box>
-                      </Grid>
+                      </Grid> */}
 
                       {/* Option 2: Free Text Address */}
                       <Grid item xs={12} md={5}>
-                        <Box
+                        {/* <Box
                           sx={{
                             border: '2px solid #e0e0e0',
                             borderRadius: '12px',
-                            padding: 3,
+                            padding: 1,
                             backgroundColor: '#fafafa',
                           }}
-                        >
-                          <Typography
+                        > */}
+                        {/* <Typography
                             variant="subtitle2"
                             sx={{
                               fontWeight: 'bold',
@@ -643,31 +630,31 @@ const CheckoutPage: React.FC = () => {
                             }}
                           >
                             📍 Other Address
-                          </Typography>
+                          </Typography> */}
 
-                          <TextField
-                            fullWidth
-                            label="Enter Your Address"
-                            placeholder="e.g., 123 Main Street, Apartment 4B"
-                            value={customAddress}
-                            onChange={(e) => {
-                              setCustomAddress(e.target.value);
-                              setAddressError('');
-                            }}
-                            multiline
-                            rows={3}
-                            size="small"
-                          />
+                        <TextField
+                          fullWidth
+                          label="Enter Your Address"
+                          placeholder="e.g., 123 Main Street, Apartment 4B"
+                          value={customAddress}
+                          onChange={(e) => {
+                            setCustomAddress(e.target.value);
+                            setAddressError('');
+                          }}
+                          multiline
+                          rows={3}
+                          size="small"
+                        />
 
-                          {/* Address Preview */}
-                          {customAddress && (
-                            <Alert severity="success" sx={{ mt: 2 }}>
-                              <Typography variant="caption">
-                                📦 {customAddress}
-                              </Typography>
-                            </Alert>
-                          )}
-                        </Box>
+                        {/* Address Preview */}
+                        {customAddress && (
+                          <Alert severity="success" sx={{ mt: 2 }}>
+                            <Typography variant="caption">
+                              📦 {customAddress}
+                            </Typography>
+                          </Alert>
+                        )}
+                        {/* </Box> */}
                       </Grid>
                     </Grid>
                   </Box>

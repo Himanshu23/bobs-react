@@ -77,6 +77,17 @@ const updateOrderStatus = async (
   return data;
 };
 
+const deleteOrder = async (orderId: string): Promise<void> => {
+  const response = await fetch(`${ENDPOINTS.CREATE_ORDER}/${orderId}`, {
+    method: 'DELETE',
+    headers: getHeaders(),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to delete order: ${response.statusText}`);
+  }
+};
+
 export const useCreateOrder = () => {
   return useMutation<Order, Error, Order>({
     mutationFn: (order) => createOrder(order),
@@ -128,6 +139,23 @@ export const useUpdateOrderStatus = () => {
     },
     onError: (error) => {
       console.error('Error updating order status:', error);
+    },
+  });
+};
+
+export const useDeleteOrder = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation<void, Error, string>({
+    mutationFn: (orderId) => deleteOrder(orderId),
+    onSuccess: () => {
+      console.log('Order deleted successfully');
+      // Invalidate queries to refetch
+      queryClient.invalidateQueries({ queryKey: ['currentOrders'] });
+      queryClient.invalidateQueries({ queryKey: ['orders'] });
+    },
+    onError: (error) => {
+      console.error('Error deleting order:', error);
     },
   });
 };

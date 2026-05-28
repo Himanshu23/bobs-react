@@ -26,15 +26,14 @@ import {
   Search as SearchIconMUI,
   ExpandMore as ExpandMoreIcon,
   ExpandLess as ExpandLessIcon,
-  EnergySavingsLeaf as LeafIcon,
 } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { RootState, AppDispatch, removeFromCart } from '../redux/store';
 import { useFoodItems } from '../data/hooks/useFoodItems';
+import { useMostReorderedItems } from '../data/hooks/useMostReorderedItems';
 import { CartActions, CATEGORY_ORDER, FoodItem, ItemOptions } from '../types';
-import { DISCOUNTS } from '../data/discounts';
-import ActiveDiscountsDropdown from '../components/ActiveDiscountsDropdown';
+import MostReorderedSection from '../components/MostReorderedSection';
 import FoodItemCard from '../components/listing/foodItemCard';
 import ProductDetailModal from '../components/productDetail';
 import QuantityUpdate from '../components/quanityUpdate/quantityUpdate';
@@ -150,6 +149,7 @@ const FoodListPage: React.FC = () => {
   const totalItems = useSelector((state: RootState) => state.cart.totalItems);
 
   const { data: items = [], isLoading, error } = useFoodItems();
+  const { data: mostReorderedItems = [] } = useMostReorderedItems();
   const [productDetailModal, setProductDetailModal] = useState(false);
   const [quantityUpdateModal, setQuantityUpdateModal] = useState(false);
   const [quantityUpdateItemID, setquantityUpdateItemID] = useState<string>();
@@ -163,7 +163,6 @@ const FoodListPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
   const [scrollToItemId, setScrollToItemId] = useState<string | null>(null);
-  const [vegOnly, setVegOnly] = useState<boolean>(false);
   const [vegAccordionExpanded, setVegAccordionExpanded] = useState(true);
   const [nonVegAccordionExpanded, setNonVegAccordionExpanded] = useState(true);
   const itemsContainerRef = useRef<HTMLDivElement>(null);
@@ -190,21 +189,14 @@ const FoodListPage: React.FC = () => {
     [items, fuseOptions]
   );
 
-  // Filter items based on search query, selected category, and veg filter
+  // Filter items based on search query and selected category
   const filteredItems = useMemo(() => {
     const trimmedSearchQuery = searchQuery.trim();
     let results = items;
 
-    // Apply veg filter first
-    if (vegOnly) {
-      results = results.filter((item) => item.veg === true);
-    }
-
     // Apply search filter
     if (trimmedSearchQuery !== '') {
-      const searchResults = fuse
-        .search(trimmedSearchQuery)
-        .filter((result) => !vegOnly || result.item.veg);
+      const searchResults = fuse.search(trimmedSearchQuery);
       const scoreById = new Map(
         searchResults.map((result) => [result.item.id, result.score ?? 1])
       );
@@ -230,7 +222,7 @@ const FoodListPage: React.FC = () => {
     }
 
     return results;
-  }, [searchQuery, selectedCategory, vegOnly, items, fuse]);
+  }, [searchQuery, selectedCategory, items, fuse]);
 
   const vegFilteredItems = filteredItems
     .filter((item) => item.veg)
@@ -350,30 +342,6 @@ const FoodListPage: React.FC = () => {
     setExpandedCategory(expandedCategory === category ? null : category);
   };
 
-  const mostReorderedItems = useMemo(() => {
-    if (items.length === 0) {
-      return [];
-    }
-
-    return [...items]
-      .sort((a, b) => {
-        const leftScore = a.reorderCount ?? a.rating * 10;
-        const rightScore = b.reorderCount ?? b.rating * 10;
-
-        if (rightScore !== leftScore) {
-          return rightScore - leftScore;
-        }
-
-        return b.rating - a.rating;
-      })
-      .slice(0, 6);
-  }, [items]);
-
-  const activeDiscounts = useMemo(
-    () => DISCOUNTS.filter((discount) => discount.active),
-    []
-  );
-
   const handleItemSelect = (category: string, itemId?: string) => {
     setSelectedCategory(category);
     if (itemId) {
@@ -397,59 +365,12 @@ const FoodListPage: React.FC = () => {
   return (
     <>
       <Container maxWidth="lg">
-        {/* Search Bar and Category Tabs */}
-        {searchQuery.trim() === '' && mostReorderedItems.length > 0 && (
-          <Box sx={{ mb: 3 }}>
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                flexWrap: 'wrap',
-                gap: 1,
-                mb: 1,
-              }}
-            >
-              <Box>
-                <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                  Most reordered
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Popular dishes customers keep coming back for.
-                </Typography>
-              </Box>
-            </Box>
-            <Box
-              sx={{
-                display: 'flex',
-                overflowX: 'auto',
-                gap: 2,
-                px: 1,
-                py: 1,
-                '&::-webkit-scrollbar': {
-                  height: 8,
-                },
-                '&::-webkit-scrollbar-thumb': {
-                  backgroundColor: 'rgba(0, 0, 0, 0.2)',
-                  borderRadius: 4,
-                },
-              }}
-            >
-              {mostReorderedItems.map((food) => (
-                <Box
-                  key={`top_${food.id}`}
-                  sx={{ minWidth: 360, flex: '0 0 auto' }}
-                >
-                  <FoodItemCard
-                    item={food}
-                    handleCart={handleCart}
-                    searchQuery={searchQuery}
-                  />
-                </Box>
-              ))}
-            </Box>
-          </Box>
-        )}
+        {/* Most Reordered Section */}
+        <MostReorderedSection
+          items={mostReorderedItems}
+          searchQuery={searchQuery}
+          onCartAction={handleCart}
+        />
         <Box
           sx={{
             position: 'sticky',
@@ -460,7 +381,7 @@ const FoodListPage: React.FC = () => {
             pb: 1,
           }}
         >
-          <ActiveDiscountsDropdown discounts={activeDiscounts} />
+          {/* <ActiveDiscountsDropdown discounts={activeDiscounts} /> */}
           <Box sx={{ display: 'flex', gap: 1, mb: 1.5, alignItems: 'center' }}>
             <TextField
               fullWidth
@@ -497,26 +418,6 @@ const FoodListPage: React.FC = () => {
                 },
               }}
             />
-            <Button
-              variant={vegOnly ? 'contained' : 'outlined'}
-              color="success"
-              startIcon={<LeafIcon />}
-              onClick={() => setVegOnly(!vegOnly)}
-              sx={{
-                whiteSpace: 'nowrap',
-                fontWeight: 600,
-                animation: !vegOnly ? 'blink 1.5s infinite' : 'none',
-                '@keyframes blink': {
-                  '0%, 49%, 100%': { opacity: 1 },
-                  '50%, 99%': { opacity: 0.5 },
-                },
-                '&:hover': {
-                  animation: 'none',
-                },
-              }}
-            >
-              Veg Only
-            </Button>
           </Box>
 
           <Tabs
