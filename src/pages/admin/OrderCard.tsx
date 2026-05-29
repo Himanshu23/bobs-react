@@ -378,7 +378,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
               </Button>
             )}
             <OrderDeleteButton
-              orderId={order.id}
+              orderId={order.id ?? ''}
               orderNumber={order.id?.slice(-4)}
               onDeleteSuccess={onDeleteSuccess}
               variant="icon"

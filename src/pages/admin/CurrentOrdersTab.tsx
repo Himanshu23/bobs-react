@@ -693,9 +693,13 @@ const OrderCard: React.FC<OrderCardProps> = ({
           )}
 
           {/* Delete Button */}
-          <Stack direction={isMobile ? 'row' : 'column'} spacing={1} width="100%">
+          <Stack
+            direction={isMobile ? 'row' : 'column'}
+            spacing={1}
+            width="100%"
+          >
             <OrderDeleteButton
-              orderId={order.id}
+              orderId={order.id ?? ''}
               orderNumber={order.id?.slice(-4)}
               variant="button"
               size={isMobile ? 'small' : 'medium'}
