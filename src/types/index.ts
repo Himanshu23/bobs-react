@@ -144,3 +144,22 @@ export interface OrderResponse {
   orders: Order[];
   totalAmount: number;
 }
+
+export interface ExpenseCategory {
+  id: string;
+  name: string;
+  recurring: boolean;
+  createdAt: string;
+}
+
+export interface Expense {
+  id: string;
+  categoryId: string;
+  categoryName: string;
+  amount: number;
+  date: string;
+  note?: string;
+  madeBy: string;
+  createdAt: string;
+  updatedAt: string;
+}
