@@ -18,4 +18,6 @@ export const ENDPOINTS = {
   AUTH_LOGIN: `${API_BASE_URL}/auth/login`,
   CREATE_ORDER: `${API_BASE_URL}/orders`,
   SEND_VOICE: `${API_BASE_URL}/voice`,
+  CATEGORIES: `${API_BASE_URL}/expense-categories`,
+  EXPENSES: `${API_BASE_URL}/expenses`,
 } as const;
