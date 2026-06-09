@@ -5,6 +5,7 @@ import {
   Card,
   CardContent,
   CircularProgress,
+  Grid2,
   MenuItem,
   Stack,
   Table,
@@ -77,58 +78,73 @@ const ExpenseListTab: React.FC<ExpenseListTabProps> = ({
           <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>
             Expense report
           </Typography>
-          <Stack
+          {/* <Stack
             direction={{ xs: 'column', md: 'row' }}
             spacing={2}
             alignItems="flex-end"
-          >
-            <TextField
-              label="From"
-              type="date"
-              value={fromDate}
-              InputLabelProps={{ shrink: true }}
-              onChange={(event) => setFromDate(event.target.value)}
-            />
-            <TextField
-              label="To"
-              type="date"
-              value={toDate}
-              InputLabelProps={{ shrink: true }}
-              onChange={(event) => setToDate(event.target.value)}
-            />
-            <TextField
-              select
-              label="Category"
-              value={selectedCategory}
-              onChange={(event) => setSelectedCategory(event.target.value)}
-            >
-              <MenuItem value="">All categories</MenuItem>
-              {categories.map((category) => (
-                <MenuItem key={category.id} value={category.id}>
-                  {category.name}
+          > */}
+          <Grid2 container spacing={1} mb={2} alignItems="flex-end">
+            <Grid2 size={{ xs: 6, md: 3 }}>
+              <TextField
+                label="From"
+                type="date"
+                value={fromDate}
+                InputLabelProps={{ shrink: true }}
+                onChange={(event) => setFromDate(event.target.value)}
+              />
+            </Grid2>
+            <Grid2 size={{ xs: 6, md: 3 }}>
+              <TextField
+                label="To"
+                type="date"
+                value={toDate}
+                InputLabelProps={{ shrink: true }}
+                onChange={(event) => setToDate(event.target.value)}
+              />
+            </Grid2>
+            <Grid2 size={{ xs: 6, md: 3 }}>
+              <TextField
+                select
+                label="Category"
+                value={selectedCategory}
+                sx={{ minWidth: 170 }}
+                InputLabelProps={{ shrink: true }}
+                onChange={(event) => setSelectedCategory(event.target.value)}
+              >
+                <MenuItem disabled value="">
+                  All categories
                 </MenuItem>
-              ))}
-            </TextField>
-            <TextField
-              select
-              label="Made by"
-              value={selectedMadeBy}
-              onChange={(event) => setSelectedMadeBy(event.target.value)}
-            >
-              <MenuItem value="">All names</MenuItem>
-              {sampleNames.map((name) => (
-                <MenuItem key={name} value={name}>
-                  {name}
-                </MenuItem>
-              ))}
-            </TextField>
-            <Button variant="outlined" onClick={handleFilterReset}>
-              Reset filters
-            </Button>
-            <Button variant="contained" onClick={() => refetch()}>
-              Apply
-            </Button>
-          </Stack>
+                {categories.map((category) => (
+                  <MenuItem key={category.id} value={category.id}>
+                    {category.name}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid2>
+            <Grid2 size={{ xs: 6, md: 3 }}>
+              <TextField
+                select
+                label="Made by"
+                sx={{ minWidth: 170 }}
+                value={selectedMadeBy}
+                onChange={(event) => setSelectedMadeBy(event.target.value)}
+              >
+                <MenuItem value="">All names</MenuItem>
+                {sampleNames.map((name) => (
+                  <MenuItem key={name} value={name}>
+                    {name}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid2>
+          </Grid2>
+          <Button variant="outlined" onClick={handleFilterReset}>
+            Reset filters
+          </Button>
+          <Button variant="contained" onClick={() => refetch()}>
+            Apply
+          </Button>
+          {/* </Stack> */}
           <Box sx={{ mt: 2 }}>
             <Typography variant="subtitle2" color="text.secondary">
               Total expenses: ₹{totalAmount.toFixed(2)}

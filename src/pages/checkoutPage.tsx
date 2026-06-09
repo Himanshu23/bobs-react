@@ -35,6 +35,7 @@ import {
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import PrintIcon from '@mui/icons-material/Print';
+import SaveIcon from '@mui/icons-material/Save';
 import { RootState } from '../redux/store';
 import { clearCart } from '../redux/store';
 import {
@@ -46,6 +47,7 @@ import {
   getCheckoutFormFromLocalStorage,
   saveCheckoutFormToLocalStorage,
 } from '../utils/checkoutStorage';
+import { isAuthenticated } from '../admin/auth';
 import { DISCOUNTS, calculateDiscountAmount } from '../data/discounts';
 import { trackEvent } from '../utils/analytics';
 import Receipt from '../components/Receipt';
@@ -129,6 +131,8 @@ const CheckoutPage: React.FC = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [selectedDiscountId, setSelectedDiscountId] = useState<string>('');
   const [orderConfirmationOpen, setOrderConfirmationOpen] = useState(false);
+  const [recordSaleConfirmationOpen, setRecordSaleConfirmationOpen] =
+    useState(false);
   const [printModalOpen, setPrintModalOpen] = useState(false);
   const [addressError, setAddressError] = useState<string>('');
   const [scheduleError, setScheduleError] = useState<string>('');
@@ -171,6 +175,7 @@ const CheckoutPage: React.FC = () => {
     customAddress && customAddress.trim() !== ''
   );
   const hasDeliveryAddress = hasHabitatAddress || hasCustomAddress;
+  const isLoggedIn = isAuthenticated();
   const appliedDiscountCode =
     discountAmount > 0 ? selectedDiscount?.code : undefined;
   const discountLabel = appliedDiscountCode
@@ -188,8 +193,48 @@ const CheckoutPage: React.FC = () => {
     });
   };
 
+  const buildOrderObject = () => {
+    let deliveryAddress = '';
+    if (deliveryMethod === 'delivery') {
+      if (hasHabitatAddress) {
+        deliveryAddress = `${habitat} - Tower ${tower}, Flat ${flatNumber}`;
+      } else {
+        deliveryAddress = customAddress.trim();
+      }
+    } else {
+      deliveryAddress = 'Pickup';
+    }
+
+    const orderItems: OrderItem[] = cartItems.map((item) => ({
+      foodItemId: item.id,
+      itemName: item.name,
+      quantity: item.quantity,
+      unitPrice: item.price,
+      size: item.option?.size,
+      style: item.option?.style,
+      base: item.option?.base,
+    }));
+
+    let fulfillmentType = OrderFulfillmentType.DELIVERY;
+    if (orderTiming === 'scheduled') {
+      fulfillmentType = OrderFulfillmentType.SCHEDULED;
+    }
+    if (deliveryMethod === 'pickup') {
+      fulfillmentType = OrderFulfillmentType.PICKUP;
+    }
+
+    return {
+      customerName: customerName || 'Guest',
+      customerPhone: '9643310092',
+      deliveryAddress,
+      fulfillmentType,
+      scheduledTime: orderTiming === 'scheduled' ? scheduledTime : undefined,
+      items: orderItems,
+      totalAmount: finalTotal,
+    };
+  };
+
   const handleProceedToCheckout = async () => {
-    // Validation based on delivery method
     if (deliveryMethod === 'delivery' && !hasDeliveryAddress) {
       setAddressError(
         'Add either Habitat, Tower and Flat Number, or enter your full address to continue.'
@@ -205,140 +250,122 @@ const CheckoutPage: React.FC = () => {
 
     setAddressError('');
     setScheduleError('');
+    setIsProcessing(true);
 
+    const orderToCreate = buildOrderObject();
+
+    try {
+      const savedOrder = await createOrder(orderToCreate);
+      console.log('Order saved to database:', savedOrder);
+
+      const orderMessage: OrderMessage = {
+        items: cartItems.map((item) => ({
+          name: item.name,
+          quantity: item.quantity,
+          price: item.price * item.quantity,
+          size: item.option?.size,
+        })),
+        total: finalTotal,
+        habitat:
+          deliveryMethod === 'delivery'
+            ? orderToCreate.deliveryAddress
+            : 'Pickup',
+        tower:
+          deliveryMethod === 'delivery'
+            ? hasHabitatAddress
+              ? tower
+              : 'Custom'
+            : 'N/A',
+        customerName: customerName || 'Guest',
+        phoneNumber: WHATSAPP_PHONE,
+        instructions: customerInstructions,
+        deliveryMethod: deliveryMethod as 'pickup' | 'delivery',
+        flatNumber: hasHabitatAddress ? flatNumber.trim() : undefined,
+        discountCode: appliedDiscountCode,
+        discountName: discountAmount > 0 ? selectedDiscount?.name : undefined,
+        discountAmount: discountAmount > 0 ? discountAmount : undefined,
+        tax,
+        scheduledTime: orderTiming === 'scheduled' ? scheduledTime : undefined,
+      };
+
+      const message = formatOrderMessage(orderMessage);
+      trackEvent('whatsapp_order_started', {
+        delivery_method: deliveryMethod,
+        item_count: cartItems.length,
+        value: finalTotal,
+        discount_id: selectedDiscountId || 'none',
+      });
+      openWhatsApp(WHATSAPP_PHONE, message);
+      setOrderConfirmationOpen(true);
+    } catch (error) {
+      console.error('Failed to save order to database:', error);
+      alert(
+        'Error saving order to database. Order still created, please share via WhatsApp.'
+      );
+
+      const orderMessage: OrderMessage = {
+        items: cartItems.map((item) => ({
+          name: item.name,
+          quantity: item.quantity,
+          price: item.price * item.quantity,
+          size: item.option?.size,
+        })),
+        total: finalTotal,
+        habitat:
+          deliveryMethod === 'delivery'
+            ? orderToCreate.deliveryAddress
+            : 'Pickup',
+        tower:
+          deliveryMethod === 'delivery'
+            ? hasHabitatAddress
+              ? tower
+              : 'Custom'
+            : 'N/A',
+        customerName: customerName || 'Guest',
+        phoneNumber: WHATSAPP_PHONE,
+        instructions: customerInstructions,
+        deliveryMethod: deliveryMethod as 'pickup' | 'delivery',
+        flatNumber: hasHabitatAddress ? flatNumber.trim() : undefined,
+        discountCode: appliedDiscountCode,
+        discountName: discountAmount > 0 ? selectedDiscount?.name : undefined,
+        discountAmount: discountAmount > 0 ? discountAmount : undefined,
+        tax,
+        scheduledTime: orderTiming === 'scheduled' ? scheduledTime : undefined,
+      };
+
+      const message = formatOrderMessage(orderMessage);
+      openWhatsApp(WHATSAPP_PHONE, message);
+      setOrderConfirmationOpen(true);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleRecordSaleOnly = async () => {
+    if (deliveryMethod === 'delivery' && !hasDeliveryAddress) {
+      setAddressError(
+        'Add either Habitat, Tower and Flat Number, or enter your full address to continue.'
+      );
+      scrollToAddressSection();
+      return;
+    }
+
+    if (orderTiming === 'scheduled' && !isScheduledTimeValid) {
+      setScheduleError('Choose a time between 12:00 PM and 12:00 AM.');
+      return;
+    }
+
+    setAddressError('');
+    setScheduleError('');
     setIsProcessing(true);
 
     try {
-      let deliveryAddress = '';
-      if (deliveryMethod === 'delivery') {
-        if (hasHabitatAddress) {
-          deliveryAddress = `${habitat} - Tower ${tower}, Flat ${flatNumber}`;
-        } else {
-          deliveryAddress = customAddress.trim();
-        }
-      } else {
-        deliveryAddress = 'Pickup';
-      }
-
-      // Create order items for database
-      const orderItems: OrderItem[] = cartItems.map((item) => ({
-        foodItemId: item.id,
-        itemName: item.name,
-        quantity: item.quantity,
-        unitPrice: item.price,
-        size: item.option?.size,
-        style: item.option?.style,
-        base: item.option?.base,
-      }));
-      let fulfillmentType = OrderFulfillmentType.DELIVERY;
-      if (orderTiming === 'scheduled') {
-        fulfillmentType = OrderFulfillmentType.SCHEDULED;
-      }
-      if (deliveryMethod == 'pickup') {
-        fulfillmentType = OrderFulfillmentType.PICKUP;
-      }
-
-      // Create order object to save to database
-      const orderToCreate = {
-        customerName: customerName || 'Guest',
-        customerPhone: '9643310092', // TODO: Get from user input
-        deliveryAddress,
-        fulfillmentType,
-        scheduledTime: orderTiming === 'scheduled' ? scheduledTime : undefined,
-        items: orderItems,
-        totalAmount: finalTotal,
-      };
-
-      // Save order to database
-      createOrder(orderToCreate, {
-        onSuccess: (savedOrder) => {
-          console.log('Order saved to database:', savedOrder);
-
-          // Format the order for WhatsApp message
-          const orderMessage: OrderMessage = {
-            items: cartItems.map((item) => ({
-              name: item.name,
-              quantity: item.quantity,
-              price: item.price * item.quantity,
-              size: item.option?.size,
-            })),
-            total: finalTotal,
-            habitat: deliveryMethod === 'delivery' ? deliveryAddress : 'Pickup',
-            tower:
-              deliveryMethod === 'delivery'
-                ? hasHabitatAddress
-                  ? tower
-                  : 'Custom'
-                : 'N/A',
-            customerName: customerName || 'Guest',
-            phoneNumber: WHATSAPP_PHONE,
-            instructions: customerInstructions,
-            deliveryMethod: deliveryMethod as 'pickup' | 'delivery',
-            flatNumber: hasHabitatAddress ? flatNumber.trim() : undefined,
-            discountCode: appliedDiscountCode,
-            discountName:
-              discountAmount > 0 ? selectedDiscount?.name : undefined,
-            discountAmount: discountAmount > 0 ? discountAmount : undefined,
-            tax,
-            scheduledTime:
-              orderTiming === 'scheduled' ? scheduledTime : undefined,
-          };
-
-          // Format and send WhatsApp message
-          const message = formatOrderMessage(orderMessage);
-          trackEvent('whatsapp_order_started', {
-            delivery_method: deliveryMethod,
-            item_count: cartItems.length,
-            value: finalTotal,
-            discount_id: selectedDiscountId || 'none',
-          });
-          openWhatsApp(WHATSAPP_PHONE, message);
-          setOrderConfirmationOpen(true);
-        },
-        onError: (error) => {
-          console.error('Failed to save order to database:', error);
-          alert(
-            'Error saving order to database. Order still created, please share via WhatsApp.'
-          );
-
-          // Still show WhatsApp option even if database save fails
-          const orderMessage: OrderMessage = {
-            items: cartItems.map((item) => ({
-              name: item.name,
-              quantity: item.quantity,
-              price: item.price * item.quantity,
-              size: item.option?.size,
-            })),
-            total: finalTotal,
-            habitat: deliveryMethod === 'delivery' ? deliveryAddress : 'Pickup',
-            tower:
-              deliveryMethod === 'delivery'
-                ? hasHabitatAddress
-                  ? tower
-                  : 'Custom'
-                : 'N/A',
-            customerName: customerName || 'Guest',
-            phoneNumber: WHATSAPP_PHONE,
-            instructions: customerInstructions,
-            deliveryMethod: deliveryMethod as 'pickup' | 'delivery',
-            flatNumber: hasHabitatAddress ? flatNumber.trim() : undefined,
-            discountCode: appliedDiscountCode,
-            discountName:
-              discountAmount > 0 ? selectedDiscount?.name : undefined,
-            discountAmount: discountAmount > 0 ? discountAmount : undefined,
-            tax,
-            scheduledTime:
-              orderTiming === 'scheduled' ? scheduledTime : undefined,
-          };
-
-          const message = formatOrderMessage(orderMessage);
-          openWhatsApp(WHATSAPP_PHONE, message);
-          setOrderConfirmationOpen(true);
-        },
-      });
+      const savedOrder = await createOrder(buildOrderObject());
+      console.log('Sale recorded to database:', savedOrder);
+      setRecordSaleConfirmationOpen(true);
     } catch (error) {
-      console.error('Error processing order:', error);
-      alert('Error processing order. Please try again.');
+      console.error('Failed to record sale:', error);
+      alert('Failed to record sale. Please try again.');
     } finally {
       setIsProcessing(false);
     }
@@ -1054,6 +1081,20 @@ const CheckoutPage: React.FC = () => {
                   {isProcessing ? 'Processing...' : 'Order via WhatsApp'}
                 </Button>
 
+                {isLoggedIn && (
+                  <Button
+                    variant="outlined"
+                    fullWidth
+                    size="large"
+                    startIcon={<SaveIcon />}
+                    onClick={handleRecordSaleOnly}
+                    disabled={isProcessing}
+                    sx={{ mb: 1, textTransform: 'none' }}
+                  >
+                    {isProcessing ? 'Saving sale...' : 'Record sale only'}
+                  </Button>
+                )}
+
                 <Button
                   variant="outlined"
                   fullWidth
@@ -1109,6 +1150,37 @@ const CheckoutPage: React.FC = () => {
           </Button>
           <Button onClick={handleOrderSentConfirmation} variant="contained">
             Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={recordSaleConfirmationOpen}
+        onClose={() => {
+          setRecordSaleConfirmationOpen(false);
+          dispatch(clearCart());
+          navigate('/');
+        }}
+        fullWidth
+        maxWidth="xs"
+      >
+        <DialogTitle>Sale recorded</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            The sale has been recorded successfully. You can continue browsing
+            or start a new order.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2 }}>
+          <Button
+            onClick={() => {
+              setRecordSaleConfirmationOpen(false);
+              dispatch(clearCart());
+              navigate('/');
+            }}
+            variant="contained"
+          >
+            Done
           </Button>
         </DialogActions>
       </Dialog>

@@ -15,6 +15,7 @@ export enum FoodCategory {
   Soups = 'Soups',
   Rice = 'Rice',
   COMBO = 'COMBO',
+  Drinks = 'Drinks',
 }
 
 // Category order for display
@@ -32,6 +33,7 @@ export const CATEGORY_ORDER = [
   FoodCategory.Breads,
   FoodCategory.Rice,
   FoodCategory.Sides,
+  FoodCategory.Drinks,
 ];
 
 export interface FoodItem {

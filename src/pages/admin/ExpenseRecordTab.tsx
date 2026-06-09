@@ -4,6 +4,7 @@ import {
   Card,
   CardContent,
   MenuItem,
+  Snackbar,
   Stack,
   TextField,
   Typography,
@@ -37,6 +38,8 @@ const ExpenseRecordTab: React.FC<ExpenseRecordTabProps> = ({
   //   const [frequency, setFrequency] = useState<ExpenseFrequency>('ONE_TIME');
   const [note, setNote] = useState('');
   const [madeBy, setMadeBy] = useState(sampleNames[0]);
+  const [isSaving, setIsSaving] = useState(false);
+  const [successOpen, setSuccessOpen] = useState(false);
 
   useEffect(() => {
     if (selectedExpense) {
@@ -84,6 +87,8 @@ const ExpenseRecordTab: React.FC<ExpenseRecordTabProps> = ({
       return;
     }
 
+    setIsSaving(true);
+
     const payload = {
       categoryId,
       amount: Number(amount),
@@ -92,14 +97,20 @@ const ExpenseRecordTab: React.FC<ExpenseRecordTabProps> = ({
       madeBy,
     };
 
-    if (selectedExpense) {
-      await updateExpense.mutateAsync({ ...selectedExpense, ...payload });
-    } else {
-      await createExpense.mutateAsync(payload);
+    try {
+      if (selectedExpense) {
+        await updateExpense.mutateAsync({ ...selectedExpense, ...payload });
+      } else {
+        await createExpense.mutateAsync(payload);
+      }
+      setSuccessOpen(true);
+      resetForm();
+      onSaved();
+    } catch (error) {
+      console.error('Failed to save expense', error);
+    } finally {
+      setIsSaving(false);
     }
-
-    resetForm();
-    onSaved();
   };
 
   return (
@@ -194,7 +205,7 @@ const ExpenseRecordTab: React.FC<ExpenseRecordTabProps> = ({
             <Button
               variant="contained"
               onClick={handleSubmit}
-              disabled={createExpense.isPending || updateExpense.isPending}
+              disabled={isSaving}
             >
               {selectedExpense ? 'Update expense' : 'Save expense'}
             </Button>
@@ -204,6 +215,13 @@ const ExpenseRecordTab: React.FC<ExpenseRecordTabProps> = ({
           </Stack>
         </Stack>
       </CardContent>
+      <Snackbar
+        open={successOpen}
+        autoHideDuration={4000}
+        onClose={() => setSuccessOpen(false)}
+        message="Expense saved successfully"
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      />
     </Card>
   );
 };

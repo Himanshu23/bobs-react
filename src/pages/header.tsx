@@ -1,14 +1,23 @@
-import React, { useMemo, useState } from 'react';
-import { AppBar, Toolbar, Typography, Badge, IconButton } from '@mui/material';
+import React, { useEffect, useMemo, useState } from 'react';
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Badge,
+  IconButton,
+  Button,
+} from '@mui/material';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import PhoneIcon from '@mui/icons-material/Phone';
 import MicIcon from '@mui/icons-material/Mic';
 import MicOffIcon from '@mui/icons-material/MicOff';
+import LogoutIcon from '@mui/icons-material/Logout';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { trackEvent } from '../utils/analytics';
 import { recordAudioForMs } from '../utils/voiceRecorder';
 import { useSendAudio } from '../hooks/useSendAudio';
+import { getAuthState, isAuthenticated, logout } from '../admin/auth';
 
 const PHONE_NUMBER = '9643310092';
 const RECORDING_MS = 5000;
@@ -24,6 +33,10 @@ const Header: React.FC = () => {
   const navigate = useNavigate();
   const [isRecording, setIsRecording] = useState(false);
   const [voiceError, setVoiceError] = useState<string | null>(null);
+  const [authenticated, setAuthenticated] = useState(isAuthenticated());
+  const [username, setUsername] = useState<string | null>(
+    getAuthState().username
+  );
   const sendAudio = useSendAudio();
 
   const supportsVoice = useMemo(() => {
@@ -48,6 +61,32 @@ const Header: React.FC = () => {
     });
     navigate('/cart');
   };
+
+  const handleLogout = () => {
+    logout();
+    setAuthenticated(false);
+    setUsername(null);
+    trackEvent('header_logout_click', {});
+    navigate('/bobs/foodList');
+  };
+
+  useEffect(() => {
+    const updateAuth = () => {
+      setAuthenticated(isAuthenticated());
+      setUsername(getAuthState().username);
+    };
+
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === 'admin_auth_token') {
+        updateAuth();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    updateAuth();
+
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
 
   const handleCallClick = () => {
     trackEvent('header_call_click', {
@@ -134,6 +173,16 @@ const Header: React.FC = () => {
             <ShoppingCartIcon />
           </Badge>
         </IconButton>
+        {authenticated ? (
+          <Button
+            color="inherit"
+            startIcon={<LogoutIcon />}
+            onClick={handleLogout}
+            sx={{ ml: 1, borderColor: 'rgba(255,255,255,0.7)', border: '1px solid' }}
+          >
+            Logout
+          </Button>
+        ) : null}
       </Toolbar>
       {voiceError ? (
         <Typography
