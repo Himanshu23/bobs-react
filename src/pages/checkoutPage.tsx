@@ -114,11 +114,9 @@ const CheckoutPage: React.FC = () => {
   const [deliveryMethod, setDeliveryMethod] = useState<'delivery' | 'pickup'>(
     initialCheckoutForm.deliveryMethod
   );
-  const [habitat, setHabitat] = useState<string>(initialCheckoutForm.habitat);
-  const [tower, setTower] = useState<string>(initialCheckoutForm.tower);
-  const [flatNumber, setFlatNumber] = useState<string>(
-    initialCheckoutForm.flatNumber
-  );
+  const [habitat] = useState<string>(initialCheckoutForm.habitat);
+  const [tower] = useState<string>(initialCheckoutForm.tower);
+  const [flatNumber] = useState<string>(initialCheckoutForm.flatNumber);
   const [customAddress, setCustomAddress] = useState<string>(
     initialCheckoutForm.customAddress
   );
@@ -168,9 +166,15 @@ const CheckoutPage: React.FC = () => {
   const tax = totalAfterDiscount * 0.05;
   const finalTotal = totalAfterDiscount;
 
-  const hasHabitatAddress = Boolean(
-    habitat && tower && flatNumber && flatNumber.trim() !== ''
-  );
+  // const hasHabitatAddress = Boolean(
+  //   habitat && tower && flatNumber && flatNumber.trim() !== ''
+  // );
+  const hasHabitatAddress = false;
+  console.log('hasHabitatAddress:', hasHabitatAddress, {
+    habitat,
+    tower,
+    flatNumber,
+  });
   const hasCustomAddress = Boolean(
     customAddress && customAddress.trim() !== ''
   );

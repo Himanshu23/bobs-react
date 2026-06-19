@@ -1,8 +1,7 @@
-import React, { useRef } from 'react';
-import { Box, Typography } from '@mui/material';
+import React from 'react';
+import { Box } from '@mui/material';
 
 import { FoodItem, CartActions, ItemOptions } from '../types';
-import FoodItemCard from './listing/foodItemCard';
 
 interface MostReorderedSectionProps {
   items: FoodItem[];
@@ -13,10 +12,7 @@ interface MostReorderedSectionProps {
 const MostReorderedSection: React.FC<MostReorderedSectionProps> = ({
   items,
   searchQuery,
-  onCartAction,
 }) => {
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
-
   if (searchQuery.trim() !== '' || items.length === 0) {
     return null;
   }
@@ -33,14 +29,14 @@ const MostReorderedSection: React.FC<MostReorderedSectionProps> = ({
           mb: 1,
         }}
       >
-        <Box>
+        {/* <Box>
           <Typography variant="h6" sx={{ fontWeight: 700 }}>
             Most reordered
           </Typography>
           <Typography variant="body2" color="text.secondary">
             Popular dishes customers keep coming back for.
           </Typography>
-        </Box>
+        </Box> */}
         {/* Carousel indicator */}
         {/* <Box sx={{ display: 'flex', gap: 0.5, alignItems: 'center' }}>
           {items.map((_, index) => (
@@ -98,7 +94,7 @@ const MostReorderedSection: React.FC<MostReorderedSectionProps> = ({
         )} */}
 
         {/* Carousel Container */}
-        <Box
+        {/* <Box
           ref={scrollContainerRef}
           sx={{
             display: 'flex',
@@ -133,7 +129,7 @@ const MostReorderedSection: React.FC<MostReorderedSectionProps> = ({
               />
             </Box>
           ))}
-        </Box>
+        </Box> */}
 
         {/* Right Navigation Button */}
         {/* {items.length > 1 && (

@@ -265,20 +265,21 @@ const FoodListPage: React.FC = () => {
     const cartItem = cartItems.find((el) => el.id === id);
     const foodItem = items.find((el) => el.id === id);
     if (action === 'Add') {
-      if (cartItem) {
-        trackEvent('view_cart_variants', {
-          item_id: cartItem.id,
-          item_name: cartItem.name,
-          variant_count: cartItems.filter((el) => el.id === id).length,
-        });
-        setQuantityUpdateModal(true);
-        setquantityUpdateItemID(cartItem.id);
-      } else {
-        trackEvent('view_item', {
-          item_id: foodItem?.id,
-          item_name: foodItem?.name,
-          category: foodItem?.category,
-        });
+      if (foodItem) {
+        if (cartItem) {
+          trackEvent('view_item_variant', {
+            item_id: foodItem.id,
+            item_name: foodItem.name,
+            category: foodItem.category,
+            variant_count: cartItems.filter((el) => el.id === id).length,
+          });
+        } else {
+          trackEvent('view_item', {
+            item_id: foodItem.id,
+            item_name: foodItem.name,
+            category: foodItem.category,
+          });
+        }
         setProductDetailModal(true);
         setProduct(foodItem);
       }
@@ -294,13 +295,13 @@ const FoodListPage: React.FC = () => {
         // Multiple variants exist - show modal to select which one to remove
         setVariantRemovalItemID(id);
         setVariantRemovalModal(true);
-      } else if (itemVariants.length === 1 && option) {
+      } else if (itemVariants.length === 1) {
         // Single variant - remove directly
         trackEvent('remove_from_cart', {
           item_id: id,
           quantity: itemVariants[0].quantity,
         });
-        dispatch(removeFromCart({ id, option }));
+        dispatch(removeFromCart({ id, option: itemVariants[0].option }));
       }
     }
   };

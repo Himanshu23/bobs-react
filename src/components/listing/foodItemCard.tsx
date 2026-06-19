@@ -172,29 +172,64 @@ const FoodItemCard = ({ item, handleCart, searchQuery }: FoodItemCardProps) => {
         {totalQuantity > 0 ? (
           <Badge
             badgeContent={totalQuantity}
-            color="primary"
+            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+            overlap="rectangular"
             sx={{
+              alignSelf: 'flex-start',
+              mt: 1,
               '& .MuiBadge-badge': {
-                right: 43,
-                top: 12,
-                fontSize: '12px',
+                top: 0,
+                right: 0,
+                transform: 'translate(50%, -50%)',
+                backgroundColor: '#ff6b6b',
+                color: '#fff',
+                fontWeight: 700,
+                fontSize: '0.75rem',
+                minWidth: 24,
+                height: 24,
+                padding: '0 8px',
+                borderRadius: 999,
+                boxShadow: '0 0 0 3px rgba(255,255,255,0.85)',
               },
             }}
           >
-            <Button
-              variant="contained"
-              color="primary"
-              sx={{ mt: 1, textTransform: 'none', alignSelf: 'flex-start' }}
-              onClick={() => handleCart(item.id, 'Add')}
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 1,
+                mt: 1,
+                width: '220px',
+              }}
             >
-              View Cart Items
-            </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                sx={{ textTransform: 'none', width: '100%' }}
+                onClick={() => handleCart(item.id, 'Add')}
+              >
+                Add more
+              </Button>
+              <Button
+                variant="outlined"
+                color="secondary"
+                sx={{ textTransform: 'none', width: '100%' }}
+                onClick={() => handleCart(item.id, 'Remove')}
+              >
+                Remove
+              </Button>
+            </Box>
           </Badge>
         ) : (
           <Button
             variant="contained"
             color="primary"
-            sx={{ mt: 1, alignSelf: 'flex-start' }}
+            sx={{
+              mt: 1,
+              alignSelf: 'flex-start',
+              width: '220px',
+              textTransform: 'none',
+            }}
             onClick={() => handleCart(item.id, 'Add')}
           >
             Add to Cart

@@ -9,8 +9,6 @@ import {
 } from '@mui/material';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import PhoneIcon from '@mui/icons-material/Phone';
-import MicIcon from '@mui/icons-material/Mic';
-import MicOffIcon from '@mui/icons-material/MicOff';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -34,9 +32,7 @@ const Header: React.FC = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [voiceError, setVoiceError] = useState<string | null>(null);
   const [authenticated, setAuthenticated] = useState(isAuthenticated());
-  const [username, setUsername] = useState<string | null>(
-    getAuthState().username
-  );
+  const [, setUsername] = useState<string | null>(getAuthState().username);
   const sendAudio = useSendAudio();
 
   const supportsVoice = useMemo(() => {
@@ -155,7 +151,7 @@ const Header: React.FC = () => {
                 : 'Record voice'
           }
         >
-          {supportsVoice ? (
+          {/* {supportsVoice ? (
             isRecording ? (
               <MicOffIcon />
             ) : (
@@ -163,7 +159,7 @@ const Header: React.FC = () => {
             )
           ) : (
             <MicOffIcon />
-          )}
+          )} */}
         </IconButton>
         <IconButton color="inherit" onClick={handleCallClick}>
           <PhoneIcon />
@@ -178,7 +174,11 @@ const Header: React.FC = () => {
             color="inherit"
             startIcon={<LogoutIcon />}
             onClick={handleLogout}
-            sx={{ ml: 1, borderColor: 'rgba(255,255,255,0.7)', border: '1px solid' }}
+            sx={{
+              ml: 1,
+              borderColor: 'rgba(255,255,255,0.7)',
+              border: '1px solid',
+            }}
           >
             Logout
           </Button>
