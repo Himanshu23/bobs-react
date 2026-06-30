@@ -5,15 +5,15 @@ import { getHeaders } from '../../utils/authHelpers';
 
 const fetchExpenses = async (
   filters: Partial<{
-    startDate: string;
-    endDate: string;
+    fromDate: string;
+    toDate: string;
     categoryId: string;
     madeBy: string;
   }>
 ): Promise<Expense[]> => {
   const params = new URLSearchParams();
-  if (filters.startDate) params.append('startDate', filters.startDate);
-  if (filters.endDate) params.append('endDate', filters.endDate);
+  if (filters.fromDate) params.append('startDate', filters.fromDate);
+  if (filters.toDate) params.append('endDate', filters.toDate);
   if (filters.categoryId) params.append('categoryId', filters.categoryId);
   if (filters.madeBy) params.append('madeBy', filters.madeBy);
 

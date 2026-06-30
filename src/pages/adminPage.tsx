@@ -17,6 +17,7 @@ import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 import SpeedIcon from '@mui/icons-material/Speed';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
+import BarChartIcon from '@mui/icons-material/BarChart';
 import { FoodItem } from '../types';
 import { useFoodItems, useUpdateFoodItem } from '../data/hooks/useFoodItems';
 import MenuTab from './admin/MenuTab';
@@ -24,6 +25,7 @@ import OrdersTab from './admin/OrdersTab';
 import CurrentOrdersTab from './admin/CurrentOrdersTab';
 import DiscountsTab from './admin/DiscountsTab';
 import ExpensesTab from './admin/ExpensesTab';
+import ReportingTab from './admin/ReportingTab';
 import EditItemDrawer from './admin/EditItemDrawer';
 
 const AdminPage: React.FC = () => {
@@ -125,6 +127,7 @@ const AdminPage: React.FC = () => {
               iconPosition="start"
               label="Expenses"
             />
+            <Tab icon={<BarChartIcon />} iconPosition="start" label="Reports" />
           </Tabs>
 
           {tab === 0 && <CurrentOrdersTab />}
@@ -134,6 +137,7 @@ const AdminPage: React.FC = () => {
           )}
           {tab === 3 && <DiscountsTab />}
           {tab === 4 && <ExpensesTab />}
+          {tab === 5 && <ReportingTab />}
         </CardContent>
       </Card>
 
