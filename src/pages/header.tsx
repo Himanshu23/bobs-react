@@ -11,7 +11,7 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import PhoneIcon from '@mui/icons-material/Phone';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { trackEvent } from '../utils/analytics';
 import { recordAudioForMs } from '../utils/voiceRecorder';
 import { useSendAudio } from '../hooks/useSendAudio';
@@ -29,6 +29,7 @@ interface RootState {
 const Header: React.FC = () => {
   const totalItems = useSelector((state: RootState) => state.cart.totalItems);
   const navigate = useNavigate();
+  const location = useLocation();
   const [isRecording, setIsRecording] = useState(false);
   const [voiceError, setVoiceError] = useState<string | null>(null);
   const [authenticated, setAuthenticated] = useState(isAuthenticated());
@@ -56,6 +57,12 @@ const Header: React.FC = () => {
       cart_items: totalItems,
     });
     navigate('/cart');
+  };
+
+  const isAdminView = location.pathname.startsWith('/bobs/admin');
+
+  const handleRouteToggle = () => {
+    navigate(isAdminView ? '/bobs/foodList' : '/bobs/admin');
   };
 
   const handleLogout = () => {
@@ -170,18 +177,23 @@ const Header: React.FC = () => {
           </Badge>
         </IconButton>
         {authenticated ? (
-          <Button
-            color="inherit"
-            startIcon={<LogoutIcon />}
-            onClick={handleLogout}
-            sx={{
-              ml: 1,
-              borderColor: 'rgba(255,255,255,0.7)',
-              border: '1px solid',
-            }}
-          >
-            Logout
-          </Button>
+          <>
+            <Button color="inherit" onClick={handleRouteToggle} sx={{ ml: 1 }}>
+              {isAdminView ? 'Food List' : 'Admin'}
+            </Button>
+            <Button
+              color="inherit"
+              startIcon={<LogoutIcon />}
+              onClick={handleLogout}
+              sx={{
+                ml: 1,
+                borderColor: 'rgba(255,255,255,0.7)',
+                border: '1px solid',
+              }}
+            >
+              Logout
+            </Button>
+          </>
         ) : null}
       </Toolbar>
       {voiceError ? (
