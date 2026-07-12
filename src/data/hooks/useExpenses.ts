@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Expense } from '../../types';
 import { ENDPOINTS } from '../../config/api';
-import { getHeaders } from '../../utils/authHelpers';
+import { fetchWithAuth } from '../../utils/authHelpers';
 
 const fetchExpenses = async (
   filters: Partial<{
@@ -18,9 +18,8 @@ const fetchExpenses = async (
   if (filters.madeBy) params.append('madeBy', filters.madeBy);
 
   const url = `${ENDPOINTS.EXPENSES}?${params.toString()}`;
-  const response = await fetch(url, {
+  const response = await fetchWithAuth(url, {
     method: 'GET',
-    headers: getHeaders(),
   });
 
   if (!response.ok) {
@@ -33,9 +32,8 @@ const fetchExpenses = async (
 const createExpense = async (
   expense: Omit<Expense, 'id' | 'createdAt' | 'updatedAt' | 'categoryName'>
 ): Promise<Expense> => {
-  const response = await fetch(ENDPOINTS.EXPENSES, {
+  const response = await fetchWithAuth(ENDPOINTS.EXPENSES, {
     method: 'POST',
-    headers: getHeaders(),
     body: JSON.stringify(expense),
   });
 
@@ -47,9 +45,8 @@ const createExpense = async (
 };
 
 const updateExpense = async (expense: Expense): Promise<Expense> => {
-  const response = await fetch(`${ENDPOINTS.EXPENSES}/${expense.id}`, {
+  const response = await fetchWithAuth(`${ENDPOINTS.EXPENSES}/${expense.id}`, {
     method: 'PUT',
-    headers: getHeaders(),
     body: JSON.stringify(expense),
   });
 
@@ -61,9 +58,8 @@ const updateExpense = async (expense: Expense): Promise<Expense> => {
 };
 
 const deleteExpense = async (expenseId: string): Promise<void> => {
-  const response = await fetch(`${ENDPOINTS.EXPENSES}/${expenseId}`, {
+  const response = await fetchWithAuth(`${ENDPOINTS.EXPENSES}/${expenseId}`, {
     method: 'DELETE',
-    headers: getHeaders(),
   });
 
   if (!response.ok) {

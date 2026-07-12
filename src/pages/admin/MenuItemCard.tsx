@@ -62,7 +62,7 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
                       >
                         ₹
                         {
-                          item.priceOptions.wasPrice.size[
+                          item.priceOptions.wasPrice?.size[
                             size as keyof typeof item.priceOptions.wasPrice.size
                           ]
                         }

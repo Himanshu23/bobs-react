@@ -34,7 +34,7 @@ const ExpenseRecordTab: React.FC<ExpenseRecordTabProps> = ({
   const updateExpense = useUpdateExpense();
   const [categoryId, setCategoryId] = useState('');
   const [amount, setAmount] = useState('');
-  const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10));
+  const [date, setDate] = useState(() => new Date().toISOString());
   //   const [frequency, setFrequency] = useState<ExpenseFrequency>('ONE_TIME');
   const [note, setNote] = useState('');
   const [madeBy, setMadeBy] = useState(sampleNames[0]);
@@ -76,7 +76,7 @@ const ExpenseRecordTab: React.FC<ExpenseRecordTabProps> = ({
   const resetForm = () => {
     setCategoryId(categories[0]?.id ?? '');
     setAmount('');
-    setDate(new Date().toISOString().slice(0, 10));
+    setDate(new Date().toISOString());
     setNote('');
     setMadeBy(sampleNames[0]);
     onClearSelection();
@@ -87,12 +87,14 @@ const ExpenseRecordTab: React.FC<ExpenseRecordTabProps> = ({
       return;
     }
 
+    const normalizedDate = new Date(date).toISOString();
+
     setIsSaving(true);
 
     const payload = {
       categoryId,
       amount: Number(amount),
-      date,
+      date: normalizedDate,
       note,
       madeBy,
     };
@@ -150,10 +152,21 @@ const ExpenseRecordTab: React.FC<ExpenseRecordTabProps> = ({
             <TextField
               label="Expense date"
               type="date"
-              value={date}
+              value={date ? date.slice(0, 10) : ''}
               fullWidth
               InputLabelProps={{ shrink: true }}
-              onChange={(event) => setDate(event.target.value)}
+              onChange={(event) => {
+                const pickedDate = event.target.value;
+                if (!pickedDate) {
+                  setDate('');
+                  return;
+                }
+
+                const isoDate = new Date(
+                  `${pickedDate}T00:00:00`
+                ).toISOString();
+                setDate(isoDate);
+              }}
             />
             <TextField
               select

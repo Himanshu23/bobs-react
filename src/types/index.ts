@@ -140,6 +140,7 @@ export interface Order {
   status?: OrderStatus;
   createdAt?: string;
   updatedAt?: string;
+  isPaidOnline: boolean;
 }
 
 export interface OrderResponse {

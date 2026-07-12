@@ -19,6 +19,7 @@ import {
   ListItem,
   ListItemText,
   Alert,
+  Checkbox,
   FormControlLabel,
   RadioGroup,
   Radio,
@@ -132,6 +133,7 @@ const CheckoutPage: React.FC = () => {
   const [recordSaleConfirmationOpen, setRecordSaleConfirmationOpen] =
     useState(false);
   const [printModalOpen, setPrintModalOpen] = useState(false);
+  const [paidOnline, setPaidOnline] = useState(false);
   const [addressError, setAddressError] = useState<string>('');
   const [scheduleError, setScheduleError] = useState<string>('');
 
@@ -235,6 +237,7 @@ const CheckoutPage: React.FC = () => {
       scheduledTime: orderTiming === 'scheduled' ? scheduledTime : undefined,
       items: orderItems,
       totalAmount: finalTotal,
+      isPaidOnline: paidOnline,
     };
   };
 
@@ -1086,17 +1089,29 @@ const CheckoutPage: React.FC = () => {
                 </Button>
 
                 {isLoggedIn && (
-                  <Button
-                    variant="outlined"
-                    fullWidth
-                    size="large"
-                    startIcon={<SaveIcon />}
-                    onClick={handleRecordSaleOnly}
-                    disabled={isProcessing}
-                    sx={{ mb: 1, textTransform: 'none' }}
-                  >
-                    {isProcessing ? 'Saving sale...' : 'Record sale only'}
-                  </Button>
+                  <Box sx={{ mb: 2 }}>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={paidOnline}
+                          onChange={(e) => setPaidOnline(e.target.checked)}
+                          color="primary"
+                        />
+                      }
+                      label="Paid online"
+                    />
+                    <Button
+                      variant="outlined"
+                      fullWidth
+                      size="large"
+                      startIcon={<SaveIcon />}
+                      onClick={handleRecordSaleOnly}
+                      disabled={isProcessing}
+                      sx={{ mt: 1, textTransform: 'none' }}
+                    >
+                      {isProcessing ? 'Saving sale...' : 'Record sale only'}
+                    </Button>
+                  </Box>
                 )}
 
                 <Button
