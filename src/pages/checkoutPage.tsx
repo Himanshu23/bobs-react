@@ -38,7 +38,7 @@ import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import PrintIcon from '@mui/icons-material/Print';
 import SaveIcon from '@mui/icons-material/Save';
 import { RootState } from '../redux/store';
-import { clearCart } from '../redux/store';
+import { addToCart, clearCart } from '../redux/store';
 import {
   formatOrderMessage,
   openWhatsApp,
@@ -54,7 +54,8 @@ import { trackEvent } from '../utils/analytics';
 import Receipt from '../components/Receipt';
 import { printReceipt } from '../utils/printService';
 import { useCreateOrder } from '../data/hooks/useOrders';
-import { OrderFulfillmentType, OrderItem } from '../types';
+import { useFoodItems } from '../data/hooks/useFoodItems';
+import { CartItem, FoodItem, OrderFulfillmentType, OrderItem } from '../types';
 
 const WHATSAPP_PHONE = '9643310092'; // Replace with your number
 
@@ -106,6 +107,7 @@ const CheckoutPage: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const cartItems = useSelector((state: RootState) => state.cart.items);
+  const { data: menuItems = [] } = useFoodItems();
   const { mutate: createOrder } = useCreateOrder();
   const addressSectionRef = useRef<HTMLDivElement | null>(null);
   const receiptRef = useRef<HTMLDivElement | null>(null);
@@ -136,6 +138,7 @@ const CheckoutPage: React.FC = () => {
   const [paidOnline, setPaidOnline] = useState(false);
   const [addressError, setAddressError] = useState<string>('');
   const [scheduleError, setScheduleError] = useState<string>('');
+  const [freeClaimDialogOpen, setFreeClaimDialogOpen] = useState(false);
 
   useEffect(() => {
     saveCheckoutFormToLocalStorage({
@@ -187,6 +190,18 @@ const CheckoutPage: React.FC = () => {
   const discountLabel = appliedDiscountCode
     ? `Discount (${appliedDiscountCode})`
     : 'Discount';
+  const freeClaimOptions = menuItems.filter((item) => {
+    if (!item.freeClaimPortion) {
+      return false;
+    }
+
+    return !cartItems.some(
+      (cartItem) =>
+        cartItem.isFreeClaim &&
+        cartItem.id === item.id &&
+        cartItem.option?.size === item.freeClaimPortion
+    );
+  });
   const scheduledTimeLabel = scheduledTime
     ? formatScheduledTime(scheduledTime)
     : '';
@@ -348,6 +363,37 @@ const CheckoutPage: React.FC = () => {
     }
   };
 
+  const handleClaimFreeItem = (foodItem: FoodItem) => {
+    const freeClaimSize = foodItem.freeClaimPortion || 'Full';
+    const freeClaimCartItem: CartItem = {
+      id: foodItem.id,
+      name: foodItem.name,
+      price: 0,
+      image: foodItem.image,
+      description: `Free ${freeClaimSize} portion`,
+      product: foodItem,
+      quantity: 1,
+      option: { size: freeClaimSize },
+      isFreeClaim: true,
+    };
+
+    dispatch(addToCart(freeClaimCartItem));
+  };
+
+  const handlePlaceOrderClick = () => {
+    if (freeClaimOptions.length > 0) {
+      setFreeClaimDialogOpen(true);
+      return;
+    }
+
+    void handleProceedToCheckout();
+  };
+
+  const handleContinueToOrder = () => {
+    setFreeClaimDialogOpen(false);
+    void handleProceedToCheckout();
+  };
+
   const handleRecordSaleOnly = async () => {
     if (deliveryMethod === 'delivery' && !hasDeliveryAddress) {
       setAddressError(
@@ -467,6 +513,66 @@ const CheckoutPage: React.FC = () => {
           <Box sx={{ width: '80px' }} />
         </Toolbar>
       </AppBar>
+
+      <Dialog
+        open={freeClaimDialogOpen}
+        onClose={() => setFreeClaimDialogOpen(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>Claim a free dish</DialogTitle>
+        <DialogContent>
+          <DialogContentText sx={{ mb: 2 }}>
+            Pick any free-portion offer below. Claimed items will be added to
+            your cart with zero cost.
+          </DialogContentText>
+
+          {freeClaimOptions.length > 0 ? (
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+              {freeClaimOptions.map((item) => (
+                <Box
+                  key={item.id}
+                  sx={{
+                    border: '1px solid #e0e0e0',
+                    borderRadius: 2,
+                    p: 1.5,
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    gap: 2,
+                  }}
+                >
+                  <Box>
+                    <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+                      {item.name}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Free {item.freeClaimPortion} portion
+                    </Typography>
+                  </Box>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={() => handleClaimFreeItem(item)}
+                  >
+                    Claim
+                  </Button>
+                </Box>
+              ))}
+            </Box>
+          ) : (
+            <Alert severity="info">
+              There are no free-claim dishes available right now.
+            </Alert>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setFreeClaimDialogOpen(false)}>Close</Button>
+          <Button variant="contained" onClick={handleContinueToOrder}>
+            Continue to Order
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       <Container maxWidth="lg" sx={{ py: 3, pb: 12 }}>
         <Grid container spacing={3}>
@@ -1075,7 +1181,7 @@ const CheckoutPage: React.FC = () => {
                   fullWidth
                   size="large"
                   startIcon={<WhatsAppIcon />}
-                  onClick={handleProceedToCheckout}
+                  onClick={handlePlaceOrderClick}
                   disabled={isProcessing}
                   sx={{
                     background:

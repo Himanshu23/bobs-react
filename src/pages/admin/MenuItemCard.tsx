@@ -7,13 +7,14 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import { Edit as EditIcon } from '@mui/icons-material';
+import { DeleteForever, Edit as EditIcon } from '@mui/icons-material';
 import { FoodItem } from '../../types';
 import FoodImage from '../../components/FoodImage';
 
 interface MenuItemCardProps {
   item: FoodItem;
   onEditItem?: (item: FoodItem) => void;
+  onDeleteItem?: (item: FoodItem) => void;
   backgroundColor?: string;
   hoverColor?: string;
 }
@@ -23,7 +24,16 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
   onEditItem,
   backgroundColor = '#fafafa',
   hoverColor = '#f5f5f5',
+  onDeleteItem,
 }) => {
+  const deleteItem = (item: FoodItem) => {
+    const confirmDelete = window.confirm(
+      `Are you sure you want to delete ${item.name}?`
+    );
+    if (confirmDelete) {
+      onDeleteItem?.(item);
+    }
+  };
   return (
     <Card
       variant="outlined"
@@ -79,6 +89,14 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
             variant="outlined"
             startIcon={<EditIcon />}
             onClick={() => onEditItem?.(item)}
+          >
+            Edit
+          </Button>
+          <Button
+            size="small"
+            variant="outlined"
+            startIcon={<DeleteForever />}
+            onClick={() => deleteItem(item)}
           >
             Edit
           </Button>

@@ -19,9 +19,14 @@ import MenuItemCard from './MenuItemCard';
 interface MenuTabProps {
   items: FoodItem[];
   onEditItem?: (item: FoodItem) => void;
+  onDeleteItem?: (item: FoodItem) => void;
 }
 
-const MenuTab: React.FC<MenuTabProps> = ({ items, onEditItem }) => {
+const MenuTab: React.FC<MenuTabProps> = ({
+  items,
+  onEditItem,
+  onDeleteItem,
+}) => {
   const [expandedCategories, setExpandedCategories] = useState<
     Record<string, boolean>
   >({});
@@ -123,6 +128,7 @@ const MenuTab: React.FC<MenuTabProps> = ({ items, onEditItem }) => {
                               key={item.id}
                               item={item}
                               onEditItem={onEditItem}
+                              onDeleteItem={onDeleteItem}
                               backgroundColor="#f1f8f4"
                               hoverColor="#e8f5e9"
                             />
@@ -149,6 +155,7 @@ const MenuTab: React.FC<MenuTabProps> = ({ items, onEditItem }) => {
                               key={item.id}
                               item={item}
                               onEditItem={onEditItem}
+                              onDeleteItem={onDeleteItem}
                               backgroundColor="#fce4ec"
                               hoverColor="#f8bbd0"
                             />

@@ -26,6 +26,53 @@ const fetchFoodItems = async (): Promise<FoodItem[]> => {
   return data;
 };
 
+const createFoodItem = async (foodItem: FoodItem): Promise<FoodItem> => {
+  const authState = getAuthState();
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+  };
+
+  if (authState.token) {
+    headers['Authorization'] = `Bearer ${authState.token}`;
+  }
+
+  const response = await fetch(FOOD_ITEMS_API_URL, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify(foodItem),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to create food item: ${response.statusText}`);
+  }
+
+  const data: FoodItem = await response.json();
+  return data;
+};
+
+const deleteFoodItem = async (foodItem: FoodItem): Promise<boolean> => {
+  const authState = getAuthState();
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+  };
+
+  if (authState.token) {
+    headers['Authorization'] = `Bearer ${authState.token}`;
+  }
+
+  const response = await fetch(`${FOOD_ITEMS_API_URL}/${foodItem.id}`, {
+    method: 'DELETE',
+    headers,
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to create food item: ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  return data;
+};
+
 const updateFoodItem = async (
   id: string,
   foodItem: FoodItem
@@ -59,6 +106,36 @@ export const useFoodItems = () => {
     queryFn: fetchFoodItems,
     staleTime: 1000 * 60 * 5, // 5 minutes
     retry: 2,
+  });
+};
+
+export const useCreateFoodItem = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation<FoodItem, Error, FoodItem>({
+    mutationFn: (foodItem) => createFoodItem(foodItem),
+    onSuccess: (createdItem) => {
+      queryClient.invalidateQueries({ queryKey: ['foodItems'] });
+      console.log('Item created successfully:', createdItem);
+    },
+    onError: (error) => {
+      console.error('Error creating item:', error);
+    },
+  });
+};
+
+export const useDeleteFoodItem = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation<boolean, Error, FoodItem>({
+    mutationFn: (foodItem) => deleteFoodItem(foodItem),
+    onSuccess: (createdItem) => {
+      queryClient.invalidateQueries({ queryKey: ['foodItems'] });
+      console.log('Item deleted successfully:', createdItem);
+    },
+    onError: (error) => {
+      console.error('Error deleting item:', error);
+    },
   });
 };
 

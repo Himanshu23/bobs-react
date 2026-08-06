@@ -7,9 +7,6 @@ import store from './redux/store';
 import theme from './styles/theme';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 
-// Initialize Firebase on app load
-import './config/firebase';
-
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );

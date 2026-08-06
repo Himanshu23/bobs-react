@@ -19,7 +19,11 @@ import SpeedIcon from '@mui/icons-material/Speed';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import { FoodItem } from '../types';
-import { useFoodItems, useUpdateFoodItem } from '../data/hooks/useFoodItems';
+import {
+  useDeleteFoodItem,
+  useFoodItems,
+  useUpdateFoodItem,
+} from '../data/hooks/useFoodItems';
 import MenuTab from './admin/MenuTab';
 import OrdersTab from './admin/OrdersTab';
 import CurrentOrdersTab from './admin/CurrentOrdersTab';
@@ -34,6 +38,7 @@ const AdminPage: React.FC = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const { data: foodItems, isLoading, isFetching } = useFoodItems();
   const updateItemMutation = useUpdateFoodItem();
+  const deleteItemMutation = useDeleteFoodItem();
 
   const handleEditItem = (item: FoodItem) => {
     setEditingItem(item);
@@ -50,6 +55,20 @@ const AdminPage: React.FC = () => {
         },
       }
     );
+  };
+
+  const handleDeleteItem = (updatedItem: FoodItem) => {
+    deleteItemMutation.mutate(updatedItem, {
+      onSuccess: () => {
+        setIsDrawerOpen(false);
+        setEditingItem(null);
+      },
+    });
+  };
+
+  const handleAddDish = () => {
+    setEditingItem(null);
+    setIsDrawerOpen(true);
   };
 
   const handleCloseDrawer = () => {
@@ -83,14 +102,19 @@ const AdminPage: React.FC = () => {
             Manage orders, menu items, and discounts.
           </Typography>
         </Box>
-        <Button
-          variant="outlined"
-          startIcon={<RefreshIcon />}
-          onClick={() => console.log('refresh')}
-          disabled={isFetching}
-        >
-          Refresh
-        </Button>
+        <Stack direction="row" spacing={1.5}>
+          <Button variant="contained" onClick={handleAddDish}>
+            Add Dish
+          </Button>
+          <Button
+            variant="outlined"
+            startIcon={<RefreshIcon />}
+            onClick={() => console.log('refresh')}
+            disabled={isFetching}
+          >
+            Refresh
+          </Button>
+        </Stack>
       </Stack>
 
       <Card>
@@ -133,7 +157,11 @@ const AdminPage: React.FC = () => {
           {tab === 0 && <CurrentOrdersTab />}
           {tab === 1 && <OrdersTab />}
           {tab === 2 && foodItems && (
-            <MenuTab items={foodItems} onEditItem={handleEditItem} />
+            <MenuTab
+              items={foodItems}
+              onEditItem={handleEditItem}
+              onDeleteItem={handleDeleteItem}
+            />
           )}
           {tab === 3 && <DiscountsTab />}
           {tab === 4 && <ExpensesTab />}

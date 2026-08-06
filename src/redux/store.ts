@@ -21,29 +21,31 @@ const initialState: CartState = {
 
 const findItem = (
   items: CartItem[],
-  item: { id: string; option: ItemOptions }
+  item: { id: string; option: ItemOptions; isFreeClaim?: boolean }
 ) => {
-  const { id, option } = item;
+  const { id, option, isFreeClaim } = item;
   return items.find(
-    (item) =>
-      item.id === id &&
-      item.option?.base === option?.base &&
-      item.option?.size === option?.size &&
-      item.option?.style === option?.style
+    (cartItem) =>
+      cartItem.id === id &&
+      cartItem.option?.base === option?.base &&
+      cartItem.option?.size === option?.size &&
+      cartItem.option?.style === option?.style &&
+      (isFreeClaim === undefined || cartItem.isFreeClaim === isFreeClaim)
   );
 };
 
 const findItemIndex = (
   items: CartItem[],
-  item: { id: string; option: ItemOptions }
+  item: { id: string; option: ItemOptions; isFreeClaim?: boolean }
 ) => {
-  const { id, option } = item;
+  const { id, option, isFreeClaim } = item;
   return items.findIndex(
-    (item) =>
-      item.id === id &&
-      item.option?.base === option?.base &&
-      item.option?.size === option?.size &&
-      item.option?.style === option?.style
+    (cartItem) =>
+      cartItem.id === id &&
+      cartItem.option?.base === option?.base &&
+      cartItem.option?.size === option?.size &&
+      cartItem.option?.style === option?.style &&
+      (isFreeClaim === undefined || cartItem.isFreeClaim === isFreeClaim)
   );
 };
 // Create slice
@@ -52,9 +54,22 @@ const cartSlice = createSlice({
   initialState,
   reducers: {
     addToCart: (state, action: PayloadAction<CartItem>) => {
-      const { id, name, price, image, quantity, option, description, product } =
-        action.payload;
-      const existingItem = findItem(state.items, { id, option });
+      const {
+        id,
+        name,
+        price,
+        image,
+        quantity,
+        option,
+        description,
+        product,
+        isFreeClaim,
+      } = action.payload;
+      const existingItem = findItem(state.items, {
+        id,
+        option,
+        isFreeClaim,
+      });
       if (existingItem) {
         existingItem.quantity += quantity;
       } else {
@@ -67,6 +82,7 @@ const cartSlice = createSlice({
           option,
           description,
           product,
+          isFreeClaim,
         });
       }
 

@@ -57,6 +57,7 @@ export interface FoodItem {
       base?: Record<BaseKey, number>;
     };
   };
+  freeClaimPortion?: ItemOptions['size'] | null;
 }
 
 export interface ItemOptions {
@@ -80,6 +81,7 @@ export interface CartItem {
   // nowPrice: number;
   quantity: number;
   option: ItemOptions;
+  isFreeClaim?: boolean;
   priceOptions?: {
     size: {
       full?: number;

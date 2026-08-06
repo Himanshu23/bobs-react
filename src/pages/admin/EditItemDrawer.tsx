@@ -1,12 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Box,
   Button,
-  Checkbox,
   Drawer,
+  FormControl,
   FormControlLabel,
-  FormGroup,
+  FormHelperText,
+  FormLabel,
   MenuItem,
+  Radio,
+  RadioGroup,
   Stack,
   TextField,
   Typography,
@@ -22,9 +25,13 @@ import {
   CircularProgress,
 } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { Controller, useForm } from 'react-hook-form';
 import { FoodItem, FoodCategory } from '../../types';
 import FoodImage from '../../components/FoodImage';
-import { useUpdateFoodItem } from '../../data/hooks/useFoodItems';
+import {
+  useCreateFoodItem,
+  useUpdateFoodItem,
+} from '../../data/hooks/useFoodItems';
 
 interface EditItemDrawerProps {
   open: boolean;
@@ -32,6 +39,22 @@ interface EditItemDrawerProps {
   onClose: () => void;
   onSave: (item: FoodItem) => void;
 }
+
+const createDefaultFoodItem = (): FoodItem => ({
+  id: `dish-${Date.now()}-${Math.round(Math.random() * 1000)}`,
+  name: '',
+  description: '',
+  veg: true,
+  rating: 4,
+  image:
+    'https://bobsimages.blob.core.windows.net/dishesh/default-placeholder.jpg',
+  category: FoodCategory.Starters,
+  priceOptions: {
+    wasPrice: { size: { Full: 0, Half: 0, Quarter: 0 } },
+    nowPrice: { size: { Full: 0, Half: 0, Quarter: 0 } },
+  },
+  freeClaimPortion: null,
+});
 
 const EditItemDrawer: React.FC<EditItemDrawerProps> = ({
   open,
@@ -42,14 +65,46 @@ const EditItemDrawer: React.FC<EditItemDrawerProps> = ({
   const [formData, setFormData] = useState<FoodItem | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const createItemMutation = useCreateFoodItem();
   const updateItemMutation = useUpdateFoodItem();
+  const {
+    control,
+    formState: { errors },
+    handleSubmit,
+    register,
+    reset,
+  } = useForm<FoodItem>({
+    defaultValues: createDefaultFoodItem(),
+    mode: 'onSubmit',
+  });
 
   useEffect(() => {
-    if (open && item) {
-      setFormData(JSON.parse(JSON.stringify(item))); // Deep copy
+    if (open) {
+      const nextItem = item
+        ? JSON.parse(JSON.stringify(item))
+        : createDefaultFoodItem();
+
+      setFormData(nextItem);
+      reset(nextItem);
       setUploadError(null);
     }
-  }, [open, item]);
+  }, [open, item, reset]);
+
+  const isCreating = !item;
+
+  const hasRequiredFields = useMemo(() => {
+    return Boolean(
+      formData?.name?.trim() &&
+        formData?.description?.trim() &&
+        formData?.category &&
+        formData?.image?.trim()
+    );
+  }, [
+    formData?.category,
+    formData?.name,
+    formData?.description,
+    formData?.image,
+  ]);
 
   if (!formData) return null;
 
@@ -88,22 +143,20 @@ const EditItemDrawer: React.FC<EditItemDrawerProps> = ({
     setUploadError(null);
 
     try {
-      // TODO: Replace with your actual Azure upload logic
-      // For now, this creates a local file URL
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const dataUrl = event.target?.result as string;
-        setFormData({ ...formData, image: dataUrl });
-        setIsUploading(false);
-      };
-      reader.readAsDataURL(file);
+      const dataUrl = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          resolve(event.target?.result as string);
+        };
+        reader.onerror = () => reject(new Error('Failed to read image file'));
+        reader.readAsDataURL(file);
+      });
 
-      // Example: If using Azure Blob directly via SAS URL or backend API:
-      // const formData = new FormData();
-      // formData.append('file', file);
-      // const response = await fetch('/api/upload', { method: 'POST', body: formData });
-      // const { imageUrl } = await response.json();
-      // setFormData({ ...formData, image: imageUrl });
+      setFormData((current) => ({
+        ...current!,
+        image: dataUrl,
+      }));
+      setIsUploading(false);
     } catch (error) {
       setUploadError(
         error instanceof Error ? error.message : 'Failed to upload image'
@@ -113,28 +166,48 @@ const EditItemDrawer: React.FC<EditItemDrawerProps> = ({
   };
 
   const handleSave = () => {
-    if (formData) {
+    if (!formData) return;
+    const nextPayload = formData;
+
+    if (item) {
       updateItemMutation.mutate(
-        { id: formData.id, foodItem: formData },
+        { id: nextPayload.id, foodItem: nextPayload },
         {
           onSuccess: () => {
-            onSave(formData);
+            onSave(nextPayload);
             onClose();
           },
         }
       );
+      return;
     }
+    console.log({ nextPayload });
+    createItemMutation.mutate(nextPayload, {
+      onSuccess: () => {
+        onSave(nextPayload);
+        onClose();
+      },
+    });
   };
 
   const handleReset = () => {
     if (item) {
-      setFormData(JSON.parse(JSON.stringify(item)));
+      const nextItem = JSON.parse(JSON.stringify(item));
+      setFormData(nextItem);
+      reset(nextItem);
+      return;
     }
+
+    const nextItem = createDefaultFoodItem();
+    setFormData(nextItem);
+    reset(nextItem);
   };
 
   const sizes: ('Full' | 'Half' | 'Quarter')[] = ['Full', 'Half', 'Quarter'];
   const styles: ('Gravy' | 'Dry')[] = ['Gravy', 'Dry'];
   const bases: ('Paratha' | 'Roomali')[] = ['Paratha', 'Roomali'];
+
+  console.log('formData', formData);
 
   return (
     <Drawer
@@ -165,7 +238,7 @@ const EditItemDrawer: React.FC<EditItemDrawerProps> = ({
           sx={{ mb: 3 }}
         >
           <Typography variant="h5" sx={{ fontWeight: 800 }}>
-            Edit Item
+            {isCreating ? 'Add Item' : 'Edit Item'}
           </Typography>
         </Stack>
 
@@ -207,7 +280,14 @@ const EditItemDrawer: React.FC<EditItemDrawerProps> = ({
               label="Item Name"
               fullWidth
               value={formData.name}
-              onChange={(e) => handleBasicInfoChange('name', e.target.value)}
+              {...register('name', {
+                required: 'Dish name is required',
+              })}
+              onChange={(e) => {
+                handleBasicInfoChange('name', e.target.value);
+              }}
+              error={Boolean(errors.name)}
+              helperText={errors.name?.message}
             />
             <TextField
               label="Description"
@@ -215,6 +295,9 @@ const EditItemDrawer: React.FC<EditItemDrawerProps> = ({
               multiline
               rows={3}
               value={formData.description}
+              {...register('description', {
+                required: 'Description is required',
+              })}
               onChange={(e) =>
                 handleBasicInfoChange('description', e.target.value)
               }
@@ -224,9 +307,14 @@ const EditItemDrawer: React.FC<EditItemDrawerProps> = ({
               label="Category"
               fullWidth
               value={formData.category}
+              {...register('category', {
+                required: 'Category is required',
+              })}
               onChange={(e) =>
                 handleBasicInfoChange('category', e.target.value)
               }
+              error={Boolean(errors.category)}
+              helperText={errors.category?.message}
             >
               {Object.values(FoodCategory).map((category) => (
                 <MenuItem key={category} value={category}>
@@ -234,19 +322,58 @@ const EditItemDrawer: React.FC<EditItemDrawerProps> = ({
                 </MenuItem>
               ))}
             </TextField>
-            <FormGroup>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={formData.veg}
-                    onChange={(e) =>
-                      handleBasicInfoChange('veg', e.target.checked)
-                    }
-                  />
-                }
-                label="Vegetarian"
+            <FormControl error={Boolean(errors.veg)}>
+              <FormLabel id="veg-nonveg">Veg or Non-Veg</FormLabel>
+              <Controller
+                name="veg"
+                control={control}
+                rules={{ required: 'Please select Veg or Non-Veg' }}
+                render={({ field }) => (
+                  <RadioGroup
+                    row
+                    aria-labelledby="veg-nonveg"
+                    value={field.value ? 'veg' : 'non-veg'}
+                    onChange={(e) => {
+                      const nextValue = e.target.value === 'veg';
+                      field.onChange(nextValue);
+                      handleBasicInfoChange('veg', nextValue);
+                    }}
+                  >
+                    <FormControlLabel
+                      value="veg"
+                      control={<Radio />}
+                      label="Veg"
+                    />
+                    <FormControlLabel
+                      value="non-veg"
+                      control={<Radio />}
+                      label="Non-Veg"
+                    />
+                  </RadioGroup>
+                )}
               />
-            </FormGroup>
+              {errors.veg && (
+                <FormHelperText>{errors.veg.message}</FormHelperText>
+              )}
+            </FormControl>
+            <TextField
+              select
+              label="Free Claim Portion"
+              fullWidth
+              value={formData.freeClaimPortion ?? ''}
+              {...register('freeClaimPortion')}
+              onChange={(e) =>
+                handleBasicInfoChange(
+                  'freeClaimPortion',
+                  e.target.value || null
+                )
+              }
+            >
+              <MenuItem value="">None</MenuItem>
+              <MenuItem value="Full">Full</MenuItem>
+              <MenuItem value="Half">Half</MenuItem>
+              <MenuItem value="Quarter">Quarter</MenuItem>
+            </TextField>
           </Stack>
 
           {/* Image Section */}
@@ -289,6 +416,11 @@ const EditItemDrawer: React.FC<EditItemDrawerProps> = ({
                 <Typography variant="caption" color="text.secondary">
                   Supported: JPG, PNG, AVIF
                 </Typography>
+                {!formData.image && (
+                  <Alert severity="warning" sx={{ mb: 1 }}>
+                    An image is required.
+                  </Alert>
+                )}
               </Stack>
             </CardContent>
           </Card>
@@ -501,15 +633,26 @@ const EditItemDrawer: React.FC<EditItemDrawerProps> = ({
           <Button
             variant="contained"
             fullWidth
-            onClick={handleSave}
-            disabled={isUploading || updateItemMutation.isPending}
+            onClick={handleSubmit(handleSave)}
+            disabled={
+              isUploading ||
+              createItemMutation.isPending ||
+              updateItemMutation.isPending ||
+              !hasRequiredFields
+            }
             startIcon={
-              updateItemMutation.isPending ? (
+              createItemMutation.isPending || updateItemMutation.isPending ? (
                 <CircularProgress size={20} />
               ) : undefined
             }
           >
-            {updateItemMutation.isPending ? 'Saving...' : 'Save Changes'}
+            {isCreating
+              ? createItemMutation.isPending
+                ? 'Creating...'
+                : 'Create Dish'
+              : updateItemMutation.isPending
+                ? 'Saving...'
+                : 'Save Changes'}
           </Button>
           <Button variant="text" fullWidth onClick={onClose}>
             Close

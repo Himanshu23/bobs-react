@@ -1,11 +1,11 @@
 import { Box, SxProps, Theme } from '@mui/material';
 import { ImageNotSupported } from '@mui/icons-material';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface FoodImageProps {
   src: string;
   alt: string;
-  size?: number; // width and height in px
+  size?: number;
   sx?: SxProps<Theme>;
   showPlaceholder?: boolean;
 }
@@ -18,6 +18,10 @@ const FoodImage = ({
   showPlaceholder = true,
 }: FoodImageProps) => {
   const [imageError, setImageError] = useState(false);
+
+  useEffect(() => {
+    setImageError(false);
+  }, [src]);
 
   if (imageError && showPlaceholder) {
     return (
@@ -41,7 +45,7 @@ const FoodImage = ({
   }
 
   if (imageError) {
-    return null; // Return nothing if placeholder is disabled
+    return null;
   }
 
   return (

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useTheme, useMediaQuery } from '@mui/material';
 import {
   Grid,
@@ -10,7 +10,6 @@ import {
   Box,
   CircularProgress,
   Alert,
-  Chip,
   Divider,
   List,
   ListItem,
@@ -31,15 +30,10 @@ import {
   useCurrentOrders,
   useUpdateOrderStatus,
 } from '../../data/hooks/useOrders';
-import { useOrderWebSocket } from '../../data/hooks/useOrderWebSocket';
 import {
-  requestNotificationPermission,
-  sendBrowserNotification,
-  startRepeatNotification,
   stopRepeatNotification,
   initializeAudio,
 } from '../../utils/notificationSound';
-import { initializeFCM } from '../../utils/firebaseMessaging';
 import OrderDeleteButton from '../../components/OrderDeleteButton';
 
 const CurrentOrdersTab: React.FC = () => {
@@ -74,58 +68,8 @@ const CurrentOrdersTab: React.FC = () => {
 
   console.log({ fetchedOrders });
 
-  // Handle new order from WebSocket
-  const handleNewOrder = useCallback(
-    async (order: Order) => {
-      console.log('New order received:', order);
-
-      // Add to WebSocket orders
-      setWsOrders((prev) => {
-        const exists = prev.some((o) => o.id === order.id);
-        if (!exists) {
-          return [order, ...prev];
-        }
-        return prev;
-      });
-
-      // Show alert for new order
-      setNewOrderAlert(order);
-      if (order.id) {
-        setAlertingOrderId(order.id);
-      }
-
-      if (alertTimeoutRef.current) {
-        clearTimeout(alertTimeoutRef.current);
-      }
-
-      // Alert stays visible until order is accepted
-      // (only clears when user accepts or timeout is manually cleared)
-
-      // Start repeating loud notification if sound is enabled
-      if (soundEnabled && order.id) {
-        startRepeatNotification(order.id, 2000); // Repeat every 2 seconds
-      }
-
-      // Send browser notification if enabled
-      await sendBrowserNotification('🔔 NEW ORDER ALERT!', {
-        body: `Order ${order.id} from ${order.customerName} - ₹${order.totalAmount.toFixed(2)}`,
-        icon: '👨‍🍳',
-      });
-
-      // Auto-switch to Unaccepted Orders tab
-      setSubTab(0);
-    },
-    [soundEnabled]
-  );
-
   // Request notification permission on mount and initialize audio + FCM
   useEffect(() => {
-    requestNotificationPermission();
-    // Initialize audio context with user gesture (required for iOS)
-    initializeAudio();
-    // Initialize Firebase Cloud Messaging for push notifications
-    void initializeFCM();
-
     // Also setup one-time click handler as additional initialization
     const handleFirstInteraction = () => {
       initializeAudio();
@@ -141,12 +85,6 @@ const CurrentOrdersTab: React.FC = () => {
       document.removeEventListener('touchstart', handleFirstInteraction);
     };
   }, []);
-
-  // Setup WebSocket listener
-  const { isConnected: wsConnected } = useOrderWebSocket(
-    handleNewOrder,
-    undefined
-  );
 
   // Fetch fresh data when switching tabs
   useEffect(() => {
@@ -385,17 +323,6 @@ const CurrentOrdersTab: React.FC = () => {
           >
             🔵 {isMobile ? 'Orders' : 'Active Orders'}: {orders.length}
           </Typography>
-          <Chip
-            label={
-              wsConnected
-                ? isMobile
-                  ? 'Connected'
-                  : 'WS Connected'
-                : 'Disconnected'
-            }
-            color={wsConnected ? 'success' : 'error'}
-            size={isMobile ? 'small' : 'medium'}
-          />
         </Box>
         <Box
           sx={{ display: 'flex', gap: 1, width: isMobile ? '100%' : 'auto' }}
