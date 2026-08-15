@@ -11,6 +11,9 @@
   "env": {
     "browser": true
   },
+  "globals": {
+    "google": "readonly"
+  },
   "settings": {
     "react": {
       "version": "detect"

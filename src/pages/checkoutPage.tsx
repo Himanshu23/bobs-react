@@ -56,6 +56,8 @@ import { printReceipt } from '../utils/printService';
 import { useCreateOrder } from '../data/hooks/useOrders';
 import { useFoodItems } from '../data/hooks/useFoodItems';
 import { CartItem, FoodItem, OrderFulfillmentType, OrderItem } from '../types';
+import { useAddressBook } from '../context/AddressContext';
+import { formatAddressForDelivery } from '../types/address';
 
 const WHATSAPP_PHONE = '9643310092'; // Replace with your number
 
@@ -109,6 +111,7 @@ const CheckoutPage: React.FC = () => {
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const { data: menuItems = [] } = useFoodItems();
   const { mutate: createOrder } = useCreateOrder();
+  const { selectedAddress, addresses } = useAddressBook();
   const addressSectionRef = useRef<HTMLDivElement | null>(null);
   const receiptRef = useRef<HTMLDivElement | null>(null);
   const receiptPreviewRef = useRef<HTMLDivElement | null>(null);
@@ -121,7 +124,9 @@ const CheckoutPage: React.FC = () => {
   const [tower] = useState<string>(initialCheckoutForm.tower);
   const [flatNumber] = useState<string>(initialCheckoutForm.flatNumber);
   const [customAddress, setCustomAddress] = useState<string>(
-    initialCheckoutForm.customAddress
+    selectedAddress
+      ? formatAddressForDelivery(selectedAddress)
+      : initialCheckoutForm.customAddress
   );
   const [customerName, setCustomerName] = useState<string>(
     initialCheckoutForm.customerName
@@ -141,6 +146,13 @@ const CheckoutPage: React.FC = () => {
   const [freeClaimDialogOpen, setFreeClaimDialogOpen] = useState(false);
 
   useEffect(() => {
+    if (selectedAddress) {
+      setCustomAddress(formatAddressForDelivery(selectedAddress));
+      setAddressError('');
+    }
+  }, [selectedAddress]);
+
+  useEffect(() => {
     saveCheckoutFormToLocalStorage({
       deliveryMethod,
       habitat,
@@ -150,8 +162,6 @@ const CheckoutPage: React.FC = () => {
       customerName,
     });
   }, [customAddress, customerName, deliveryMethod, flatNumber, habitat, tower]);
-
-  // Reset tower when habitat changes
 
   const totalPrice = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
@@ -175,15 +185,7 @@ const CheckoutPage: React.FC = () => {
   //   habitat && tower && flatNumber && flatNumber.trim() !== ''
   // );
   const hasHabitatAddress = false;
-  console.log('hasHabitatAddress:', hasHabitatAddress, {
-    habitat,
-    tower,
-    flatNumber,
-  });
-  const hasCustomAddress = Boolean(
-    customAddress && customAddress.trim() !== ''
-  );
-  const hasDeliveryAddress = hasHabitatAddress || hasCustomAddress;
+  const hasSelectedSavedAddress = Boolean(selectedAddress);
   const isLoggedIn = isAuthenticated();
   const appliedDiscountCode =
     discountAmount > 0 ? selectedDiscount?.code : undefined;
@@ -207,17 +209,30 @@ const CheckoutPage: React.FC = () => {
     : '';
   const isScheduledTimeValid = SCHEDULE_TIME_OPTIONS.includes(scheduledTime);
 
-  const scrollToAddressSection = () => {
-    addressSectionRef.current?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start',
-    });
+  const goToAddressFlow = () => {
+    navigate('/addresses?return=/checkout');
+  };
+
+  const ensureDeliveryAddress = (): boolean => {
+    if (deliveryMethod !== 'delivery') {
+      return true;
+    }
+
+    if (hasSelectedSavedAddress) {
+      return true;
+    }
+
+    setAddressError('Add a delivery address to continue.');
+    goToAddressFlow();
+    return false;
   };
 
   const buildOrderObject = () => {
     let deliveryAddress = '';
     if (deliveryMethod === 'delivery') {
-      if (hasHabitatAddress) {
+      if (selectedAddress) {
+        deliveryAddress = formatAddressForDelivery(selectedAddress);
+      } else if (hasHabitatAddress) {
         deliveryAddress = `${habitat} - Tower ${tower}, Flat ${flatNumber}`;
       } else {
         deliveryAddress = customAddress.trim();
@@ -257,11 +272,7 @@ const CheckoutPage: React.FC = () => {
   };
 
   const handleProceedToCheckout = async () => {
-    if (deliveryMethod === 'delivery' && !hasDeliveryAddress) {
-      setAddressError(
-        'Add either Habitat, Tower and Flat Number, or enter your full address to continue.'
-      );
-      scrollToAddressSection();
+    if (!ensureDeliveryAddress()) {
       return;
     }
 
@@ -395,11 +406,7 @@ const CheckoutPage: React.FC = () => {
   };
 
   const handleRecordSaleOnly = async () => {
-    if (deliveryMethod === 'delivery' && !hasDeliveryAddress) {
-      setAddressError(
-        'Add either Habitat, Tower and Flat Number, or enter your full address to continue.'
-      );
-      scrollToAddressSection();
+    if (!ensureDeliveryAddress()) {
       return;
     }
 
@@ -614,7 +621,7 @@ const CheckoutPage: React.FC = () => {
                 {deliveryMethod === 'delivery' && (
                   <Box ref={addressSectionRef}>
                     <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 3 }}>
-                      📍 Delivery Address
+                      Delivery Address
                     </Typography>
 
                     {addressError ? (
@@ -623,7 +630,6 @@ const CheckoutPage: React.FC = () => {
                       </Alert>
                     ) : null}
 
-                    {/* Customer Name */}
                     <TextField
                       fullWidth
                       label="Your Name (Optional)"
@@ -633,170 +639,34 @@ const CheckoutPage: React.FC = () => {
                       sx={{ mb: 3 }}
                     />
 
-                    {/* Habitat Selection */}
-                    {/* <FormControl fullWidth sx={{ mb: 3 }}>
-                      <InputLabel>Select Habitat</InputLabel>
-                      <Select
-                        value={habitat}
-                        label="Select Habitat"
-                        onChange={handleHabitatChange}
-                      >
-                        <MenuItem value="">-- Choose Habitat --</MenuItem>
-                        {Object.keys(HABITAT_TOWERS).map((h) => (
-                          <MenuItem key={h} value={h}>
-                            {h}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl> */}
-
-                    {/* Two Options Side by Side */}
-                    <Grid container spacing={2} sx={{ mb: 3 }}>
-                      {/* Option 1: Tower + Flat Number */}
-                      <Grid item xs={12} md={5}>
-                        {/* <Box
-                          sx={{
-                            border: '2px solid #e0e0e0',
-                            borderRadius: '12px',
-                            padding: 3,
-                            backgroundColor: '#fafafa',
-                          }}
-                        > */}
-                        {/* <Typography
-                            variant="subtitle2"
-                            sx={{
-                              fontWeight: 'bold',
-                              mb: 2,
-                              color: '#333',
-                            }}
-                          >
-                            🏢 Tower & Flat
-                          </Typography> */}
-
-                        {/* Tower and Flat - Side by Side */}
-                        {/* <Grid container spacing={2}>
-                            <Grid item xs={6}>
-                              <FormControl
-                                fullWidth
-                                size="small"
-                                disabled={!habitat}
-                              >
-                                <InputLabel>Tower</InputLabel>
-                                <Select
-                                  value={tower}
-                                  label="Tower"
-                                  onChange={(e) => {
-                                    setTower(e.target.value);
-                                    setAddressError('');
-                                  }}
-                                >
-                                  <MenuItem value="">Select</MenuItem>
-                                  {availableTowers.map((t) => (
-                                    <MenuItem key={t} value={t}>
-                                      {t}
-                                    </MenuItem>
-                                  ))}
-                                </Select>
-                              </FormControl>
-                            </Grid>
-                            <Grid item xs={6}>
-                              <TextField
-                                fullWidth
-                                size="small"
-                                label="Flat No."
-                                placeholder="e.g., 502"
-                                value={flatNumber}
-                                onChange={(e) => {
-                                  setFlatNumber(e.target.value);
-                                  setAddressError('');
-                                }}
-                              />
-                            </Grid>
-                          </Grid> */}
-
-                        {/* Address Preview */}
-                        {/* {hasHabitatAddress && (
-                            <Alert severity="success" sx={{ mt: 2 }}>
-                              <Typography variant="caption">
-                                📦 {habitat} - Tower {tower}, Flat {flatNumber}
-                              </Typography>
-                            </Alert>
-                          )} */}
-                        {/* </Box> */}
-                      </Grid>
-
-                      {/* OR Divider */}
-                      {/* <Grid item xs={12} md={2}>
-                        <Box
-                          sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            height: '100%',
-                            minHeight: '10px',
-                          }}
+                    {selectedAddress ? (
+                      <Alert severity="success" sx={{ mb: 2 }}>
+                        <Typography
+                          variant="subtitle2"
+                          sx={{ fontWeight: 700 }}
                         >
-                          <Box sx={{ textAlign: 'center' }}>
-                            <Typography
-                              variant="h6"
-                              sx={{
-                                fontWeight: 'bold',
-                                color: '#999',
-                                fontSize: '1.1rem',
-                              }}
-                            >
-                              OR
-                            </Typography>
-                          </Box>
-                        </Box>
-                      </Grid> */}
+                          {selectedAddress.label}
+                        </Typography>
+                        <Typography variant="body2">
+                          {formatAddressForDelivery(selectedAddress)}
+                        </Typography>
+                      </Alert>
+                    ) : (
+                      <Alert severity="info" sx={{ mb: 2 }}>
+                        No saved delivery address yet. Add one to place a
+                        delivery order.
+                      </Alert>
+                    )}
 
-                      {/* Option 2: Free Text Address */}
-                      <Grid item xs={12} md={5}>
-                        {/* <Box
-                          sx={{
-                            border: '2px solid #e0e0e0',
-                            borderRadius: '12px',
-                            padding: 1,
-                            backgroundColor: '#fafafa',
-                          }}
-                        > */}
-                        {/* <Typography
-                            variant="subtitle2"
-                            sx={{
-                              fontWeight: 'bold',
-                              mb: 2,
-                              color: '#333',
-                            }}
-                          >
-                            📍 Other Address
-                          </Typography> */}
-
-                        <TextField
-                          fullWidth
-                          label="Enter Your Address"
-                          placeholder="e.g., 123 Main Street, Apartment 4B"
-                          value={customAddress}
-                          onChange={(e) => {
-                            setCustomAddress(e.target.value);
-                            setAddressError('');
-                          }}
-                          multiline
-                          rows={3}
-                          size="small"
-                        />
-
-                        {/* Address Preview */}
-                        {customAddress && (
-                          <Alert severity="success" sx={{ mt: 2 }}>
-                            <Typography variant="caption">
-                              📦 {customAddress}
-                            </Typography>
-                          </Alert>
-                        )}
-                        {/* </Box> */}
-                      </Grid>
-                    </Grid>
+                    <Button
+                      variant="outlined"
+                      onClick={goToAddressFlow}
+                      sx={{ textTransform: 'none' }}
+                    >
+                      {addresses.length > 0
+                        ? 'Change address'
+                        : 'Add delivery address'}
+                    </Button>
                   </Box>
                 )}
 
@@ -1229,10 +1099,9 @@ const CheckoutPage: React.FC = () => {
                   Review Cart and Edit Items
                 </Button>
 
-                {deliveryMethod === 'delivery' && !hasDeliveryAddress ? (
+                {deliveryMethod === 'delivery' && !hasSelectedSavedAddress ? (
                   <Alert severity="info" sx={{ mt: 2 }}>
-                    Add a delivery address. If you tap the button first, the
-                    page will jump to the address section.
+                    Add a delivery address before placing your order.
                   </Alert>
                 ) : null}
               </CardContent>

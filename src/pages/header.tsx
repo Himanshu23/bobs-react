@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   AppBar,
   Toolbar,
@@ -13,9 +13,8 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { trackEvent } from '../utils/analytics';
-import { recordAudioForMs } from '../utils/voiceRecorder';
-import { useSendAudio } from '../hooks/useSendAudio';
 import { getAuthState, isAuthenticated, logout } from '../admin/auth';
+import AddressHeaderBar from '../components/address/AddressHeaderBar';
 
 const PHONE_NUMBER = '9643310092';
 
@@ -132,6 +131,7 @@ const Header: React.FC = () => {
           Logout
         </Button>
       </Toolbar>
+      {!isAdminView ? <AddressHeaderBar /> : null}
     </AppBar>
   );
 };
