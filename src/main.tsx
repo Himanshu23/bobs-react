@@ -6,6 +6,18 @@ import { Provider } from 'react-redux';
 import store from './redux/store';
 import theme from './styles/theme';
 import { ThemeProvider, CssBaseline } from '@mui/material';
+import { StatusBar, Style } from '@capacitor/status-bar';
+import { Capacitor } from '@capacitor/core';
+
+const initializeApp = async () => {
+  if (Capacitor.isNativePlatform()) {
+    await StatusBar.setStyle({
+      style: Style.Light,
+    });
+  }
+};
+
+initializeApp();
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

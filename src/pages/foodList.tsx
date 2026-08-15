@@ -380,9 +380,9 @@ const FoodListPage: React.FC = () => {
             backgroundColor: 'background.paper',
             pt: 2,
             pb: 1,
+            paddingTop: 'env(safe-area-inset-top)',
           }}
         >
-          {/* <ActiveDiscountsDropdown discounts={activeDiscounts} /> */}
           <Box sx={{ display: 'flex', gap: 1, mb: 1.5, alignItems: 'center' }}>
             <TextField
               fullWidth

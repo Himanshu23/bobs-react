@@ -1,29 +1,29 @@
-import { PushNotifications } from '@capacitor/push-notifications';
+// import { PushNotifications } from '@capacitor/push-notifications';
 
-export const initPushNotifications = async () => {
-  const permission = await PushNotifications.requestPermissions();
+// export const initPushNotifications = async () => {
+//   const permission = await PushNotifications.requestPermissions();
 
-  if (permission.receive !== 'granted') {
-    console.log('Permission denied');
-    return;
-  }
+//   if (permission.receive !== 'granted') {
+//     console.log('Permission denied');
+//     return;
+//   }
 
-  await PushNotifications.register();
+//   await PushNotifications.register();
 
-  PushNotifications.addListener('registration', (token) => {
-    console.log('FCM TOKEN:', token.value);
+//   PushNotifications.addListener('registration', (token) => {
+//     console.log('FCM TOKEN:', token.value);
 
-    // SEND TOKEN TO SPRING BOOT BACKEND
-  });
+//     // SEND TOKEN TO SPRING BOOT BACKEND
+//   });
 
-  PushNotifications.addListener('pushNotificationReceived', (notification) => {
-    console.log('Notification received:', notification);
-  });
+//   PushNotifications.addListener('pushNotificationReceived', (notification) => {
+//     console.log('Notification received:', notification);
+//   });
 
-  PushNotifications.addListener(
-    'pushNotificationActionPerformed',
-    (notification) => {
-      console.log('Notification clicked:', notification);
-    }
-  );
-};
+//   PushNotifications.addListener(
+//     'pushNotificationActionPerformed',
+//     (notification) => {
+//       console.log('Notification clicked:', notification);
+//     }
+//   );
+// };
