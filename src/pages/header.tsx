@@ -28,8 +28,8 @@ const Header: React.FC = () => {
   const totalItems = useSelector((state: RootState) => state.cart.totalItems);
   const navigate = useNavigate();
   const location = useLocation();
-  const [authenticated, setAuthenticated] = useState(isAuthenticated());
   const [, setUsername] = useState<string | null>(getAuthState().username);
+  const authenticated = isAuthenticated();
 
   const handleHeaderClick = () => {
     trackEvent('header_brand_click', {
@@ -54,7 +54,6 @@ const Header: React.FC = () => {
 
   const handleLogout = () => {
     logout();
-    setAuthenticated(false);
     setUsername(null);
     trackEvent('header_logout_click', {});
     navigate('/bobs/foodList');
@@ -62,7 +61,6 @@ const Header: React.FC = () => {
 
   useEffect(() => {
     const updateAuth = () => {
-      setAuthenticated(isAuthenticated());
       setUsername(getAuthState().username);
     };
 
@@ -115,21 +113,25 @@ const Header: React.FC = () => {
           </Badge>
         </IconButton>
 
-        <Button color="inherit" onClick={handleRouteToggle} sx={{ ml: 1 }}>
-          {isAdminView ? 'Food List' : 'Admin'}
-        </Button>
-        <Button
-          color="inherit"
-          startIcon={<LogoutIcon />}
-          onClick={handleLogout}
-          sx={{
-            ml: 1,
-            borderColor: 'rgba(255,255,255,0.7)',
-            border: '1px solid',
-          }}
-        >
-          Logout
-        </Button>
+        {authenticated && (
+          <Button color="inherit" onClick={handleRouteToggle} sx={{ ml: 1 }}>
+            {isAdminView ? 'Food List' : 'Admin'}
+          </Button>
+        )}
+        {authenticated && (
+          <Button
+            color="inherit"
+            startIcon={<LogoutIcon />}
+            onClick={handleLogout}
+            sx={{
+              ml: 1,
+              borderColor: 'rgba(255,255,255,0.7)',
+              border: '1px solid',
+            }}
+          >
+            Logout
+          </Button>
+        )}
       </Toolbar>
       {!isAdminView ? <AddressHeaderBar /> : null}
     </AppBar>
