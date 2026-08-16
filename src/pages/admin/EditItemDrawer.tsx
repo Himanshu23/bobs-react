@@ -181,7 +181,6 @@ const EditItemDrawer: React.FC<EditItemDrawerProps> = ({
       );
       return;
     }
-    console.log({ nextPayload });
     createItemMutation.mutate(nextPayload, {
       onSuccess: () => {
         onSave(nextPayload);
@@ -327,12 +326,23 @@ const EditItemDrawer: React.FC<EditItemDrawerProps> = ({
               <Controller
                 name="veg"
                 control={control}
-                rules={{ required: 'Please select Veg or Non-Veg' }}
+                rules={{
+                  validate: (value) =>
+                    value !== undefined && value !== null
+                      ? true
+                      : 'Please select Veg or Non-Veg',
+                }}
                 render={({ field }) => (
                   <RadioGroup
                     row
                     aria-labelledby="veg-nonveg"
-                    value={field.value ? 'veg' : 'non-veg'}
+                    value={
+                      field.value === true
+                        ? 'veg'
+                        : field.value === false
+                          ? 'non-veg'
+                          : ''
+                    }
                     onChange={(e) => {
                       const nextValue = e.target.value === 'veg';
                       field.onChange(nextValue);
