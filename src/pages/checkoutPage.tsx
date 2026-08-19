@@ -48,7 +48,11 @@ import {
   getCheckoutFormFromLocalStorage,
   saveCheckoutFormToLocalStorage,
 } from '../utils/checkoutStorage';
-import { isAuthenticated } from '../admin/auth';
+import { isAuthenticatedAndAdmin } from '../admin/auth';
+import {
+  getCustomerAuthState,
+  isCustomerAuthenticated,
+} from '../customer/auth';
 import { DISCOUNTS, calculateDiscountAmount } from '../data/discounts';
 import { trackEvent } from '../utils/analytics';
 import Receipt from '../components/Receipt';
@@ -57,9 +61,27 @@ import { useCreateOrder } from '../data/hooks/useOrders';
 import { useFoodItems } from '../data/hooks/useFoodItems';
 import { CartItem, FoodItem, OrderFulfillmentType, OrderItem } from '../types';
 import { useAddressBook } from '../context/AddressContext';
-import { formatAddressForDelivery } from '../types/address';
+import { formatAddressForDelivery, SavedAddress } from '../types/address';
+import CustomerOtpDialog from '../components/auth/CustomerOtpDialog';
+import { RESTAURANT_LOCATION } from '../config/restaurantLocation';
+import { CustomerAuthResponseDTO } from '../types/customerAuth';
 
 const WHATSAPP_PHONE = '9643310092'; // Replace with your number
+
+const getPickupAddressFallback = (): SavedAddress => {
+  const now = Date.now();
+  return {
+    id: 'pickup-default',
+    label: 'Other',
+    formattedAddress: "Bob's kitchen — Pickup",
+    line1: 'Pickup',
+    landmark: '',
+    lat: RESTAURANT_LOCATION.lat,
+    lng: RESTAURANT_LOCATION.lng,
+    createdAt: now,
+    updatedAt: now,
+  };
+};
 
 const formatScheduledTime = (time: string): string => {
   const [hoursText, minutes] = time.split(':');
@@ -110,12 +132,16 @@ const CheckoutPage: React.FC = () => {
   const dispatch = useDispatch();
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const { data: menuItems = [] } = useFoodItems();
-  const { mutate: createOrder } = useCreateOrder();
+  const { mutateAsync: createOrder } = useCreateOrder();
   const { selectedAddress, addresses } = useAddressBook();
   const addressSectionRef = useRef<HTMLDivElement | null>(null);
   const receiptRef = useRef<HTMLDivElement | null>(null);
   const receiptPreviewRef = useRef<HTMLDivElement | null>(null);
   const initialCheckoutForm = getInitialCheckoutForm();
+  const [otpDialogOpen, setOtpDialogOpen] = useState(false);
+  const [verifiedCustomerPhone, setVerifiedCustomerPhone] = useState<
+    string | null
+  >(() => getCustomerAuthState().customer?.phoneNumber ?? null);
 
   const [deliveryMethod, setDeliveryMethod] = useState<'delivery' | 'pickup'>(
     initialCheckoutForm.deliveryMethod
@@ -186,7 +212,7 @@ const CheckoutPage: React.FC = () => {
   // );
   const hasHabitatAddress = false;
   const hasSelectedSavedAddress = Boolean(selectedAddress);
-  const isLoggedIn = isAuthenticated();
+  const isAdminLoggedIn = isAuthenticatedAndAdmin();
   const appliedDiscountCode =
     discountAmount > 0 ? selectedDiscount?.code : undefined;
   const discountLabel = appliedDiscountCode
@@ -261,7 +287,10 @@ const CheckoutPage: React.FC = () => {
 
     return {
       customerName: customerName || 'Guest',
-      customerPhone: '9643310092',
+      customerPhone:
+        verifiedCustomerPhone ||
+        getCustomerAuthState().customer?.phoneNumber ||
+        WHATSAPP_PHONE,
       deliveryAddress,
       fulfillmentType,
       scheduledTime: orderTiming === 'scheduled' ? scheduledTime : undefined,
@@ -271,7 +300,19 @@ const CheckoutPage: React.FC = () => {
     };
   };
 
-  const handleProceedToCheckout = async () => {
+  const getAddressForOtp = (): SavedAddress | null => {
+    if (selectedAddress) {
+      return selectedAddress;
+    }
+
+    if (deliveryMethod === 'pickup') {
+      return getPickupAddressFallback();
+    }
+
+    return null;
+  };
+
+  const placeOrderAfterAuth = async () => {
     if (!ensureDeliveryAddress()) {
       return;
     }
@@ -310,7 +351,7 @@ const CheckoutPage: React.FC = () => {
               : 'Custom'
             : 'N/A',
         customerName: customerName || 'Guest',
-        phoneNumber: WHATSAPP_PHONE,
+        phoneNumber: orderToCreate.customerPhone,
         instructions: customerInstructions,
         deliveryMethod: deliveryMethod as 'pickup' | 'delivery',
         flatNumber: hasHabitatAddress ? flatNumber.trim() : undefined,
@@ -355,7 +396,7 @@ const CheckoutPage: React.FC = () => {
               : 'Custom'
             : 'N/A',
         customerName: customerName || 'Guest',
-        phoneNumber: WHATSAPP_PHONE,
+        phoneNumber: orderToCreate.customerPhone,
         instructions: customerInstructions,
         deliveryMethod: deliveryMethod as 'pickup' | 'delivery',
         flatNumber: hasHabitatAddress ? flatNumber.trim() : undefined,
@@ -372,6 +413,34 @@ const CheckoutPage: React.FC = () => {
     } finally {
       setIsProcessing(false);
     }
+  };
+
+  const handleProceedToCheckout = async () => {
+    if (!ensureDeliveryAddress()) {
+      return;
+    }
+
+    if (orderTiming === 'scheduled' && !isScheduledTimeValid) {
+      setScheduleError('Choose a time between 12:00 PM and 12:00 AM.');
+      return;
+    }
+
+    if (!isCustomerAuthenticated()) {
+      if (!getAddressForOtp()) {
+        setAddressError('Add a delivery address before verifying your phone.');
+        return;
+      }
+      setOtpDialogOpen(true);
+      return;
+    }
+
+    await placeOrderAfterAuth();
+  };
+
+  const handleOtpVerified = (auth: CustomerAuthResponseDTO) => {
+    setVerifiedCustomerPhone(auth.customer.phoneNumber);
+    setOtpDialogOpen(false);
+    void placeOrderAfterAuth();
   };
 
   const handleClaimFreeItem = (foodItem: FoodItem) => {
@@ -1064,7 +1133,7 @@ const CheckoutPage: React.FC = () => {
                   {isProcessing ? 'Processing...' : 'Order via WhatsApp'}
                 </Button>
 
-                {isLoggedIn && (
+                {isAdminLoggedIn && (
                   <Box sx={{ mb: 2 }}>
                     <FormControlLabel
                       control={
@@ -1265,6 +1334,13 @@ const CheckoutPage: React.FC = () => {
           discountCode={appliedDiscountCode}
         />
       </Box>
+
+      <CustomerOtpDialog
+        open={otpDialogOpen}
+        address={getAddressForOtp()}
+        onClose={() => setOtpDialogOpen(false)}
+        onVerified={handleOtpVerified}
+      />
     </>
   );
 };

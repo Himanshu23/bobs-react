@@ -4,9 +4,10 @@
  */
 
 import { logout } from '../admin/auth';
+import { getCustomerAuthToken } from '../customer/auth';
 
 /**
- * Get auth token from localStorage
+ * Get admin auth token from localStorage
  */
 export const getAuthToken = (): string | null => {
   const stored = localStorage.getItem('admin_auth_token');
@@ -22,10 +23,17 @@ export const getAuthToken = (): string | null => {
 };
 
 /**
+ * Prefer customer token for storefront calls; fall back to admin token.
+ */
+export const getRequestAuthToken = (): string | null => {
+  return getCustomerAuthToken() || getAuthToken();
+};
+
+/**
  * Get headers with auth token for API requests
  */
 export const getHeaders = (): Record<string, string> => {
-  const token = getAuthToken();
+  const token = getRequestAuthToken();
   return {
     'Content-Type': 'application/json',
     ...(token && { Authorization: `Bearer ${token}` }),

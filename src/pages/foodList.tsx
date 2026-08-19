@@ -32,7 +32,7 @@ import { useNavigate } from 'react-router-dom';
 import { RootState, AppDispatch, removeFromCart } from '../redux/store';
 import { useFoodItems } from '../data/hooks/useFoodItems';
 import { useMostReorderedItems } from '../data/hooks/useMostReorderedItems';
-import { CartActions, CATEGORY_ORDER, FoodItem, ItemOptions } from '../types';
+import { CartActions, CATEGORY_ORDER, FoodItem } from '../types';
 import MostReorderedSection from '../components/MostReorderedSection';
 import FoodItemCard from '../components/listing/foodItemCard';
 import ProductDetailModal from '../components/productDetail';
@@ -257,11 +257,7 @@ const FoodListPage: React.FC = () => {
     }
   }, [scrollToItemId]);
 
-  const handleCart = (
-    id: string,
-    action: CartActions,
-    option?: ItemOptions
-  ) => {
+  const handleCart = (id: string, action: CartActions) => {
     const cartItem = cartItems.find((el) => el.id === id);
     const foodItem = items.find((el) => el.id === id);
     if (action === 'Add') {
