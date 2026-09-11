@@ -48,7 +48,7 @@ import {
   getCheckoutFormFromLocalStorage,
   saveCheckoutFormToLocalStorage,
 } from '../utils/checkoutStorage';
-import { isAuthenticatedAndAdmin } from '../admin/auth';
+import { isAuthenticated, isAuthenticatedAndAdmin } from '../admin/auth';
 import { getCustomerAuthState } from '../customer/auth';
 import { DISCOUNTS, calculateDiscountAmount } from '../data/discounts';
 import { trackEvent } from '../utils/analytics';
@@ -205,14 +205,16 @@ const CheckoutPage: React.FC = () => {
     usePromotionalAddons(cartItems);
   const promoSavings = getCartPromoSavings(cartItems);
   const qualifyingSubtotal = getQualifyingCartSubtotal(cartItems);
-
+  const hasFreeDish = cartItems.some((item) => item.isFreeClaim);
+  const hasPromotionalDish = cartItems.some((item) => item.isPromotionalAddon);
   // Calculate discount
   const selectedDiscount = selectedDiscountId
     ? DISCOUNTS.find((d) => d.id === selectedDiscountId)
     : null;
-  const discountAmount = selectedDiscount
-    ? calculateDiscountAmount(selectedDiscount, totalPrice)
-    : 0;
+  const discountAmount =
+    selectedDiscount && !hasFreeDish && !hasPromotionalDish
+      ? calculateDiscountAmount(selectedDiscount, totalPrice)
+      : 0;
 
   // Calculate total after discount
   const totalAfterDiscount = totalPrice - discountAmount;
@@ -225,7 +227,8 @@ const CheckoutPage: React.FC = () => {
   const hasSelectedSavedAddress = Boolean(selectedAddress);
   const isAdminLoggedIn = isAuthenticatedAndAdmin();
   const isCustomerLoggedIn = getCustomerAuthState().isAuthenticated;
-  const isGuestOrder = !isAdminLoggedIn && !isCustomerLoggedIn;
+  const isGuestOrder =
+    !isAdminLoggedIn && !isCustomerLoggedIn && !isAuthenticated();
   const isGuestOrderBelowMinimum =
     isGuestOrder && totalPrice < GUEST_MINIMUM_ORDER_VALUE;
   const deliveryFee = isGuestOrder ? GUEST_DELIVERY_FEE : 0;
@@ -293,7 +296,7 @@ const CheckoutPage: React.FC = () => {
       style: item.option?.style,
       base: item.option?.base,
       isPromotionalAddon: item.isPromotionalAddon,
-      isFreeClaim: item.isFreeClaim,
+      isFreeClaim: Boolean(item.isFreeClaim),
       originalPrice: item.originalPrice,
     }));
 
@@ -497,6 +500,7 @@ const CheckoutPage: React.FC = () => {
       isFreeClaim: true,
     };
 
+    setSelectedDiscountId('');
     dispatch(addToCart(freeClaimCartItem));
   };
 
@@ -1009,6 +1013,7 @@ const CheckoutPage: React.FC = () => {
                     <Select
                       value={selectedDiscountId}
                       label="Select Discount"
+                      disabled={hasFreeDish || hasPromotionalDish}
                       onChange={(e) => setSelectedDiscountId(e.target.value)}
                     >
                       <MenuItem value="">No Discount</MenuItem>
@@ -1023,6 +1028,11 @@ const CheckoutPage: React.FC = () => {
                       ))}
                     </Select>
                   </FormControl>
+                  {(hasFreeDish || hasPromotionalDish) && (
+                    <Typography variant="caption" color="text.secondary">
+                      Discounts are unavailable when a free dish is selected.
+                    </Typography>
+                  )}
                   {selectedDiscount && (
                     <Typography
                       variant="caption"
