@@ -32,6 +32,7 @@ export const createCartItem = (
     },
     product,
     description: product.description,
+    isFreeClaim: false,
   };
 };
 
@@ -53,5 +54,6 @@ export const createPromotionalAddonCartItem = (
     style: promoItem.style,
     base: promoItem.base,
   },
+  isFreeClaim: false,
   isPromotionalAddon: true,
 });
