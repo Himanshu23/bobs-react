@@ -5,7 +5,7 @@ import { FoodItem } from '../types';
  */
 export const getLowestNowPrice = (item: FoodItem): number | undefined => {
   const prices = Object.values(item.priceOptions.nowPrice.size).filter(
-    (price): price is number => price !== undefined
+    (price): price is number => price !== undefined && price > 0
   );
   return prices.length > 0 ? Math.min(...prices) : 0;
 };

@@ -529,7 +529,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
                     }}
                   >
                     <ListItemText
-                      primary={`${item.itemName}${variantText.length > 20 && isMobile ? '' : variantText} ×${item.quantity}`}
+                      primary={`${item.itemName}${variantText.length > 20 && isMobile ? '' : variantText} ×${item.quantity}${item.isPromotionalAddon ? ' · PROMO' : ''}${item.isFreeClaim ? ' · FREE' : ''}`}
                       secondary={`₹${(item.unitPrice * item.quantity).toFixed(2)}`}
                       primaryTypographyProps={{
                         variant: isMobile ? 'caption' : 'body2',
@@ -545,6 +545,32 @@ const OrderCard: React.FC<OrderCardProps> = ({
           </Box>
 
           <Divider sx={{ my: isMobile ? 1 : 1.5 }} />
+
+          {((order.discountAmount ?? 0) > 0 ||
+            (order.promotionalSavings ?? 0) > 0) && (
+            <Box sx={{ mb: 1.5 }}>
+              {(order.promotionalSavings ?? 0) > 0 && (
+                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <Typography variant="caption" color="success.main">
+                    Promo savings
+                  </Typography>
+                  <Typography variant="caption" color="success.main">
+                    -₹{order.promotionalSavings!.toFixed(2)}
+                  </Typography>
+                </Box>
+              )}
+              {(order.discountAmount ?? 0) > 0 && (
+                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <Typography variant="caption" color="success.main">
+                    {order.discountName || order.discountCode || 'Discount'}
+                  </Typography>
+                  <Typography variant="caption" color="success.main">
+                    -₹{order.discountAmount!.toFixed(2)}
+                  </Typography>
+                </Box>
+              )}
+            </Box>
+          )}
 
           {/* Total */}
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>

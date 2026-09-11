@@ -15,14 +15,17 @@ const fetchFoodItems = async (): Promise<FoodItem[]> => {
     headers['Authorization'] = `Bearer ${authState.token}`;
   }
 
-  const response = await fetch(FOOD_ITEMS_API_URL, { headers });
+  const response = await fetch(
+    `${FOOD_ITEMS_API_URL}?includeUnavailable=false`,
+    { headers }
+  );
 
   if (!response.ok) {
     throw new Error(`Failed to fetch food items: ${response.statusText}`);
   }
 
   const data: FoodItem[] = await response.json();
-  return data;
+  return data.filter((item) => item.available !== false);
 };
 
 /**

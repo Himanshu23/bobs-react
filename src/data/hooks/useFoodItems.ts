@@ -5,7 +5,14 @@ import { ENDPOINTS } from '../../config/api';
 
 const FOOD_ITEMS_API_URL = ENDPOINTS.FOOD_ITEMS;
 
-const fetchFoodItems = async (): Promise<FoodItem[]> => {
+export interface UseFoodItemsOptions {
+  /** Admin-only view that includes unavailable items. */
+  includeUnavailable?: boolean;
+}
+
+const fetchFoodItems = async (
+  options: UseFoodItemsOptions = {}
+): Promise<FoodItem[]> => {
   const authState = getAuthState();
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
@@ -15,14 +22,16 @@ const fetchFoodItems = async (): Promise<FoodItem[]> => {
     headers['Authorization'] = `Bearer ${authState.token}`;
   }
 
-  const response = await fetch(FOOD_ITEMS_API_URL, { headers });
+  const params = new URLSearchParams({
+    includeUnavailable: String(options.includeUnavailable ?? false),
+  });
+  const response = await fetch(`${FOOD_ITEMS_API_URL}?${params}`, { headers });
 
   if (!response.ok) {
     throw new Error(`Failed to fetch food items: ${response.statusText}`);
   }
 
   const data: FoodItem[] = await response.json();
-  console.log({ data });
   return data;
 };
 
@@ -100,10 +109,12 @@ const updateFoodItem = async (
   return data;
 };
 
-export const useFoodItems = () => {
+export const useFoodItems = (options: UseFoodItemsOptions = {}) => {
+  const includeUnavailable = options.includeUnavailable ?? false;
+
   return useQuery<FoodItem[], Error>({
-    queryKey: ['foodItems'],
-    queryFn: fetchFoodItems,
+    queryKey: ['foodItems', { includeUnavailable }],
+    queryFn: () => fetchFoodItems({ includeUnavailable }),
     staleTime: 1000 * 60 * 5, // 5 minutes
     retry: 2,
   });

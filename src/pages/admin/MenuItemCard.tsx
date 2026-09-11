@@ -15,6 +15,7 @@ interface MenuItemCardProps {
   item: FoodItem;
   onEditItem?: (item: FoodItem) => void;
   onDeleteItem?: (item: FoodItem) => void;
+  onToggleAvailability?: (item: FoodItem) => void;
   backgroundColor?: string;
   hoverColor?: string;
 }
@@ -25,6 +26,7 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
   backgroundColor = '#fafafa',
   hoverColor = '#f5f5f5',
   onDeleteItem,
+  onToggleAvailability,
 }) => {
   const deleteItem = (item: FoodItem) => {
     const confirmDelete = window.confirm(
@@ -39,6 +41,8 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
       variant="outlined"
       sx={{
         backgroundColor,
+        opacity: item.available === false ? 0.58 : 1,
+        filter: item.available === false ? 'grayscale(0.75)' : 'none',
         '&:hover': { backgroundColor: hoverColor },
       }}
     >
@@ -55,6 +59,11 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
               <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 0.5 }}>
                 {item.name}
               </Typography>
+              {item.available === false && (
+                <Typography variant="caption" color="error" sx={{ fontWeight: 700 }}>
+                  OUT OF STOCK
+                </Typography>
+              )}
               <Stack spacing={0.25}>
                 {Object.entries(item.priceOptions.nowPrice.size).map(
                   ([size, nowPrice]) => (
@@ -91,6 +100,14 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
             onClick={() => onEditItem?.(item)}
           >
             Edit
+          </Button>
+          <Button
+            size="small"
+            variant={item.available === false ? 'contained' : 'outlined'}
+            color={item.available === false ? 'success' : 'warning'}
+            onClick={() => onToggleAvailability?.(item)}
+          >
+            {item.available === false ? 'Mark available' : 'Out of stock'}
           </Button>
           <Button
             size="small"

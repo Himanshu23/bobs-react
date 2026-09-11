@@ -11,11 +11,13 @@ export interface LoginCredentials {
 export interface AuthResponse {
   token: string;
   username: string;
+  role: string;
 }
 
 export interface AuthState {
   isAuthenticated: boolean;
   username: string | null;
+  role: string | null;
   token: string | null;
 }
 
@@ -73,6 +75,7 @@ export const getAuthState = (): AuthState => {
       return {
         isAuthenticated: true,
         username: data.username,
+        role: data.role,
         token: data.token,
       };
     } catch {
@@ -83,9 +86,18 @@ export const getAuthState = (): AuthState => {
     isAuthenticated: false,
     username: null,
     token: null,
+    role: null,
   };
 };
 
 export const isAuthenticated = (): boolean => {
   return getAuthState().isAuthenticated;
+};
+
+export const getRole = (): string | null => {
+  return getAuthState().role;
+};
+
+export const isAuthenticatedAndAdmin = (): boolean => {
+  return getAuthState().isAuthenticated && getAuthState().role === 'ADMIN';
 };

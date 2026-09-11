@@ -65,6 +65,22 @@ const OrderCard: React.FC<OrderCardProps> = ({
         ? 'Scheduled'
         : 'Delivery';
 
+  const itemSubtotal = order.items.reduce(
+    (sum, item) => sum + item.unitPrice * item.quantity,
+    0
+  );
+  const promotionalSavings =
+    order.promotionalSavings ??
+    order.items.reduce(
+      (sum, item) =>
+        sum +
+        (item.isPromotionalAddon && item.originalPrice
+          ? (item.originalPrice - item.unitPrice) * item.quantity
+          : 0),
+      0
+    );
+  const discountAmount = order.discountAmount ?? 0;
+
   return (
     <Card
       sx={{
@@ -350,6 +366,22 @@ const OrderCard: React.FC<OrderCardProps> = ({
                     >
                       • {item.itemName}
                       {variantText} × {item.quantity}
+                      {item.isPromotionalAddon && (
+                        <Chip
+                          label="Promo deal"
+                          size="small"
+                          color="success"
+                          sx={{ ml: 0.5, height: 18, fontSize: '0.65rem' }}
+                        />
+                      )}
+                      {item.isFreeClaim && (
+                        <Chip
+                          label="FREE"
+                          size="small"
+                          color="info"
+                          sx={{ ml: 0.5, height: 18, fontSize: '0.65rem' }}
+                        />
+                      )}
                     </Typography>
                   );
                 })}
@@ -358,6 +390,38 @@ const OrderCard: React.FC<OrderCardProps> = ({
           </>
         )}
       </CardContent>
+
+      <Box sx={{ px: isMobile ? 1.25 : 2, pb: 1.5 }}>
+        <Divider sx={{ mb: 1 }} />
+        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Typography variant="caption" color="text.secondary">
+            Items subtotal
+          </Typography>
+          <Typography variant="caption">
+            ₹{(order.subtotal ?? itemSubtotal).toFixed(2)}
+          </Typography>
+        </Box>
+        {promotionalSavings > 0 && (
+          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Typography variant="caption" color="success.main">
+              Promo savings
+            </Typography>
+            <Typography variant="caption" color="success.main">
+              -₹{promotionalSavings.toFixed(2)}
+            </Typography>
+          </Box>
+        )}
+        {discountAmount > 0 && (
+          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Typography variant="caption" color="success.main">
+              {order.discountName || order.discountCode || 'Discount'}
+            </Typography>
+            <Typography variant="caption" color="success.main">
+              -₹{discountAmount.toFixed(2)}
+            </Typography>
+          </Box>
+        )}
+      </Box>
 
       {/* Action Buttons */}
       {(onViewDetails || onDeleteSuccess !== undefined) && (

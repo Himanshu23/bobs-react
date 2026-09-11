@@ -48,7 +48,8 @@ import {
   getCheckoutFormFromLocalStorage,
   saveCheckoutFormToLocalStorage,
 } from '../utils/checkoutStorage';
-import { isAuthenticated } from '../admin/auth';
+import { isAuthenticatedAndAdmin } from '../admin/auth';
+import { getCustomerAuthState } from '../customer/auth';
 import { DISCOUNTS, calculateDiscountAmount } from '../data/discounts';
 import { trackEvent } from '../utils/analytics';
 import Receipt from '../components/Receipt';
@@ -57,9 +58,37 @@ import { useCreateOrder } from '../data/hooks/useOrders';
 import { useFoodItems } from '../data/hooks/useFoodItems';
 import { CartItem, FoodItem, OrderFulfillmentType, OrderItem } from '../types';
 import { useAddressBook } from '../context/AddressContext';
-import { formatAddressForDelivery } from '../types/address';
+import { formatAddressForDelivery, SavedAddress } from '../types/address';
+import CustomerOtpDialog from '../components/auth/CustomerOtpDialog';
+import { RESTAURANT_LOCATION } from '../config/restaurantLocation';
+import { CustomerAuthResponseDTO } from '../types/customerAuth';
+import { usePromotionalAddons } from '../data/hooks/usePromotionalAddons';
+import PromotionalAddonBanner from '../components/promotionalAddons/PromotionalAddonBanner';
+import PromotionalAddonSection from '../components/promotionalAddons/PromotionalAddonSection';
+import CartItemPriceDisplay from '../components/promotionalAddons/CartItemPriceDisplay';
+import {
+  getCartPromoSavings,
+  getQualifyingCartSubtotal,
+} from '../utils/promotionalAddonStrategy';
 
 const WHATSAPP_PHONE = '9643310092'; // Replace with your number
+const GUEST_MINIMUM_ORDER_VALUE = 299;
+const GUEST_DELIVERY_FEE = 20;
+
+const getPickupAddressFallback = (): SavedAddress => {
+  const now = Date.now();
+  return {
+    id: 'pickup-default',
+    label: 'Other',
+    formattedAddress: "Bob's kitchen — Pickup",
+    line1: 'Pickup',
+    landmark: '',
+    lat: RESTAURANT_LOCATION.lat,
+    lng: RESTAURANT_LOCATION.lng,
+    createdAt: now,
+    updatedAt: now,
+  };
+};
 
 const formatScheduledTime = (time: string): string => {
   const [hoursText, minutes] = time.split(':');
@@ -110,12 +139,16 @@ const CheckoutPage: React.FC = () => {
   const dispatch = useDispatch();
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const { data: menuItems = [] } = useFoodItems();
-  const { mutate: createOrder } = useCreateOrder();
+  const { mutateAsync: createOrder } = useCreateOrder();
   const { selectedAddress, addresses } = useAddressBook();
   const addressSectionRef = useRef<HTMLDivElement | null>(null);
   const receiptRef = useRef<HTMLDivElement | null>(null);
   const receiptPreviewRef = useRef<HTMLDivElement | null>(null);
   const initialCheckoutForm = getInitialCheckoutForm();
+  const [otpDialogOpen, setOtpDialogOpen] = useState(false);
+  const [verifiedCustomerPhone, setVerifiedCustomerPhone] = useState<
+    string | null
+  >(() => getCustomerAuthState().customer?.phoneNumber ?? null);
 
   const [deliveryMethod, setDeliveryMethod] = useState<'delivery' | 'pickup'>(
     initialCheckoutForm.deliveryMethod
@@ -168,6 +201,11 @@ const CheckoutPage: React.FC = () => {
     0
   );
 
+  const { data: promoData, isFetching: isPromoFetching } =
+    usePromotionalAddons(cartItems);
+  const promoSavings = getCartPromoSavings(cartItems);
+  const qualifyingSubtotal = getQualifyingCartSubtotal(cartItems);
+
   // Calculate discount
   const selectedDiscount = selectedDiscountId
     ? DISCOUNTS.find((d) => d.id === selectedDiscountId)
@@ -179,14 +217,19 @@ const CheckoutPage: React.FC = () => {
   // Calculate total after discount
   const totalAfterDiscount = totalPrice - discountAmount;
   const tax = totalAfterDiscount * 0.05;
-  const finalTotal = totalAfterDiscount;
 
   // const hasHabitatAddress = Boolean(
   //   habitat && tower && flatNumber && flatNumber.trim() !== ''
   // );
   const hasHabitatAddress = false;
   const hasSelectedSavedAddress = Boolean(selectedAddress);
-  const isLoggedIn = isAuthenticated();
+  const isAdminLoggedIn = isAuthenticatedAndAdmin();
+  const isCustomerLoggedIn = getCustomerAuthState().isAuthenticated;
+  const isGuestOrder = !isAdminLoggedIn && !isCustomerLoggedIn;
+  const isGuestOrderBelowMinimum =
+    isGuestOrder && totalPrice < GUEST_MINIMUM_ORDER_VALUE;
+  const deliveryFee = isGuestOrder ? GUEST_DELIVERY_FEE : 0;
+  const finalTotal = totalAfterDiscount + deliveryFee;
   const appliedDiscountCode =
     discountAmount > 0 ? selectedDiscount?.code : undefined;
   const discountLabel = appliedDiscountCode
@@ -249,6 +292,9 @@ const CheckoutPage: React.FC = () => {
       size: item.option?.size,
       style: item.option?.style,
       base: item.option?.base,
+      isPromotionalAddon: item.isPromotionalAddon,
+      isFreeClaim: item.isFreeClaim,
+      originalPrice: item.originalPrice,
     }));
 
     let fulfillmentType = OrderFulfillmentType.DELIVERY;
@@ -261,17 +307,39 @@ const CheckoutPage: React.FC = () => {
 
     return {
       customerName: customerName || 'Guest',
-      customerPhone: '9643310092',
+      customerPhone:
+        verifiedCustomerPhone ||
+        getCustomerAuthState().customer?.phoneNumber ||
+        WHATSAPP_PHONE,
       deliveryAddress,
       fulfillmentType,
       scheduledTime: orderTiming === 'scheduled' ? scheduledTime : undefined,
       items: orderItems,
+      subtotal: totalPrice,
+      discountAmount: discountAmount > 0 ? discountAmount : undefined,
+      discountCode: appliedDiscountCode,
+      discountName: discountAmount > 0 ? selectedDiscount?.name : undefined,
+      promotionalSavings: promoSavings > 0 ? promoSavings : undefined,
+      deliveryFee: deliveryFee > 0 ? deliveryFee : undefined,
+      taxAmount: tax,
       totalAmount: finalTotal,
       isPaidOnline: paidOnline,
     };
   };
 
-  const handleProceedToCheckout = async () => {
+  const getAddressForOtp = (): SavedAddress | null => {
+    if (selectedAddress) {
+      return selectedAddress;
+    }
+
+    if (deliveryMethod === 'pickup') {
+      return getPickupAddressFallback();
+    }
+
+    return null;
+  };
+
+  const placeOrderAfterAuth = async () => {
     if (!ensureDeliveryAddress()) {
       return;
     }
@@ -310,13 +378,14 @@ const CheckoutPage: React.FC = () => {
               : 'Custom'
             : 'N/A',
         customerName: customerName || 'Guest',
-        phoneNumber: WHATSAPP_PHONE,
+        phoneNumber: orderToCreate.customerPhone,
         instructions: customerInstructions,
         deliveryMethod: deliveryMethod as 'pickup' | 'delivery',
         flatNumber: hasHabitatAddress ? flatNumber.trim() : undefined,
         discountCode: appliedDiscountCode,
         discountName: discountAmount > 0 ? selectedDiscount?.name : undefined,
         discountAmount: discountAmount > 0 ? discountAmount : undefined,
+        deliveryFee: deliveryFee > 0 ? deliveryFee : undefined,
         tax,
         scheduledTime: orderTiming === 'scheduled' ? scheduledTime : undefined,
       };
@@ -355,13 +424,14 @@ const CheckoutPage: React.FC = () => {
               : 'Custom'
             : 'N/A',
         customerName: customerName || 'Guest',
-        phoneNumber: WHATSAPP_PHONE,
+        phoneNumber: orderToCreate.customerPhone,
         instructions: customerInstructions,
         deliveryMethod: deliveryMethod as 'pickup' | 'delivery',
         flatNumber: hasHabitatAddress ? flatNumber.trim() : undefined,
         discountCode: appliedDiscountCode,
         discountName: discountAmount > 0 ? selectedDiscount?.name : undefined,
         discountAmount: discountAmount > 0 ? discountAmount : undefined,
+        deliveryFee: deliveryFee > 0 ? deliveryFee : undefined,
         tax,
         scheduledTime: orderTiming === 'scheduled' ? scheduledTime : undefined,
       };
@@ -372,6 +442,45 @@ const CheckoutPage: React.FC = () => {
     } finally {
       setIsProcessing(false);
     }
+  };
+
+  const isCustomerAuthenticated = (): boolean => {
+    return getCustomerAuthState().isAuthenticated;
+  };
+
+  const handleProceedToCheckout = async () => {
+    if (isGuestOrderBelowMinimum) {
+      setAddressError(
+        `Orders must be at least ₹${GUEST_MINIMUM_ORDER_VALUE}. Please add more items.`
+      );
+      return;
+    }
+
+    if (!ensureDeliveryAddress()) {
+      return;
+    }
+
+    if (orderTiming === 'scheduled' && !isScheduledTimeValid) {
+      setScheduleError('Choose a time between 12:00 PM and 12:00 AM.');
+      return;
+    }
+    //TODO: implement OTP verification for customers before placing order
+    // if (!isCustomerAuthenticated()) {
+    //   if (!getAddressForOtp()) {
+    //     setAddressError('Add a delivery address before verifying your phone.');
+    //     return;
+    //   }
+    //   setOtpDialogOpen(true);
+    //   return;
+    // }
+
+    await placeOrderAfterAuth();
+  };
+
+  const handleOtpVerified = (auth: CustomerAuthResponseDTO) => {
+    setVerifiedCustomerPhone(auth.customer.phoneNumber);
+    setOtpDialogOpen(false);
+    void placeOrderAfterAuth();
   };
 
   const handleClaimFreeItem = (foodItem: FoodItem) => {
@@ -582,6 +691,16 @@ const CheckoutPage: React.FC = () => {
       </Dialog>
 
       <Container maxWidth="lg" sx={{ py: 3, pb: 12 }}>
+        <PromotionalAddonBanner
+          promoData={promoData}
+          cartSubtotal={qualifyingSubtotal}
+        />
+        <PromotionalAddonSection
+          promoData={promoData}
+          menuItems={menuItems}
+          isUpdating={isPromoFetching}
+        />
+
         <Grid container spacing={3}>
           {/* Delivery Details Section */}
           <Grid item xs={12} md={8}>
@@ -822,31 +941,54 @@ const CheckoutPage: React.FC = () => {
 
                 <List sx={{ maxHeight: 240, overflow: 'auto', mb: 1.5, py: 0 }}>
                   {cartItems.map((item, idx) => (
-                    <React.Fragment key={idx}>
+                    <React.Fragment
+                      key={`${item.id}-${JSON.stringify(item.option)}-${item.isPromotionalAddon ? 'promo' : ''}`}
+                    >
                       <ListItem
                         sx={{ py: 0.75, px: 0, alignItems: 'flex-start' }}
                       >
                         <ListItemText
                           primary={`${item.name} ${
                             item.option?.size ? `(${item.option.size})` : ''
-                          }`}
-                          secondary={`Qty: ${item.quantity} × ₹${item.price.toFixed(
-                            2
-                          )}`}
+                          }${item.isPromotionalAddon ? ' · ₹9 Deal' : ''}`}
+                          secondary={
+                            item.isPromotionalAddon && item.originalPrice ? (
+                              <Box
+                                component="span"
+                                sx={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: 0.5,
+                                }}
+                              >
+                                <Typography
+                                  component="span"
+                                  variant="caption"
+                                  sx={{
+                                    textDecoration: 'line-through',
+                                    color: 'text.secondary',
+                                  }}
+                                >
+                                  ₹{item.originalPrice.toFixed(0)}
+                                </Typography>
+                                <Typography component="span" variant="caption">
+                                  ₹{item.price.toFixed(0)} × {item.quantity}
+                                </Typography>
+                              </Box>
+                            ) : (
+                              `Qty: ${item.quantity} × ₹${item.price.toFixed(2)}`
+                            )
+                          }
                           primaryTypographyProps={{
                             variant: 'body2',
                             fontWeight: 600,
                           }}
                           secondaryTypographyProps={{
                             variant: 'caption',
+                            component: 'div',
                           }}
                         />
-                        <Typography
-                          variant="body2"
-                          sx={{ fontWeight: 'bold', pt: 0.25 }}
-                        >
-                          ₹{(item.quantity * item.price).toFixed(2)}
-                        </Typography>
+                        <CartItemPriceDisplay item={item} compact />
                       </ListItem>
                       {idx < cartItems.length - 1 && <Divider />}
                     </React.Fragment>
@@ -929,6 +1071,22 @@ const CheckoutPage: React.FC = () => {
                       ₹{totalPrice.toFixed(2)}
                     </Typography>
                   </Box>
+                  {promoSavings > 0 && (
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        mb: 0.75,
+                      }}
+                    >
+                      <Typography variant="body2" color="#2e7d32">
+                        ₹9 Deal savings
+                      </Typography>
+                      <Typography variant="body2" sx={{ color: '#2e7d32' }}>
+                        −₹{promoSavings.toFixed(0)}
+                      </Typography>
+                    </Box>
+                  )}
                   <Box
                     sx={{
                       display: 'flex',
@@ -939,8 +1097,11 @@ const CheckoutPage: React.FC = () => {
                     <Typography variant="body2" color="textSecondary">
                       Delivery
                     </Typography>
-                    <Typography variant="body2" color="#4CAF50">
-                      Free
+                    <Typography
+                      variant="body2"
+                      color={deliveryFee > 0 ? 'text.primary' : '#4CAF50'}
+                    >
+                      {deliveryFee > 0 ? `₹${deliveryFee.toFixed(2)}` : 'Free'}
                     </Typography>
                   </Box>
                   <Box
@@ -1052,7 +1213,7 @@ const CheckoutPage: React.FC = () => {
                   size="large"
                   startIcon={<WhatsAppIcon />}
                   onClick={handlePlaceOrderClick}
-                  disabled={isProcessing}
+                  disabled={isProcessing || isGuestOrderBelowMinimum}
                   sx={{
                     background:
                       'linear-gradient(135deg, #25D366 0%, #128C7E 100%)',
@@ -1064,7 +1225,14 @@ const CheckoutPage: React.FC = () => {
                   {isProcessing ? 'Processing...' : 'Order via WhatsApp'}
                 </Button>
 
-                {isLoggedIn && (
+                {isGuestOrderBelowMinimum && (
+                  <Alert severity="warning" sx={{ mb: 2 }}>
+                    Orders must be at least ₹{GUEST_MINIMUM_ORDER_VALUE}. Add
+                    more items to continue.
+                  </Alert>
+                )}
+
+                {isAdminLoggedIn && (
                   <Box sx={{ mb: 2 }}>
                     <FormControlLabel
                       control={
@@ -1265,6 +1433,13 @@ const CheckoutPage: React.FC = () => {
           discountCode={appliedDiscountCode}
         />
       </Box>
+
+      <CustomerOtpDialog
+        open={otpDialogOpen}
+        address={getAddressForOtp()}
+        onClose={() => setOtpDialogOpen(false)}
+        onVerified={handleOtpVerified}
+      />
     </>
   );
 };

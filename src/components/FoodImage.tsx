@@ -1,6 +1,6 @@
 import { Box, SxProps, Theme } from '@mui/material';
 import { ImageNotSupported } from '@mui/icons-material';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 interface FoodImageProps {
   src: string;
@@ -10,6 +10,8 @@ interface FoodImageProps {
   showPlaceholder?: boolean;
 }
 
+const FALLBACK_IMAGE = '/imgs/no-image.jpeg';
+
 const FoodImage = ({
   src,
   alt,
@@ -17,11 +19,15 @@ const FoodImage = ({
   sx = {},
   showPlaceholder = true,
 }: FoodImageProps) => {
-  const [imageError, setImageError] = useState(false);
+  const [imageSrc, setImageSrc] = useState(src || FALLBACK_IMAGE);
+  const [fallbackFailed, setFallbackFailed] = useState(false);
 
   useEffect(() => {
-    setImageError(false);
+    setImageSrc(src || FALLBACK_IMAGE);
+    setFallbackFailed(false);
   }, [src]);
+
+  const imageError = fallbackFailed && imageSrc === FALLBACK_IMAGE;
 
   if (imageError && showPlaceholder) {
     return (
@@ -51,9 +57,15 @@ const FoodImage = ({
   return (
     <Box
       component="img"
-      src={src}
+      src={imageSrc}
       alt={alt}
-      onError={() => setImageError(true)}
+      onError={() => {
+        if (imageSrc !== FALLBACK_IMAGE) {
+          setImageSrc(FALLBACK_IMAGE);
+        } else {
+          setFallbackFailed(true);
+        }
+      }}
       sx={{
         width: size,
         height: size,

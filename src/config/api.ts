@@ -16,8 +16,13 @@ export const API_BASE_SOCKET_URL =
 export const ENDPOINTS = {
   FOOD_ITEMS: `${API_BASE_URL}/food-items`,
   AUTH_LOGIN: `${API_BASE_URL}/auth/login`,
+  CUSTOMER_SEND_OTP: `${API_BASE_URL}/auth/customer/send-otp`,
+  CUSTOMER_VERIFY_OTP: `${API_BASE_URL}/auth/customer/verify-otp`,
   CREATE_ORDER: `${API_BASE_URL}/orders`,
   SEND_VOICE: `${API_BASE_URL}/voice`,
   CATEGORIES: `${API_BASE_URL}/expense-categories`,
   EXPENSES: `${API_BASE_URL}/expenses`,
+  PROMOTIONAL_ADDONS: `${API_BASE_URL}/promotional-addons/available`,
+  PROMOTIONAL_ADDONS_CONFIG: `${API_BASE_URL}/promotional-addons/config`,
+  PROMOTIONAL_ADDONS_VALIDATE: `${API_BASE_URL}/promotional-addons/validate`,
 } as const;

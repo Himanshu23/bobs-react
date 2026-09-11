@@ -20,12 +20,14 @@ interface MenuTabProps {
   items: FoodItem[];
   onEditItem?: (item: FoodItem) => void;
   onDeleteItem?: (item: FoodItem) => void;
+  onToggleAvailability?: (item: FoodItem) => void;
 }
 
 const MenuTab: React.FC<MenuTabProps> = ({
   items,
   onEditItem,
   onDeleteItem,
+  onToggleAvailability,
 }) => {
   const [expandedCategories, setExpandedCategories] = useState<
     Record<string, boolean>
@@ -129,6 +131,7 @@ const MenuTab: React.FC<MenuTabProps> = ({
                               item={item}
                               onEditItem={onEditItem}
                               onDeleteItem={onDeleteItem}
+                              onToggleAvailability={onToggleAvailability}
                               backgroundColor="#f1f8f4"
                               hoverColor="#e8f5e9"
                             />
@@ -156,6 +159,7 @@ const MenuTab: React.FC<MenuTabProps> = ({
                               item={item}
                               onEditItem={onEditItem}
                               onDeleteItem={onDeleteItem}
+                              onToggleAvailability={onToggleAvailability}
                               backgroundColor="#fce4ec"
                               hoverColor="#f8bbd0"
                             />
