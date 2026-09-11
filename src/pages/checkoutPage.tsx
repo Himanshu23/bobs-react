@@ -225,7 +225,7 @@ const CheckoutPage: React.FC = () => {
   // );
   const hasHabitatAddress = false;
   const hasSelectedSavedAddress = Boolean(selectedAddress);
-  const isAdminLoggedIn = isAuthenticatedAndAdmin();
+  const isAdminLoggedIn = isAuthenticatedAndAdmin() || isAuthenticated();
   const isCustomerLoggedIn = getCustomerAuthState().isAuthenticated;
   const isGuestOrder =
     !isAdminLoggedIn && !isCustomerLoggedIn && !isAuthenticated();
