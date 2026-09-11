@@ -1,16 +1,13 @@
 import React from 'react';
-import { Grid, Typography } from '@mui/material';
+import { FoodItem } from '../../types';
+import PromotionalAddonsTab from './PromotionalAddonsTab';
 
-const DiscountsTab: React.FC = () => {
-  return (
-    <Grid container spacing={2}>
-      <Grid item xs={12}>
-        <Typography color="text.secondary">
-          Discounts management coming soon...
-        </Typography>
-      </Grid>
-    </Grid>
-  );
+interface DiscountsTabProps {
+  foodItems: FoodItem[];
+}
+
+const DiscountsTab: React.FC<DiscountsTabProps> = ({ foodItems }) => {
+  return <PromotionalAddonsTab foodItems={foodItems} />;
 };
 
 export default DiscountsTab;

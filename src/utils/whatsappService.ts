@@ -21,6 +21,7 @@ export interface OrderMessage {
   discountCode?: string;
   discountName?: string;
   discountAmount?: number;
+  deliveryFee?: number;
   tax?: number;
   scheduledTime?: string;
 }
@@ -88,6 +89,12 @@ ${order.habitat}`;
     message += `
 
 *Tax (shown only, not charged):* ~~₹${order.tax.toFixed(2)}~~`;
+  }
+
+  if (order.deliveryFee && order.deliveryFee > 0) {
+    message += `
+
+*Delivery Fee:* ₹${order.deliveryFee.toFixed(2)}`;
   }
 
   message += `

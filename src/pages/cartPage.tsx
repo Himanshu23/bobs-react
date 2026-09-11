@@ -1,24 +1,38 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { updateQuantity, removeFromCart } from '../redux/store';
+import {
+  removePromotionalAddons,
+  updateQuantity,
+  removeFromCart,
+} from '../redux/store';
 import {
   Box,
   Button,
   Typography,
   Card,
   CardContent,
-  CardMedia,
   Grid,
   IconButton,
   Divider,
   Container,
+  Chip,
 } from '@mui/material';
 import { CartItem, ItemOptions } from '../types';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { trackEvent } from '../utils/analytics';
+import { usePromotionalAddons } from '../data/hooks/usePromotionalAddons';
+import { useFoodItems } from '../data/hooks/useFoodItems';
+import PromotionalAddonBanner from '../components/promotionalAddons/PromotionalAddonBanner';
+import PromotionalAddonSection from '../components/promotionalAddons/PromotionalAddonSection';
+import CartItemPriceDisplay from '../components/promotionalAddons/CartItemPriceDisplay';
+import FoodImage from '../components/FoodImage';
+import {
+  getCartPromoSavings,
+  getQualifyingCartSubtotal,
+} from '../utils/promotionalAddonStrategy';
 
 interface RootState {
   cart: {
@@ -30,11 +44,29 @@ const CartPage: React.FC = () => {
   const navigate = useNavigate();
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const dispatch = useDispatch();
+  const { data: menuItems = [] } = useFoodItems();
+
+  const totalPrice = cartItems.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
+
+  const { data: promoData, isFetching: isPromoFetching } =
+    usePromotionalAddons(cartItems);
+  const promoSavings = getCartPromoSavings(cartItems);
+  const qualifyingSubtotal = getQualifyingCartSubtotal(cartItems);
+
+  useEffect(() => {
+    if (promoData && !promoData.eligible && promoData.campaign.active) {
+      dispatch(removePromotionalAddons());
+    }
+  }, [dispatch, promoData]);
 
   const handleQuantityChange = (
     id: string,
     option: ItemOptions,
-    newQuantity: number
+    newQuantity: number,
+    itemFlags?: { isPromotionalAddon?: boolean; isFreeClaim?: boolean }
   ) => {
     if (newQuantity > 0) {
       trackEvent('update_cart_quantity', {
@@ -42,23 +74,33 @@ const CartPage: React.FC = () => {
         quantity: newQuantity,
         source: 'cart_page',
       });
-      dispatch(updateQuantity({ id, option, quantity: newQuantity }));
+      dispatch(
+        updateQuantity({
+          id,
+          option,
+          quantity: newQuantity,
+          ...itemFlags,
+        })
+      );
     } else if (newQuantity === 0) {
-      // Remove item when quantity reaches 0
       trackEvent('remove_from_cart', {
         item_id: id,
         source: 'cart_page',
       });
-      dispatch(removeFromCart({ id, option }));
+      dispatch(removeFromCart({ id, option, ...itemFlags }));
     }
   };
 
-  const handleRemove = (id: string, option: ItemOptions) => {
+  const handleRemove = (
+    id: string,
+    option: ItemOptions,
+    itemFlags?: { isPromotionalAddon?: boolean; isFreeClaim?: boolean }
+  ) => {
     trackEvent('remove_from_cart', {
       item_id: id,
       source: 'cart_page',
     });
-    dispatch(removeFromCart({ id, option }));
+    dispatch(removeFromCart({ id, option, ...itemFlags }));
   };
 
   const handleProceedToCheckout = () => {
@@ -69,10 +111,13 @@ const CartPage: React.FC = () => {
     navigate('/checkout');
   };
 
-  const totalPrice = cartItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
+  const getItemKey = (item: CartItem) =>
+    `${item.id}-${JSON.stringify(item.option)}-${item.isPromotionalAddon ? 'promo' : ''}-${item.isFreeClaim ? 'free' : ''}`;
+
+  const getItemFlags = (item: CartItem) => ({
+    isPromotionalAddon: item.isPromotionalAddon,
+    isFreeClaim: item.isFreeClaim,
+  });
 
   const getOptionLabel = (item: CartItem): string => {
     const options = [];
@@ -102,11 +147,23 @@ const CartPage: React.FC = () => {
         </Card>
       ) : (
         <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <PromotionalAddonBanner
+              promoData={promoData}
+              cartSubtotal={qualifyingSubtotal}
+            />
+            <PromotionalAddonSection
+              promoData={promoData}
+              menuItems={menuItems}
+              isUpdating={isPromoFetching}
+            />
+          </Grid>
+
           {/* Cart Items Section */}
           <Grid item xs={12} md={8}>
             {cartItems.map((item) => (
               <Card
-                key={`${item.id}-${JSON.stringify(item.option)}`}
+                key={getItemKey(item)}
                 sx={{
                   display: 'flex',
                   mb: 2,
@@ -117,18 +174,11 @@ const CartPage: React.FC = () => {
                 }}
               >
                 {/* Product Image */}
-                <CardMedia
-                  component="img"
-                  sx={{
-                    width: 120,
-                    height: 120,
-                    objectFit: 'cover',
-                  }}
-                  image={item.image}
+                <FoodImage
+                  src={item.image}
                   alt={item.name}
-                  onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
-                    (e.target as HTMLImageElement).src = '/placeholder.jpg';
-                  }}
+                  size={120}
+                  sx={{ borderRadius: 0 }}
                 />
 
                 {/* Product Details */}
@@ -152,19 +202,22 @@ const CartPage: React.FC = () => {
                       </Typography>
                       <Typography variant="body2" color="textSecondary">
                         {getOptionLabel(item)}
+                        {item.isPromotionalAddon && (
+                          <Chip
+                            label="₹9 Deal"
+                            size="small"
+                            sx={{
+                              ml: 1,
+                              height: 18,
+                              fontSize: '0.65rem',
+                              bgcolor: '#e8f5e9',
+                              color: '#2e7d32',
+                            }}
+                          />
+                        )}
                       </Typography>
                     </Box>
-                    <Box sx={{ textAlign: 'right' }}>
-                      <Typography
-                        variant="h6"
-                        sx={{ fontWeight: 'bold', color: '#ff6b6b' }}
-                      >
-                        ₹{(item.price * item.quantity).toFixed(2)}
-                      </Typography>
-                      <Typography variant="caption" color="textSecondary">
-                        ₹{item.price} each
-                      </Typography>
-                    </Box>
+                    <CartItemPriceDisplay item={item} showEach />
                   </Box>
 
                   <Box
@@ -190,7 +243,8 @@ const CartPage: React.FC = () => {
                           handleQuantityChange(
                             item.id,
                             item.option as ItemOptions,
-                            item.quantity - 1
+                            item.quantity - 1,
+                            getItemFlags(item)
                           )
                         }
                         disabled={item.quantity <= 1}
@@ -208,9 +262,11 @@ const CartPage: React.FC = () => {
                           handleQuantityChange(
                             item.id,
                             item.option as ItemOptions,
-                            item.quantity + 1
+                            item.quantity + 1,
+                            getItemFlags(item)
                           )
                         }
+                        disabled={item.isPromotionalAddon && item.quantity >= 1}
                       >
                         <AddIcon fontSize="small" />
                       </IconButton>
@@ -220,7 +276,11 @@ const CartPage: React.FC = () => {
                     <IconButton
                       color="error"
                       onClick={() =>
-                        handleRemove(item.id, item.option as ItemOptions)
+                        handleRemove(
+                          item.id,
+                          item.option as ItemOptions,
+                          getItemFlags(item)
+                        )
                       }
                       title="Delete entire item from cart"
                     >
@@ -251,6 +311,20 @@ const CartPage: React.FC = () => {
                   <Typography color="textSecondary">Subtotal:</Typography>
                   <Typography>₹{totalPrice.toFixed(2)}</Typography>
                 </Box>
+                {promoSavings > 0 && (
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      mb: 1,
+                    }}
+                  >
+                    <Typography color="#2e7d32">₹9 Deal savings:</Typography>
+                    <Typography color="#2e7d32">
+                      −₹{promoSavings.toFixed(0)}
+                    </Typography>
+                  </Box>
+                )}
                 <Box
                   sx={{
                     display: 'flex',

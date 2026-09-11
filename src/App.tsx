@@ -23,6 +23,9 @@ import AddressConfirmDialog from './components/address/AddressConfirmDialog';
 import { AddressProvider, useAddressBook } from './context/AddressContext';
 import { initializeAnalytics, trackPageView } from './utils/analytics';
 import { queryClient } from './admin/api/queryClient';
+import PromotionalAddonLaunchDialog, {
+  usePromotionalAddonLaunch,
+} from './components/promotionalAddons/PromotionalAddonLaunchDialog';
 import {
   hasShownAddressConfirmThisSession,
   markAddressConfirmShownThisSession,
@@ -70,6 +73,11 @@ function AddressLaunchDialog() {
 
 function AppLayout() {
   const location = useLocation();
+  const isMenuLaunch =
+    location.pathname === '/bobs/foodList' ||
+    location.pathname === '/bobs' ||
+    location.pathname === '/bobs/menu';
+  const promoLaunch = usePromotionalAddonLaunch(isMenuLaunch);
   const shouldShowHeader =
     location.pathname !== '/bobs/landing' &&
     location.pathname !== '/bobs/menu' &&
@@ -118,6 +126,11 @@ function AppLayout() {
         </Routes>
       </div>
       <AddressLaunchDialog />
+      <PromotionalAddonLaunchDialog
+        open={promoLaunch.open}
+        onClose={promoLaunch.close}
+        onBrowseMenu={promoLaunch.close}
+      />
     </>
   );
 }

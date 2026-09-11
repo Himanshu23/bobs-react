@@ -44,6 +44,8 @@ export interface FoodItem {
   rating: number;
   reorderCount?: number;
   image: string;
+  /** Whether customers can currently order this item. Missing means available for legacy records. */
+  available?: boolean;
   category: FoodCategory;
   priceOptions: {
     wasPrice: {
@@ -82,6 +84,10 @@ export interface CartItem {
   quantity: number;
   option: ItemOptions;
   isFreeClaim?: boolean;
+  /** Item added via the ₹9 steal-deals promotion */
+  isPromotionalAddon?: boolean;
+  /** Regular price before promotional discount — shown struck-through in cart */
+  originalPrice?: number;
   priceOptions?: {
     size: {
       full?: number;
@@ -128,6 +134,9 @@ export interface OrderItem {
   size: string;
   style?: string;
   base?: string;
+  isPromotionalAddon?: boolean;
+  isFreeClaim?: boolean;
+  originalPrice?: number;
 }
 
 export interface Order {
@@ -138,6 +147,13 @@ export interface Order {
   fulfillmentType: OrderFulfillmentType;
   scheduledTime?: string;
   items: OrderItem[];
+  subtotal?: number;
+  discountAmount?: number;
+  discountCode?: string;
+  discountName?: string;
+  promotionalSavings?: number;
+  deliveryFee?: number;
+  taxAmount?: number;
   totalAmount: number;
   status?: OrderStatus;
   createdAt?: string;

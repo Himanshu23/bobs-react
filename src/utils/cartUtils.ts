@@ -1,4 +1,5 @@
 import { CartItem, FoodItem, ItemOptions } from '../types';
+import { PromotionalAddonItemDTO } from '../types/promotionalAddons';
 
 export const createCartItem = (
   product: FoodItem,
@@ -33,3 +34,24 @@ export const createCartItem = (
     description: product.description,
   };
 };
+
+export const createPromotionalAddonCartItem = (
+  promoItem: PromotionalAddonItemDTO,
+  product: FoodItem,
+  quantity = 1
+): CartItem => ({
+  id: promoItem.foodItemId,
+  name: promoItem.name,
+  price: promoItem.promotionalPrice,
+  originalPrice: promoItem.originalPrice,
+  image: promoItem.image,
+  description: promoItem.description,
+  product,
+  quantity,
+  option: {
+    size: promoItem.size,
+    style: promoItem.style,
+    base: promoItem.base,
+  },
+  isPromotionalAddon: true,
+});

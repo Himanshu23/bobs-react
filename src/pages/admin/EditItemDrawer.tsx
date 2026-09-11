@@ -48,6 +48,7 @@ const createDefaultFoodItem = (): FoodItem => ({
   rating: 4,
   image:
     'https://bobsimages.blob.core.windows.net/dishesh/default-placeholder.jpg',
+  available: true,
   category: FoodCategory.Starters,
   priceOptions: {
     wasPrice: { size: { Full: 0, Half: 0, Quarter: 0 } },

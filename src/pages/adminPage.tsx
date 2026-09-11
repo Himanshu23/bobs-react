@@ -19,11 +19,7 @@ import SpeedIcon from '@mui/icons-material/Speed';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import { FoodItem } from '../types';
-import {
-  useDeleteFoodItem,
-  useFoodItems,
-  useUpdateFoodItem,
-} from '../data/hooks/useFoodItems';
+import { useFoodItems, useUpdateFoodItem } from '../data/hooks/useFoodItems';
 import MenuTab from './admin/MenuTab';
 import OrdersTab from './admin/OrdersTab';
 import CurrentOrdersTab from './admin/CurrentOrdersTab';
@@ -36,9 +32,14 @@ const AdminPage: React.FC = () => {
   const [tab, setTab] = useState(0);
   const [editingItem, setEditingItem] = useState<FoodItem | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const { data: foodItems, isLoading, isFetching } = useFoodItems();
+  const {
+    data: foodItems,
+    isLoading,
+    isFetching,
+  } = useFoodItems({
+    includeUnavailable: true,
+  });
   const updateItemMutation = useUpdateFoodItem();
-  const deleteItemMutation = useDeleteFoodItem();
 
   const handleEditItem = (item: FoodItem) => {
     setEditingItem(item);
@@ -57,18 +58,11 @@ const AdminPage: React.FC = () => {
     );
   };
 
-  const handleDeleteItem = (updatedItem: FoodItem) => {
-    deleteItemMutation.mutate(updatedItem, {
-      onSuccess: () => {
-        setIsDrawerOpen(false);
-        setEditingItem(null);
-      },
+  const handleToggleAvailability = (item: FoodItem) => {
+    updateItemMutation.mutate({
+      id: item.id,
+      foodItem: { ...item, available: item.available === false },
     });
-  };
-
-  const handleAddDish = () => {
-    setEditingItem(null);
-    setIsDrawerOpen(true);
   };
 
   const handleCloseDrawer = () => {
@@ -102,19 +96,14 @@ const AdminPage: React.FC = () => {
             Manage orders, menu items, and discounts.
           </Typography>
         </Box>
-        <Stack direction="row" spacing={1.5}>
-          <Button variant="contained" onClick={handleAddDish}>
-            Add Dish
-          </Button>
-          <Button
-            variant="outlined"
-            startIcon={<RefreshIcon />}
-            onClick={() => console.log('refresh')}
-            disabled={isFetching}
-          >
-            Refresh
-          </Button>
-        </Stack>
+        <Button
+          variant="outlined"
+          startIcon={<RefreshIcon />}
+          onClick={() => console.log('refresh')}
+          disabled={isFetching}
+        >
+          Refresh
+        </Button>
       </Stack>
 
       <Card>
@@ -160,10 +149,10 @@ const AdminPage: React.FC = () => {
             <MenuTab
               items={foodItems}
               onEditItem={handleEditItem}
-              onDeleteItem={handleDeleteItem}
+              onToggleAvailability={handleToggleAvailability}
             />
           )}
-          {tab === 3 && <DiscountsTab />}
+          {tab === 3 && <DiscountsTab foodItems={foodItems} />}
           {tab === 4 && <ExpensesTab />}
           {tab === 5 && <ReportingTab />}
         </CardContent>

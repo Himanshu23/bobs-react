@@ -22,4 +22,7 @@ export const ENDPOINTS = {
   SEND_VOICE: `${API_BASE_URL}/voice`,
   CATEGORIES: `${API_BASE_URL}/expense-categories`,
   EXPENSES: `${API_BASE_URL}/expenses`,
+  PROMOTIONAL_ADDONS: `${API_BASE_URL}/promotional-addons/available`,
+  PROMOTIONAL_ADDONS_CONFIG: `${API_BASE_URL}/promotional-addons/config`,
+  PROMOTIONAL_ADDONS_VALIDATE: `${API_BASE_URL}/promotional-addons/validate`,
 } as const;

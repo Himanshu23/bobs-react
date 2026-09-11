@@ -1,6 +1,9 @@
 import React from 'react';
+import { Box } from '@mui/material';
 
 import landingItems from '../data/landingData';
+import PromotionalAddonBanner from '../components/promotionalAddons/PromotionalAddonBanner';
+import { usePromotionalAddons } from '../data/hooks/usePromotionalAddons';
 
 const landingStyles = `
   :root {
@@ -303,6 +306,8 @@ const landingStyles = `
 `;
 
 const StaticLanding: React.FC = () => {
+  const { data: promoData } = usePromotionalAddons([]);
+
   //const [items, setItems] = useState<LandingItem[]>();
 
   // useEffect(() => {
@@ -336,6 +341,12 @@ const StaticLanding: React.FC = () => {
             <h1>Bob&apos;s — Where cool meets curry</h1>
             <p className="tagline">Featured Delights</p>
           </div>
+
+          {promoData?.campaign.active && (
+            <Box sx={{ px: 1, pt: 1 }}>
+              <PromotionalAddonBanner promoData={promoData} cartSubtotal={0} />
+            </Box>
+          )}
 
           {/* Tiles */}
           <main className="tiles">

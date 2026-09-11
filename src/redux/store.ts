@@ -21,31 +21,45 @@ const initialState: CartState = {
 
 const findItem = (
   items: CartItem[],
-  item: { id: string; option: ItemOptions; isFreeClaim?: boolean }
+  item: {
+    id: string;
+    option: ItemOptions;
+    isFreeClaim?: boolean;
+    isPromotionalAddon?: boolean;
+  }
 ) => {
-  const { id, option, isFreeClaim } = item;
+  const { id, option, isFreeClaim, isPromotionalAddon } = item;
   return items.find(
     (cartItem) =>
       cartItem.id === id &&
       cartItem.option?.base === option?.base &&
       cartItem.option?.size === option?.size &&
       cartItem.option?.style === option?.style &&
-      (isFreeClaim === undefined || cartItem.isFreeClaim === isFreeClaim)
+      (isFreeClaim === undefined || cartItem.isFreeClaim === isFreeClaim) &&
+      (isPromotionalAddon === undefined ||
+        cartItem.isPromotionalAddon === isPromotionalAddon)
   );
 };
 
 const findItemIndex = (
   items: CartItem[],
-  item: { id: string; option: ItemOptions; isFreeClaim?: boolean }
+  item: {
+    id: string;
+    option: ItemOptions;
+    isFreeClaim?: boolean;
+    isPromotionalAddon?: boolean;
+  }
 ) => {
-  const { id, option, isFreeClaim } = item;
+  const { id, option, isFreeClaim, isPromotionalAddon } = item;
   return items.findIndex(
     (cartItem) =>
       cartItem.id === id &&
       cartItem.option?.base === option?.base &&
       cartItem.option?.size === option?.size &&
       cartItem.option?.style === option?.style &&
-      (isFreeClaim === undefined || cartItem.isFreeClaim === isFreeClaim)
+      (isFreeClaim === undefined || cartItem.isFreeClaim === isFreeClaim) &&
+      (isPromotionalAddon === undefined ||
+        cartItem.isPromotionalAddon === isPromotionalAddon)
   );
 };
 // Create slice
@@ -64,13 +78,19 @@ const cartSlice = createSlice({
         description,
         product,
         isFreeClaim,
+        isPromotionalAddon,
+        originalPrice,
       } = action.payload;
       const existingItem = findItem(state.items, {
         id,
         option,
         isFreeClaim,
+        isPromotionalAddon,
       });
       if (existingItem) {
+        if (isPromotionalAddon) {
+          return;
+        }
         existingItem.quantity += quantity;
       } else {
         state.items.push({
@@ -83,6 +103,8 @@ const cartSlice = createSlice({
           description,
           product,
           isFreeClaim,
+          isPromotionalAddon,
+          originalPrice,
         });
       }
 
@@ -96,10 +118,18 @@ const cartSlice = createSlice({
         id: string;
         option: ItemOptions;
         quantity: number;
+        isFreeClaim?: boolean;
+        isPromotionalAddon?: boolean;
       }>
     ) => {
-      const { id, option, quantity } = action.payload;
-      const item = findItem(state.items, { id, option });
+      const { id, option, quantity, isFreeClaim, isPromotionalAddon } =
+        action.payload;
+      const item = findItem(state.items, {
+        id,
+        option,
+        isFreeClaim,
+        isPromotionalAddon,
+      });
 
       if (item) {
         state.totalItems += quantity - item.quantity;
@@ -110,7 +140,12 @@ const cartSlice = createSlice({
     },
     removeFromCart: (
       state,
-      action: PayloadAction<{ id: string; option: ItemOptions }>
+      action: PayloadAction<{
+        id: string;
+        option: ItemOptions;
+        isFreeClaim?: boolean;
+        isPromotionalAddon?: boolean;
+      }>
     ) => {
       const itemIndex = findItemIndex(state.items, action.payload);
       if (itemIndex !== -1) {
@@ -122,6 +157,20 @@ const cartSlice = createSlice({
         saveCartToLocalStorage(state.items);
       }
     },
+    removePromotionalAddons: (state) => {
+      const promotionalItems = state.items.filter(
+        (item) => item.isPromotionalAddon
+      );
+
+      if (promotionalItems.length === 0) return;
+
+      state.totalItems -= promotionalItems.reduce(
+        (total, item) => total + item.quantity,
+        0
+      );
+      state.items = state.items.filter((item) => !item.isPromotionalAddon);
+      saveCartToLocalStorage(state.items);
+    },
     clearCart: (state) => {
       state.items = [];
       state.totalItems = 0;
@@ -132,7 +181,13 @@ const cartSlice = createSlice({
 });
 
 // Export actions
-export const { addToCart, updateQuantity, removeFromCart, clearCart } =
+export const {
+  addToCart,
+  updateQuantity,
+  removeFromCart,
+  removePromotionalAddons,
+  clearCart,
+} =
   cartSlice.actions;
 
 // Configure store with types
