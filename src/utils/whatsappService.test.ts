@@ -143,7 +143,7 @@ describe('formatOrderMessage', () => {
     );
     expect(message).toBe(
       [
-        "🍕 *Order via Bob's Delivery*",
+        '🍕 *Order via Grokheads*',
         '',
         '*Customer:* Asha',
         '',
@@ -322,7 +322,7 @@ describe('formatOrderMessage for a split pickup (D12)', () => {
     );
     expect(message).toBe(
       [
-        "🍕 *Order via Bob's Delivery*",
+        '🍕 *Order via Grokheads*',
         '',
         '*Customer:* Asha',
         '',

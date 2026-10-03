@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import {
+  getHeaderMode,
   isBrowsePath,
+  isRestaurantMenuPath,
   isOpenedFromList,
   marketPath,
   MENU_FROM_LIST_STATE,
@@ -62,5 +64,35 @@ describe('isOpenedFromList', () => {
     expect(isOpenedFromList(undefined)).toBe(false);
     expect(isOpenedFromList({ fromRestaurantList: 'yes' })).toBe(false);
     expect(isOpenedFromList('fromRestaurantList')).toBe(false);
+  });
+});
+
+describe('getHeaderMode', () => {
+  it.each([
+    '/bobs',
+    '/bobs/',
+    '/bobs/menu',
+    '/bobs/foodList',
+    '/m/x/r/y',
+    '/m/market1/r/bobs/',
+  ])('uses the restaurant header on the menu route %s', (path) => {
+    expect(getHeaderMode(path)).toBe('restaurant');
+    expect(isRestaurantMenuPath(path)).toBe(true);
+  });
+
+  it.each([
+    '/',
+    '/m/x',
+    '/m/x/r',
+    '/m/x/r/y/extra',
+    '/cart',
+    '/checkout',
+    '/addresses',
+    '/bobs/admin',
+    '/bobs/admin/login',
+    '/bobs/landing',
+  ])('keeps the default header on %s', (path) => {
+    expect(getHeaderMode(path)).toBe('default');
+    expect(isRestaurantMenuPath(path)).toBe(false);
   });
 });

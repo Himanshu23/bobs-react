@@ -274,7 +274,7 @@ export const formatOrderMessage = (order: OrderMessage): string => {
 
 ${order.restaurants.map(formatRestaurantSection).join('\n\n')}`;
 
-  let message = `🍕 *Order via Bob's Delivery*
+  let message = `🍕 *Order via Grokheads*
 
 *Customer:* ${order.customerName || 'Guest'}
 

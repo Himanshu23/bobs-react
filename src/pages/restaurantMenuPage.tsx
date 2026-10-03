@@ -4,16 +4,14 @@ import {
   Button,
   CircularProgress,
   Container,
-  IconButton,
   Typography,
 } from '@mui/material';
-import { ArrowBack as ArrowBackIcon } from '@mui/icons-material';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import FoodList from './foodList';
 import { useRestaurant } from '../data/hooks/useRestaurants';
 import { useCurrentMarketId } from '../data/hooks/useMarkets';
 import { CurrentRestaurantProvider } from '../context/CurrentRestaurantContext';
-import RestaurantInfoButton from '../components/marketplace/RestaurantInfoSheet';
+import { usePublishRestaurantHeader } from '../context/RestaurantHeaderContext';
 import CartBar from '../components/marketplace/CartBar';
 import {
   DEFAULT_RESTAURANT_ID,
@@ -84,6 +82,9 @@ const RestaurantMenuPage: React.FC<RestaurantMenuPageProps> = ({ slug }) => {
     });
   };
 
+  // The app header shows back + name + ⓘ for this restaurant (header.tsx).
+  usePublishRestaurantHeader(restaurant ?? null, isLoading, backToList);
+
   if (isLoading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}>
@@ -111,38 +112,13 @@ const RestaurantMenuPage: React.FC<RestaurantMenuPageProps> = ({ slug }) => {
     );
   }
 
-  const header = (
-    <Box
-      sx={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 1,
-        pt: 1.5,
-        pb: 1,
-      }}
-    >
-      <IconButton
-        onClick={backToList}
-        aria-label="Back to restaurants"
-        edge="start"
-      >
-        <ArrowBackIcon />
-      </IconButton>
-      <Typography
-        variant="h6"
-        component="h1"
-        sx={{ fontWeight: 700, lineHeight: 1.2, minWidth: 0, mb: 0 }}
-        noWrap
-      >
-        {restaurant.name}
-      </Typography>
-      <RestaurantInfoButton restaurant={restaurant} source="menu_header" />
-    </Box>
-  );
-
   return (
     <CurrentRestaurantProvider value={cartRestaurant}>
-      <FoodList restaurantId={restaurant.id} restaurantHeader={header} />
+      {/* The name/back/ⓘ now live in the app header; keep a little top space. */}
+      <FoodList
+        restaurantId={restaurant.id}
+        restaurantHeader={<Box aria-hidden sx={{ pt: 1.5 }} />}
+      />
       <CartBar />
     </CurrentRestaurantProvider>
   );

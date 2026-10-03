@@ -22,6 +22,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import AddressConfirmDialog from './components/address/AddressConfirmDialog';
 import { AddressProvider, useAddressBook } from './context/AddressContext';
 import { CartGuardProvider } from './context/CartGuardContext';
+import { RestaurantHeaderProvider } from './context/RestaurantHeaderContext';
 import { isBrowsePath } from './utils/marketplaceRoutes';
 import { DEFAULT_RESTAURANT_ID } from './types/marketplace';
 import { initializeAnalytics, trackPageView } from './utils/analytics';
@@ -148,7 +149,9 @@ function App() {
       <Router>
         <AddressProvider>
           <CartGuardProvider>
-            <AppLayout />
+            <RestaurantHeaderProvider>
+              <AppLayout />
+            </RestaurantHeaderProvider>
           </CartGuardProvider>
         </AddressProvider>
       </Router>

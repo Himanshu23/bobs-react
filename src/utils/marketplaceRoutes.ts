@@ -21,16 +21,33 @@ export const isOpenedFromList = (state: unknown): boolean =>
   typeof state === 'object' &&
   (state as { fromRestaurantList?: unknown }).fromRestaurantList === true;
 
+// React Router matches `/bobs/` like `/bobs`; do the same here.
+const withoutTrailingSlash = (pathname: string) =>
+  pathname.length > 1 && pathname.endsWith('/')
+    ? pathname.slice(0, -1)
+    : pathname;
+
+const RESTAURANT_MENU_PATH = /^\/m\/[^/]+\/r\/[^/]+$/;
+
+/** One restaurant's menu: `/m/:marketId/r/:slug` or a legacy `/bobs*` path. */
+export const isRestaurantMenuPath = (pathname: string) => {
+  const path = withoutTrailingSlash(pathname);
+  return LEGACY_MENU_PATHS.includes(path) || RESTAURANT_MENU_PATH.test(path);
+};
+
 /** Restaurant list or a restaurant menu (where launch dialogs may show). */
 export const isBrowsePath = (pathname: string) => {
-  // React Router matches `/bobs/` like `/bobs`; do the same here.
-  const path =
-    pathname.length > 1 && pathname.endsWith('/')
-      ? pathname.slice(0, -1)
-      : pathname;
+  const path = withoutTrailingSlash(pathname);
   return (
-    path === '/' ||
-    LEGACY_MENU_PATHS.includes(path) ||
-    /^\/m\/[^/]+(\/r\/[^/]+)?$/.test(path)
+    path === '/' || /^\/m\/[^/]+$/.test(path) || isRestaurantMenuPath(path)
   );
 };
+
+/**
+ * App header layout: on a restaurant menu it shows back + restaurant name + ⓘ
+ * instead of the brand; everywhere else the default brand header.
+ */
+export type HeaderMode = 'restaurant' | 'default';
+
+export const getHeaderMode = (pathname: string): HeaderMode =>
+  isRestaurantMenuPath(pathname) ? 'restaurant' : 'default';
