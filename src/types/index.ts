@@ -60,6 +60,11 @@ export interface FoodItem {
     };
   };
   freeClaimPortion?: ItemOptions['size'] | null;
+  /**
+   * Owning restaurant. The backend always sends it (legacy items resolve to
+   * `bobs`); optional here so older cached/static data still type-checks.
+   */
+  restaurantId?: string;
 }
 
 export interface ItemOptions {
@@ -88,6 +93,12 @@ export interface CartItem {
   isPromotionalAddon?: boolean;
   /** Regular price before promotional discount — shown struck-through in cart */
   originalPrice?: number;
+  /** Restaurant the item was added from. Part of the cart line identity. */
+  restaurantId?: string;
+  /** Snapshot of the restaurant name, for grouping the cart. */
+  restaurantName?: string;
+  /** Market (cart scope, D5) of the restaurant. */
+  marketId?: string;
   priceOptions?: {
     size: {
       full?: number;

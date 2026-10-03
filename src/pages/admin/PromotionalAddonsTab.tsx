@@ -6,6 +6,8 @@ import {
   Checkbox,
   FormControlLabel,
   Grid,
+  MenuItem,
+  Select,
   Stack,
   TextField,
   Typography,
@@ -78,6 +80,21 @@ const PromotionalAddonsTab = ({ foodItems }: PromotionalAddonsTabProps) => {
           size,
         },
       ],
+    }));
+  };
+
+  const updateDishOption = (
+    foodItemId: string,
+    field: 'size' | 'style' | 'base',
+    value: string
+  ) => {
+    setConfig((current) => ({
+      ...current,
+      dishes: current.dishes.map((dish) =>
+        dish.foodItemId === foodItemId
+          ? { ...dish, [field]: value || undefined }
+          : dish
+      ),
     }));
   };
   useEffect(() => {
@@ -215,15 +232,104 @@ const PromotionalAddonsTab = ({ foodItems }: PromotionalAddonsTabProps) => {
         <Grid container spacing={1}>
           {foodItems.map((foodItem) => (
             <Grid item xs={12} sm={6} md={4} key={foodItem.id}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={selectedIds.has(foodItem.id)}
-                    onChange={() => toggleDish(foodItem)}
-                  />
-                }
-                label={foodItem.name}
-              />
+              <Stack spacing={1}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={selectedIds.has(foodItem.id)}
+                      onChange={() => toggleDish(foodItem)}
+                    />
+                  }
+                  label={foodItem.name}
+                />
+                {selectedIds.has(foodItem.id) && (
+                  <Stack direction="row" spacing={1}>
+                    <Select
+                      size="small"
+                      value={
+                        config.dishes.find(
+                          (dish) => dish.foodItemId === foodItem.id
+                        )?.size ?? 'Full'
+                      }
+                      onChange={(event) =>
+                        updateDishOption(
+                          foodItem.id,
+                          'size',
+                          event.target.value
+                        )
+                      }
+                      sx={{ minWidth: 90 }}
+                    >
+                      {(['Full', 'Half', 'Quarter'] as const)
+                        .filter(
+                          (size) =>
+                            foodItem.priceOptions.nowPrice.size[size] != null
+                        )
+                        .map((size) => (
+                          <MenuItem key={size} value={size}>
+                            {size}
+                          </MenuItem>
+                        ))}
+                    </Select>
+                    {foodItem.priceOptions.nowPrice.type && (
+                      <Select
+                        size="small"
+                        displayEmpty
+                        value={
+                          config.dishes.find(
+                            (dish) => dish.foodItemId === foodItem.id
+                          )?.style ?? ''
+                        }
+                        onChange={(event) =>
+                          updateDishOption(
+                            foodItem.id,
+                            'style',
+                            event.target.value
+                          )
+                        }
+                        sx={{ minWidth: 90 }}
+                      >
+                        <MenuItem value="">Style</MenuItem>
+                        {Object.keys(foodItem.priceOptions.nowPrice.type).map(
+                          (style) => (
+                            <MenuItem key={style} value={style}>
+                              {style}
+                            </MenuItem>
+                          )
+                        )}
+                      </Select>
+                    )}
+                    {foodItem.priceOptions.nowPrice.base && (
+                      <Select
+                        size="small"
+                        displayEmpty
+                        value={
+                          config.dishes.find(
+                            (dish) => dish.foodItemId === foodItem.id
+                          )?.base ?? ''
+                        }
+                        onChange={(event) =>
+                          updateDishOption(
+                            foodItem.id,
+                            'base',
+                            event.target.value
+                          )
+                        }
+                        sx={{ minWidth: 90 }}
+                      >
+                        <MenuItem value="">Base</MenuItem>
+                        {Object.keys(foodItem.priceOptions.nowPrice.base).map(
+                          (base) => (
+                            <MenuItem key={base} value={base}>
+                              {base}
+                            </MenuItem>
+                          )
+                        )}
+                      </Select>
+                    )}
+                  </Stack>
+                )}
+              </Stack>
             </Grid>
           ))}
         </Grid>

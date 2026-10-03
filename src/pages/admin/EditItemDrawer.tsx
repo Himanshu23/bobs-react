@@ -32,15 +32,25 @@ import {
   useCreateFoodItem,
   useUpdateFoodItem,
 } from '../../data/hooks/useFoodItems';
+import { AdminFoodItem, RestaurantAdmin } from '../../admin/types/marketplace';
+import {
+  buildRestaurantOptions,
+  resolveRestaurantId,
+} from '../../admin/utils/marketplaceForms';
 
 interface EditItemDrawerProps {
   open: boolean;
-  item: FoodItem | null;
+  item: AdminFoodItem | null;
+  /** Admin restaurant list for the (required) restaurant selector. */
+  restaurants: RestaurantAdmin[];
+  /** Preselected restaurant when creating an item. */
+  defaultRestaurantId?: string;
   onClose: () => void;
-  onSave: (item: FoodItem) => void;
+  /** Called after the drawer has saved the item successfully. */
+  onSave: (item: AdminFoodItem) => void;
 }
 
-const createDefaultFoodItem = (): FoodItem => ({
+const createDefaultFoodItem = (restaurantId = ''): AdminFoodItem => ({
   id: `dish-${Date.now()}-${Math.round(Math.random() * 1000)}`,
   name: '',
   description: '',
@@ -55,15 +65,25 @@ const createDefaultFoodItem = (): FoodItem => ({
     nowPrice: { size: { Full: 0, Half: 0, Quarter: 0 } },
   },
   freeClaimPortion: null,
+  restaurantId,
+});
+
+/** Deep copy of an existing item; legacy items without a restaurant are `bobs`. */
+const cloneItem = (item: AdminFoodItem): AdminFoodItem => ({
+  ...JSON.parse(JSON.stringify(item)),
+  restaurantId: resolveRestaurantId(item.restaurantId),
 });
 
 const EditItemDrawer: React.FC<EditItemDrawerProps> = ({
   open,
   item,
+  restaurants,
+  defaultRestaurantId = '',
   onClose,
   onSave,
 }) => {
-  const [formData, setFormData] = useState<FoodItem | null>(null);
+  const [formData, setFormData] = useState<AdminFoodItem | null>(null);
+  const [restaurantError, setRestaurantError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const createItemMutation = useCreateFoodItem();
@@ -82,14 +102,18 @@ const EditItemDrawer: React.FC<EditItemDrawerProps> = ({
   useEffect(() => {
     if (open) {
       const nextItem = item
-        ? JSON.parse(JSON.stringify(item))
-        : createDefaultFoodItem();
+        ? cloneItem(item)
+        : createDefaultFoodItem(defaultRestaurantId);
 
       setFormData(nextItem);
       reset(nextItem);
       setUploadError(null);
+      setRestaurantError(null);
+      createItemMutation.reset();
+      updateItemMutation.reset();
     }
-  }, [open, item, reset]);
+    // Reset only when the drawer (re)opens, not on every mutation render.
+  }, [open, item, reset, defaultRestaurantId]);
 
   const isCreating = !item;
 
@@ -98,9 +122,11 @@ const EditItemDrawer: React.FC<EditItemDrawerProps> = ({
       formData?.name?.trim() &&
         formData?.description?.trim() &&
         formData?.category &&
-        formData?.image?.trim()
+        formData?.image?.trim() &&
+        formData?.restaurantId?.trim()
     );
   }, [
+    formData?.restaurantId,
     formData?.category,
     formData?.name,
     formData?.description,
@@ -109,7 +135,12 @@ const EditItemDrawer: React.FC<EditItemDrawerProps> = ({
 
   if (!formData) return null;
 
-  const handleBasicInfoChange = (field: keyof FoodItem, value: any) => {
+  const restaurantOptions = buildRestaurantOptions(
+    restaurants,
+    formData.restaurantId
+  );
+
+  const handleBasicInfoChange = (field: keyof AdminFoodItem, value: any) => {
     setFormData({ ...formData, [field]: value });
   };
 
@@ -168,6 +199,10 @@ const EditItemDrawer: React.FC<EditItemDrawerProps> = ({
 
   const handleSave = () => {
     if (!formData) return;
+    if (!formData.restaurantId?.trim()) {
+      setRestaurantError('Restaurant is required');
+      return;
+    }
     const nextPayload = formData;
 
     if (item) {
@@ -191,14 +226,15 @@ const EditItemDrawer: React.FC<EditItemDrawerProps> = ({
   };
 
   const handleReset = () => {
+    setRestaurantError(null);
     if (item) {
-      const nextItem = JSON.parse(JSON.stringify(item));
+      const nextItem = cloneItem(item);
       setFormData(nextItem);
       reset(nextItem);
       return;
     }
 
-    const nextItem = createDefaultFoodItem();
+    const nextItem = createDefaultFoodItem(defaultRestaurantId);
     setFormData(nextItem);
     reset(nextItem);
   };
@@ -206,8 +242,6 @@ const EditItemDrawer: React.FC<EditItemDrawerProps> = ({
   const sizes: ('Full' | 'Half' | 'Quarter')[] = ['Full', 'Half', 'Quarter'];
   const styles: ('Gravy' | 'Dry')[] = ['Gravy', 'Dry'];
   const bases: ('Paratha' | 'Roomali')[] = ['Paratha', 'Roomali'];
-
-  console.log('formData', formData);
 
   return (
     <Drawer
@@ -263,6 +297,17 @@ const EditItemDrawer: React.FC<EditItemDrawerProps> = ({
           </Alert>
         )}
 
+        {createItemMutation.isError && (
+          <Alert
+            severity="error"
+            onClose={() => createItemMutation.reset()}
+            sx={{ mb: 2 }}
+          >
+            {createItemMutation.error?.message ||
+              'Failed to create item. Please try again.'}
+          </Alert>
+        )}
+
         {updateItemMutation.isSuccess && (
           <Alert severity="success" sx={{ mb: 2 }}>
             Item saved successfully!
@@ -276,6 +321,27 @@ const EditItemDrawer: React.FC<EditItemDrawerProps> = ({
             Basic Information
           </Typography>
           <Stack spacing={2} sx={{ mb: 3 }}>
+            <TextField
+              select
+              required
+              label="Restaurant"
+              fullWidth
+              value={formData.restaurantId ?? ''}
+              onChange={(e) => {
+                handleBasicInfoChange('restaurantId', e.target.value);
+                setRestaurantError(null);
+              }}
+              error={Boolean(restaurantError)}
+              helperText={
+                restaurantError ?? 'The restaurant that sells this dish'
+              }
+            >
+              {restaurantOptions.map((option) => (
+                <MenuItem key={option.id} value={option.id}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
             <TextField
               label="Item Name"
               fullWidth

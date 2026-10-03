@@ -93,7 +93,9 @@ const getHighlightedSegments = (text: string, searchQuery?: string) => {
 };
 
 const FoodItemCard = ({ item, handleCart, searchQuery }: FoodItemCardProps) => {
-  const totalQuantity = useSelector(selectProductTotalQuantity(item.id));
+  const totalQuantity = useSelector(
+    selectProductTotalQuantity(item.id, item.restaurantId || undefined)
+  );
   const [imageError, setImageError] = useState(false);
 
   const handleImageError = () => {

@@ -40,6 +40,19 @@ export const getHeaders = (): Record<string, string> => {
   };
 };
 
+/**
+ * Headers for ADMIN-only endpoints. Uses only the admin token, never the
+ * customer token, so an admin browser that also holds a customer session
+ * still authenticates as admin.
+ */
+export const getAdminHeaders = (): Record<string, string> => {
+  const token = getAuthToken();
+  return {
+    'Content-Type': 'application/json',
+    ...(token && { Authorization: `Bearer ${token}` }),
+  };
+};
+
 const redirectToLogin = (): void => {
   logout();
   if (typeof window !== 'undefined') {
@@ -47,10 +60,10 @@ const redirectToLogin = (): void => {
   }
 };
 
-const buildHeaders = (
+const buildAdminHeaders = (
   initHeaders?: Record<string, string> | Headers
 ): Record<string, string> => {
-  const headers = { ...getHeaders() };
+  const headers = { ...getAdminHeaders() };
 
   if (initHeaders instanceof Headers) {
     initHeaders.forEach((value, key) => {
@@ -65,18 +78,28 @@ const buildHeaders = (
   return headers;
 };
 
-export const fetchWithAuth = async (
+/**
+ * fetch() for ADMIN-only endpoints. Sends the admin token only. When the
+ * admin token is missing, or the backend rejects it (401/403), the admin
+ * session is cleared and the browser goes to the admin login page.
+ */
+export const fetchWithAdminAuth = async (
   input: string,
   init: { [key: string]: unknown } = {}
 ): Promise<Response> => {
+  if (!getAuthToken()) {
+    redirectToLogin();
+    throw new Error('Admin session missing. Please log in again.');
+  }
+
   const response = await fetch(input, {
     ...init,
-    headers: buildHeaders(
+    headers: buildAdminHeaders(
       init.headers as Record<string, string> | Headers | undefined
     ),
   });
 
-  if (response.status === 403) {
+  if (response.status === 401 || response.status === 403) {
     redirectToLogin();
   }
 

@@ -10,8 +10,6 @@ import {
   Menu,
   MenuItem,
   Button,
-  Avatar,
-  AvatarGroup,
   TextField,
   InputAdornment,
   Container,
@@ -22,15 +20,13 @@ import {
 } from '@mui/material';
 import {
   List as ListIcon,
-  ChevronRight as ChevronRightIcon,
   Search as SearchIconMUI,
   ExpandMore as ExpandMoreIcon,
   ExpandLess as ExpandLessIcon,
 } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import { RootState, AppDispatch, removeFromCart } from '../redux/store';
-import { useFoodItems } from '../data/hooks/useFoodItems';
+import { useRestaurantFoodItems } from '../data/hooks/useRestaurantFoodItems';
 import { useMostReorderedItems } from '../data/hooks/useMostReorderedItems';
 import { CartActions, CATEGORY_ORDER, FoodItem } from '../types';
 import MostReorderedSection from '../components/MostReorderedSection';
@@ -40,6 +36,8 @@ import QuantityUpdate from '../components/quanityUpdate/quantityUpdate';
 import VariantRemovalModal from '../components/variantRemovalModal';
 import { trackEvent } from '../utils/analytics';
 import { getLowestNowPrice } from '../utils/priceUtils';
+import { getCartItemRestaurantId } from '../utils/cartUtils';
+import { DEFAULT_RESTAURANT_ID } from '../types/marketplace';
 
 const normalizeSearchText = (value: string) =>
   value
@@ -142,14 +140,42 @@ const compareSearchResults = (
   return left.name.localeCompare(right.name);
 };
 
-const FoodListPage: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const navigate = useNavigate();
-  const cartItems = useSelector((state: RootState) => state.cart.items);
-  const totalItems = useSelector((state: RootState) => state.cart.totalItems);
+interface FoodListPageProps {
+  /** Only this restaurant's menu is shown (D11: menus are never mixed). */
+  restaurantId: string;
+  /** Restaurant header (name, phone, back button) rendered above the menu. */
+  restaurantHeader?: React.ReactNode;
+}
 
-  const { data: items = [], isLoading, error } = useFoodItems();
-  const { data: mostReorderedItems = [] } = useMostReorderedItems();
+const FoodListPage: React.FC<FoodListPageProps> = ({
+  restaurantId,
+  restaurantHeader,
+}) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const allCartItems = useSelector((state: RootState) => state.cart.items);
+  const totalItems = useSelector((state: RootState) => state.cart.totalItems);
+  // The cart spans restaurants; this page only manages this restaurant's lines.
+  const cartItems = useMemo(
+    () =>
+      allCartItems.filter(
+        (item) => getCartItemRestaurantId(item) === restaurantId
+      ),
+    [allCartItems, restaurantId]
+  );
+
+  const {
+    data: items = [],
+    isLoading,
+    error,
+  } = useRestaurantFoodItems({ restaurantId });
+  const { data: allMostReorderedItems = [] } = useMostReorderedItems();
+  const mostReorderedItems = useMemo(
+    () =>
+      allMostReorderedItems.filter(
+        (item) => (item.restaurantId || DEFAULT_RESTAURANT_ID) === restaurantId
+      ),
+    [allMostReorderedItems, restaurantId]
+  );
   const [productDetailModal, setProductDetailModal] = useState(false);
   const [quantityUpdateModal, setQuantityUpdateModal] = useState(false);
   const [quantityUpdateItemID, setquantityUpdateItemID] = useState<string>();
@@ -297,7 +323,15 @@ const FoodListPage: React.FC = () => {
           item_id: id,
           quantity: itemVariants[0].quantity,
         });
-        dispatch(removeFromCart({ id, option: itemVariants[0].option }));
+        dispatch(
+          removeFromCart({
+            id,
+            option: itemVariants[0].option,
+            isPromotionalAddon: !!itemVariants[0].isPromotionalAddon,
+            isFreeClaim: !!itemVariants[0].isFreeClaim,
+            restaurantId,
+          })
+        );
       }
     }
   };
@@ -309,7 +343,15 @@ const FoodListPage: React.FC = () => {
         item_name: variant.name,
         quantity: variant.quantity,
       });
-      dispatch(removeFromCart({ id: variant.id, option: variant.option }));
+      dispatch(
+        removeFromCart({
+          id: variant.id,
+          option: variant.option,
+          isPromotionalAddon: !!variant.isPromotionalAddon,
+          isFreeClaim: !!variant.isFreeClaim,
+          restaurantId,
+        })
+      );
     }
     setVariantRemovalModal(false);
     setVariantRemovalItemID(null);
@@ -348,20 +390,60 @@ const FoodListPage: React.FC = () => {
     handleMenuClose();
   };
 
-  // Get unique categories
-  const categories = CATEGORY_ORDER;
+  // Categories that have items in this restaurant (all of them until loaded)
+  const categories = useMemo(() => {
+    const withItems = CATEGORY_ORDER.filter((category) =>
+      items.some((item) => item.category === category)
+    );
+    return withItems.length > 0 ? withItems : CATEGORY_ORDER;
+  }, [items]);
+
+  // Another restaurant may not serve the default category.
+  useEffect(() => {
+    if (!(categories as string[]).includes(selectedCategory)) {
+      setSelectedCategory(categories[0]);
+    }
+  }, [categories, selectedCategory]);
 
   if (isLoading) {
-    return <CircularProgress />;
+    return (
+      <Container maxWidth="lg">
+        {restaurantHeader}
+        <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
+          <CircularProgress aria-label="Loading menu" />
+        </Box>
+      </Container>
+    );
   }
 
   if (error) {
-    return <Typography color="error">{error.message}</Typography>;
+    return (
+      <Container maxWidth="lg">
+        {restaurantHeader}
+        <Typography color="error" sx={{ py: 4, textAlign: 'center' }}>
+          {error.message}
+        </Typography>
+      </Container>
+    );
+  }
+
+  if (items.length === 0) {
+    return (
+      <Container maxWidth="lg">
+        {restaurantHeader}
+        <Box sx={{ textAlign: 'center', py: 6 }}>
+          <Typography variant="h6" color="textSecondary">
+            No dishes on this menu yet
+          </Typography>
+        </Box>
+      </Container>
+    );
   }
 
   return (
     <>
       <Container maxWidth="lg">
+        {restaurantHeader}
         {/* Most Reordered Section */}
         <MostReorderedSection
           items={mostReorderedItems}
@@ -701,72 +783,14 @@ const FoodListPage: React.FC = () => {
           }}
         />
       )}
-      {totalItems > 0 && (
-        <Button
-          variant="contained"
-          color="primary"
-          fullWidth
-          onClick={() => navigate('/cart')}
-          sx={{
-            position: 'fixed',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            zIndex: 999,
-            borderRadius: 0,
-            fontSize: '1rem',
-            fontWeight: 600,
-            padding: '16px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            textTransform: 'none',
-          }}
-        >
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-            <AvatarGroup
-              max={3}
-              sx={{
-                '& .MuiAvatar-root': {
-                  width: 40,
-                  height: 40,
-                  fontSize: '0.875rem',
-                  border: '3px solid rgba(255, 255, 255, 0.8)',
-                },
-                '& .MuiAvatarGroup-avatar': {
-                  marginLeft: '-12px',
-                },
-              }}
-            >
-              {cartItems.slice(0, 3).map((item) => (
-                <Avatar
-                  key={`${item.id}_${JSON.stringify(item.option)}`}
-                  alt={item.name}
-                  src={item.image}
-                  sx={{
-                    width: 40,
-                    height: 40,
-                  }}
-                />
-              ))}
-            </AvatarGroup>
-            <Typography sx={{ fontWeight: 500, color: 'white' }}>
-              {totalItems} Item{totalItems > 1 ? 's' : ''} Added
-            </Typography>
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-            View Cart
-            <ChevronRightIcon sx={{ fontSize: '1.25rem' }} />
-          </Box>
-        </Button>
-      )}
       <Fab
         color="primary"
         aria-label="categories"
         onClick={handleMenuOpen}
         sx={{
           position: 'fixed',
-          bottom: 80,
+          // Clears the cart bar (72px + the home-indicator inset).
+          bottom: 'calc(80px + env(safe-area-inset-bottom, 0px))',
           right: 16,
           zIndex: 1000,
         }}

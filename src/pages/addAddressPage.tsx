@@ -16,7 +16,7 @@ import AddressMapPicker, {
 } from '../components/address/AddressMapPicker';
 import { useAddressBook } from '../context/AddressContext';
 import { trackEvent } from '../utils/analytics';
-import { SERVICE_RADIUS_KM } from '../config/restaurantLocation';
+import { useDeliveryArea } from '../data/hooks/useMarkets';
 
 const AddAddressPage: React.FC = () => {
   const navigate = useNavigate();
@@ -24,6 +24,8 @@ const AddAddressPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const returnTo = searchParams.get('return') || '/bobs/foodList';
   const { addresses, saveAddress } = useAddressBook();
+  // Market 1 only: the current market's area (fallback if the call fails).
+  const { area } = useDeliveryArea();
   const editing = useMemo(
     () => (id ? addresses.find((address) => address.id === id) : undefined),
     [addresses, id]
@@ -55,9 +57,7 @@ const AddAddressPage: React.FC = () => {
     }
 
     if (!serviceable) {
-      setError(
-        `We only deliver within ${SERVICE_RADIUS_KM} km of the restaurant.`
-      );
+      setError(`We only deliver within ${area.radiusKm} km of ${area.name}.`);
       return;
     }
 
@@ -118,6 +118,7 @@ const AddAddressPage: React.FC = () => {
                 }
               : undefined
           }
+          area={area}
           onChange={(values, nextServiceable) => {
             setForm(values);
             setServiceable(nextServiceable);

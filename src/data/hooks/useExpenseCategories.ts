@@ -1,12 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ExpenseCategory } from '../../types';
 import { ENDPOINTS } from '../../config/api';
-import { getHeaders } from '../../utils/authHelpers';
+import { fetchWithAdminAuth } from '../../utils/authHelpers';
 
 const fetchExpenseCategories = async (): Promise<ExpenseCategory[]> => {
-  const response = await fetch(ENDPOINTS.CATEGORIES, {
+  const response = await fetchWithAdminAuth(ENDPOINTS.CATEGORIES, {
     method: 'GET',
-    headers: getHeaders(),
   });
 
   if (!response.ok) {
@@ -22,9 +21,8 @@ const createExpenseCategory = async (payload: {
   name: string;
   recurring?: boolean;
 }): Promise<ExpenseCategory> => {
-  const response = await fetch(ENDPOINTS.CATEGORIES, {
+  const response = await fetchWithAdminAuth(ENDPOINTS.CATEGORIES, {
     method: 'POST',
-    headers: getHeaders(),
     body: JSON.stringify(payload),
   });
 
@@ -41,9 +39,8 @@ const updateExpenseCategory = async (
   id: string,
   payload: { name?: string; recurring?: boolean }
 ): Promise<ExpenseCategory> => {
-  const response = await fetch(`${ENDPOINTS.CATEGORIES}/${id}`, {
+  const response = await fetchWithAdminAuth(`${ENDPOINTS.CATEGORIES}/${id}`, {
     method: 'PUT',
-    headers: getHeaders(),
     body: JSON.stringify(payload),
   });
 
@@ -57,9 +54,8 @@ const updateExpenseCategory = async (
 };
 
 const deleteExpenseCategory = async (id: string): Promise<void> => {
-  const response = await fetch(`${ENDPOINTS.CATEGORIES}/${id}`, {
+  const response = await fetchWithAdminAuth(`${ENDPOINTS.CATEGORIES}/${id}`, {
     method: 'DELETE',
-    headers: getHeaders(),
   });
 
   if (!response.ok) {

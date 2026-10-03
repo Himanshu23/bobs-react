@@ -8,7 +8,16 @@ import {
   CircularProgress,
   Grid,
   Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableFooter,
+  TableHead,
+  TableRow,
   TextField,
+  ToggleButton,
+  ToggleButtonGroup,
   Typography,
   useMediaQuery,
   useTheme,
@@ -17,23 +26,106 @@ import { formatPrice } from '../../utils/priceUtils';
 import { useExpenses } from '../../data/hooks/useExpenses';
 import { useOrdersByDateRange } from '../../data/hooks/useOrders';
 import { OrderFulfillmentType } from '../../types';
+import { useSalesReport } from '../../admin/hooks/useAdminReports';
+import { useAdminRestaurants } from '../../admin/hooks/useMarketplaceAdmin';
+import { SalesGroupBy, SalesRow } from '../../admin/types/orders';
+import {
+  buildRestaurantFilterOptions,
+  filterOrdersByRestaurant,
+  formatRupees,
+} from '../../admin/utils/adminOrders';
+import {
+  UTC_DAY_NOTE,
+  averageOrderValue,
+  dateRangeError,
+  salesRowLabel,
+  sumSalesRows,
+  utcIsoDate,
+} from '../../admin/utils/adminReports';
+import RestaurantFilterSelect from './RestaurantFilterSelect';
 
-const formatDate = (date: Date): string => date.toISOString().split('T')[0];
+// UTC days, matching the backend's date filters (§5, §9).
+const getLastWeekDate = (): string => utcIsoDate(new Date(), 7);
 
-const getLastWeekDate = (): string => {
-  const date = new Date();
-  date.setDate(date.getDate() - 7);
-  return formatDate(date);
-};
+const getTodayDate = (): string => utcIsoDate();
 
-const getTodayDate = (): string => formatDate(new Date());
+/** Headline tile for one restaurant (or all restaurants). */
+const SalesTile: React.FC<{
+  title: string;
+  orders: number;
+  items: number;
+  gross: number;
+  highlight?: boolean;
+}> = ({ title, orders, items, gross, highlight }) => (
+  <Card variant="outlined" sx={{ height: '100%' }}>
+    <CardContent>
+      <Typography
+        variant="subtitle2"
+        color={highlight ? 'primary.main' : 'text.secondary'}
+        sx={{ fontWeight: 700 }}
+        gutterBottom
+      >
+        {title}
+      </Typography>
+      <Typography variant="h5" sx={{ fontWeight: 800 }}>
+        {orders} orders
+      </Typography>
+      <Typography sx={{ mt: 0.5 }}>
+        Item sales: <strong>{formatRupees(gross)}</strong>
+      </Typography>
+      <Typography color="text.secondary" variant="body2">
+        {items} items · avg{' '}
+        {formatRupees(averageOrderValue({ orders, grossSubtotal: gross }))}
+        /order
+      </Typography>
+    </CardContent>
+  </Card>
+);
 
+/**
+ * Order reporting per restaurant (task 5.5): orders, items and item sales
+ * from GET /reporting/sales, plus status/fulfillment counts. Delivery-fee
+ * earnings and platform totals are left for a separate dashboard.
+ */
 const ReportingTab: React.FC = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const today = getTodayDate();
   const [fromDate, setFromDate] = useState<string>(getLastWeekDate());
   const [toDate, setToDate] = useState<string>(today);
+  const [restaurantId, setRestaurantId] = useState('');
+  const [groupBy, setGroupBy] = useState<SalesGroupBy>('restaurant');
+  const rangeError = dateRangeError(fromDate, toDate);
+
+  // Per-restaurant rows for the headline tiles (always grouped by restaurant).
+  const {
+    data: byRestaurant,
+    isLoading: tilesLoading,
+    error: tilesError,
+    refetch: refetchTiles,
+  } = useSalesReport({
+    from: fromDate,
+    to: toDate,
+    groupBy: 'restaurant',
+    restaurantId,
+  });
+  // Table rows, grouped by the toggle (same query when it's "restaurant").
+  const {
+    data: sales,
+    isLoading: salesLoading,
+    error: salesError,
+    refetch: refetchSales,
+  } = useSalesReport({
+    from: fromDate,
+    to: toDate,
+    groupBy,
+    restaurantId,
+  });
+  const { data: restaurants = [] } = useAdminRestaurants();
+  const restaurantOptions = useMemo(
+    () => buildRestaurantFilterOptions(restaurants),
+    [restaurants]
+  );
 
   const {
     data: orderData = { orders: [], totalAmount: 0 },
@@ -49,20 +141,24 @@ const ReportingTab: React.FC = () => {
     refetch: refetchExpenses,
   } = useExpenses({ fromDate, toDate });
 
-  const loading = ordersLoading || expensesLoading;
-  const error = ordersError || expensesError;
+  const loading =
+    ordersLoading || expensesLoading || salesLoading || tilesLoading;
+  const salesOrTilesError = salesError || tilesError;
+  const error = ordersError || expensesError || salesOrTilesError;
 
-  const totals = useMemo(() => {
-    const totalOrders = orderData.orders.length;
-    const totalRevenue = orderData.totalAmount ?? 0;
-    const averageOrder = totalOrders ? totalRevenue / totalOrders : 0;
-    const totalExpenses = expenses.reduce(
-      (sum, expense) => sum + expense.amount,
-      0
+  const tableRows: SalesRow[] = sales?.rows ?? [];
+  const tileRows: SalesRow[] = byRestaurant?.rows ?? [];
+  const rowTotals = useMemo(() => sumSalesRows(tableRows), [tableRows]);
+  const tileTotals = useMemo(() => sumSalesRows(tileRows), [tileRows]);
+
+  const counts = useMemo(() => {
+    // Status/fulfillment counts come from the order list (the sales report
+    // has no per-status data) and follow the restaurant filter.
+    const scopedOrders = filterOrdersByRestaurant(
+      orderData.orders,
+      restaurantId
     );
-    const profit = totalRevenue - totalExpenses;
-
-    const ordersByStatus = orderData.orders.reduce<Record<string, number>>(
+    const ordersByStatus = scopedOrders.reduce<Record<string, number>>(
       (acc, order) => {
         const status = order.status ?? 'UNKNOWN';
         acc[status] = (acc[status] ?? 0) + 1;
@@ -70,8 +166,7 @@ const ReportingTab: React.FC = () => {
       },
       {}
     );
-
-    const ordersByFulfillment = orderData.orders.reduce<Record<string, number>>(
+    const ordersByFulfillment = scopedOrders.reduce<Record<string, number>>(
       (acc, order) => {
         const type = order.fulfillmentType || OrderFulfillmentType.DELIVERY;
         acc[type] = (acc[type] ?? 0) + 1;
@@ -79,32 +174,47 @@ const ReportingTab: React.FC = () => {
       },
       {}
     );
+    return { ordersByStatus, ordersByFulfillment };
+  }, [orderData.orders, restaurantId]);
 
-    const expensesByCategory = expenses.reduce<Record<string, number>>(
-      (acc, expense) => {
+  const expensesByCategory = useMemo(
+    () =>
+      expenses.reduce<Record<string, number>>((acc, expense) => {
         acc[expense.categoryName] =
           (acc[expense.categoryName] ?? 0) + expense.amount;
         return acc;
-      },
-      {}
-    );
-
-    return {
-      totalOrders,
-      totalRevenue,
-      averageOrder,
-      totalExpenses,
-      profit,
-      ordersByStatus,
-      ordersByFulfillment,
-      expensesByCategory,
-    };
-  }, [orderData.orders, orderData.totalAmount, expenses]);
+      }, {}),
+    [expenses]
+  );
+  const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
 
   const handleRefresh = () => {
     void refetchOrders();
     void refetchExpenses();
+    void refetchSales();
+    void refetchTiles();
   };
+
+  const countList = (entries: Record<string, number>) => (
+    <Stack spacing={1}>
+      {Object.entries(entries).map(([key, count]) => (
+        <Box
+          key={key}
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <Typography>{key}</Typography>
+          <Typography sx={{ fontWeight: 700 }}>{count}</Typography>
+        </Box>
+      ))}
+      {Object.keys(entries).length === 0 && (
+        <Typography color="text.secondary">No orders found.</Typography>
+      )}
+    </Stack>
+  );
 
   return (
     <Box sx={{ p: isMobile ? 1 : 3, width: '100%' }}>
@@ -127,8 +237,8 @@ const ReportingTab: React.FC = () => {
                   Reporting
                 </Typography>
                 <Typography color="text.secondary">
-                  View revenue, order volume, and expense insights for the
-                  selected date range.
+                  Orders and item sales per restaurant for the selected date
+                  range.
                 </Typography>
               </Box>
               <Button
@@ -146,8 +256,9 @@ const ReportingTab: React.FC = () => {
                 display: 'grid',
                 gridTemplateColumns: isMobile
                   ? '1fr'
-                  : 'repeat(3, minmax(0, 1fr))',
-                gap: 16,
+                  : 'repeat(5, minmax(0, 1fr))',
+                gap: 2,
+                alignItems: 'center',
               }}
             >
               <TextField
@@ -179,7 +290,32 @@ const ReportingTab: React.FC = () => {
               >
                 Last 7 days
               </Button>
+              <RestaurantFilterSelect
+                value={restaurantId}
+                options={restaurantOptions}
+                onChange={setRestaurantId}
+                minWidth={0}
+              />
+              <ToggleButtonGroup
+                size="small"
+                exclusive
+                value={groupBy}
+                onChange={(_, value: SalesGroupBy | null) =>
+                  value && setGroupBy(value)
+                }
+              >
+                <ToggleButton value="restaurant">By restaurant</ToggleButton>
+                <ToggleButton value="day">By day</ToggleButton>
+              </ToggleButtonGroup>
             </Box>
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              sx={{ display: 'block', mt: 1 }}
+            >
+              {UTC_DAY_NOTE} Sales exclude cancelled orders; item sales are at
+              menu prices (free items included).
+            </Typography>
           </CardContent>
         </Card>
 
@@ -189,77 +325,138 @@ const ReportingTab: React.FC = () => {
           </Box>
         )}
 
+        {rangeError && <Alert severity="warning">{rangeError}</Alert>}
+
         {error && (
           <Alert severity="error">
-            {ordersError ? `Orders error: ${ordersError.message}` : ''}
+            {salesOrTilesError
+              ? `Sales report error: ${salesOrTilesError.message} `
+              : ''}
+            {ordersError ? `Orders error: ${ordersError.message} ` : ''}
             {expensesError ? `Expenses error: ${expensesError.message}` : ''}
           </Alert>
         )}
 
-        {!loading && !error && (
+        {!loading && !error && !rangeError && (
           <Grid container spacing={2}>
-            <Grid item xs={12} md={6} lg={4}>
+            {/* Headline tiles: all restaurants + one per restaurant, or just
+                the filtered restaurant. */}
+            {!restaurantId && (
+              <Grid item xs={12} md={6} lg={4}>
+                <SalesTile
+                  title="All restaurants"
+                  // An order can span restaurants: use the distinct count.
+                  orders={byRestaurant?.platform?.orders ?? tileTotals.orders}
+                  items={tileTotals.items}
+                  gross={tileTotals.grossSubtotal}
+                  highlight
+                />
+              </Grid>
+            )}
+            {tileRows.map((row) => (
+              <Grid
+                key={row.restaurantId ?? salesRowLabel(row)}
+                item
+                xs={12}
+                md={6}
+                lg={4}
+              >
+                <SalesTile
+                  title={salesRowLabel(row)}
+                  orders={row.orders}
+                  items={row.items}
+                  gross={row.grossSubtotal}
+                  highlight={!!restaurantId}
+                />
+              </Grid>
+            ))}
+            {tileRows.length === 0 && (
+              <Grid item xs={12}>
+                <Alert severity="info">No orders in this range.</Alert>
+              </Grid>
+            )}
+
+            <Grid item xs={12}>
               <Card variant="outlined">
                 <CardContent>
-                  <Typography
-                    variant="subtitle2"
-                    color="text.secondary"
-                    gutterBottom
-                  >
-                    Total Revenue
+                  <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>
+                    {groupBy === 'day'
+                      ? 'Orders by day'
+                      : 'Orders by restaurant'}
                   </Typography>
-                  <Typography variant="h4" sx={{ fontWeight: 800 }}>
-                    {formatPrice(totals.totalRevenue)}
-                  </Typography>
-                  <Typography color="text.secondary" sx={{ mt: 1 }}>
-                    Orders: {totals.totalOrders}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-            <Grid item xs={12} md={6} lg={4}>
-              <Card variant="outlined">
-                <CardContent>
-                  <Typography
-                    variant="subtitle2"
-                    color="text.secondary"
-                    gutterBottom
-                  >
-                    Average Order Value
-                  </Typography>
-                  <Typography variant="h4" sx={{ fontWeight: 800 }}>
-                    {formatPrice(totals.averageOrder)}
-                  </Typography>
-                  <Typography color="text.secondary" sx={{ mt: 1 }}>
-                    Total expenses: {formatPrice(totals.totalExpenses)}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-            <Grid item xs={12} md={6} lg={4}>
-              <Card variant="outlined">
-                <CardContent>
-                  <Typography
-                    variant="subtitle2"
-                    color="text.secondary"
-                    gutterBottom
-                  >
-                    Profit
-                  </Typography>
-                  <Typography
-                    variant="h4"
-                    sx={{
-                      fontWeight: 800,
-                      color: totals.profit < 0 ? 'error.main' : 'success.main',
-                    }}
-                  >
-                    {formatPrice(totals.profit)}
-                  </Typography>
-                  <Typography color="text.secondary" sx={{ mt: 1 }}>
-                    {totals.profit < 0
-                      ? 'Negative profit'
-                      : 'Net income after expenses'}
-                  </Typography>
+                  <TableContainer>
+                    <Table size="small">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>
+                            {groupBy === 'day' ? 'Day (UTC)' : 'Restaurant'}
+                          </TableCell>
+                          <TableCell align="right">Orders</TableCell>
+                          <TableCell align="right">Items</TableCell>
+                          <TableCell align="right">Item sales</TableCell>
+                          <TableCell align="right">Avg / order</TableCell>
+                          <TableCell align="right">Free items</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {tableRows.length === 0 && (
+                          <TableRow>
+                            <TableCell colSpan={6}>
+                              <Typography color="text.secondary">
+                                No orders in this range.
+                              </Typography>
+                            </TableCell>
+                          </TableRow>
+                        )}
+                        {tableRows.map((row) => (
+                          <TableRow
+                            key={`${row.restaurantId ?? ''}-${row.day ?? ''}`}
+                          >
+                            <TableCell sx={{ fontWeight: 600 }}>
+                              {salesRowLabel(row)}
+                            </TableCell>
+                            <TableCell align="right">{row.orders}</TableCell>
+                            <TableCell align="right">{row.items}</TableCell>
+                            <TableCell align="right">
+                              {formatRupees(row.grossSubtotal)}
+                            </TableCell>
+                            <TableCell align="right">
+                              {formatRupees(averageOrderValue(row))}
+                            </TableCell>
+                            <TableCell align="right">
+                              {formatRupees(row.freeClaimValue)}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                      {tableRows.length > 1 && (
+                        <TableFooter>
+                          <TableRow>
+                            <TableCell sx={{ fontWeight: 700 }}>
+                              Total
+                            </TableCell>
+                            <TableCell align="right">
+                              {/* An order can span restaurants, so the
+                                  per-restaurant counts don't add up. */}
+                              {groupBy === 'restaurant'
+                                ? (sales?.platform?.orders ?? '')
+                                : rowTotals.orders}
+                            </TableCell>
+                            <TableCell align="right">
+                              {rowTotals.items}
+                            </TableCell>
+                            <TableCell align="right">
+                              {formatRupees(rowTotals.grossSubtotal)}
+                            </TableCell>
+                            <TableCell align="right" />
+                            <TableCell align="right">
+                              {formatRupees(rowTotals.freeClaimValue)}
+                            </TableCell>
+                          </TableRow>
+                        </TableFooter>
+                      )}
+                    </Table>
+                  </TableContainer>
                 </CardContent>
               </Card>
             </Grid>
@@ -270,30 +467,7 @@ const ReportingTab: React.FC = () => {
                   <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>
                     Orders by Status
                   </Typography>
-                  <Stack spacing={1}>
-                    {Object.entries(totals.ordersByStatus).map(
-                      ([status, count]) => (
-                        <Box
-                          key={status}
-                          sx={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                          }}
-                        >
-                          <Typography>{status}</Typography>
-                          <Typography sx={{ fontWeight: 700 }}>
-                            {count}
-                          </Typography>
-                        </Box>
-                      )
-                    )}
-                    {Object.keys(totals.ordersByStatus).length === 0 && (
-                      <Typography color="text.secondary">
-                        No orders found.
-                      </Typography>
-                    )}
-                  </Stack>
+                  {countList(counts.ordersByStatus)}
                 </CardContent>
               </Card>
             </Grid>
@@ -304,34 +478,13 @@ const ReportingTab: React.FC = () => {
                   <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>
                     Orders by Fulfillment
                   </Typography>
-                  <Stack spacing={1}>
-                    {Object.entries(totals.ordersByFulfillment).map(
-                      ([type, count]) => (
-                        <Box
-                          key={type}
-                          sx={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                          }}
-                        >
-                          <Typography>{type}</Typography>
-                          <Typography sx={{ fontWeight: 700 }}>
-                            {count}
-                          </Typography>
-                        </Box>
-                      )
-                    )}
-                    {Object.keys(totals.ordersByFulfillment).length === 0 && (
-                      <Typography color="text.secondary">
-                        No orders found.
-                      </Typography>
-                    )}
-                  </Stack>
+                  {countList(counts.ordersByFulfillment)}
                 </CardContent>
               </Card>
             </Grid>
 
+            {/* Kept for now: the Expenses tabs have no all-categories
+                breakdown (Expense List filters one category at a time). */}
             <Grid item xs={12}>
               <Card variant="outlined">
                 <CardContent>
@@ -345,12 +498,12 @@ const ReportingTab: React.FC = () => {
                       Expense Breakdown
                     </Typography>
                     <Typography color="text.secondary">
-                      {expenses.length} entries
+                      {expenses.length} entries · {formatPrice(totalExpenses)}
                     </Typography>
                   </Stack>
-                  {Object.entries(totals.expensesByCategory).length > 0 ? (
+                  {Object.entries(expensesByCategory).length > 0 ? (
                     <Stack spacing={1}>
-                      {Object.entries(totals.expensesByCategory)
+                      {Object.entries(expensesByCategory)
                         .sort((a, b) => b[1] - a[1])
                         .map(([category, amount]) => (
                           <Box

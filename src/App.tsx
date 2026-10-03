@@ -1,6 +1,5 @@
 import {
   BrowserRouter as Router,
-  Navigate,
   Routes,
   Route,
   useLocation,
@@ -10,7 +9,8 @@ import { useEffect, useState } from 'react';
 import { QueryClientProvider } from '@tanstack/react-query';
 
 import StaticLanding from './pages/staticLanding';
-import FoodList from './pages/foodList';
+import RestaurantListPage from './pages/restaurantListPage';
+import RestaurantMenuPage from './pages/restaurantMenuPage';
 import Header from './pages/header';
 import CartPage from './pages/cartPage';
 import CheckoutPage from './pages/checkoutPage';
@@ -21,6 +21,9 @@ import AddAddressPage from './pages/addAddressPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import AddressConfirmDialog from './components/address/AddressConfirmDialog';
 import { AddressProvider, useAddressBook } from './context/AddressContext';
+import { CartGuardProvider } from './context/CartGuardContext';
+import { isBrowsePath } from './utils/marketplaceRoutes';
+import { DEFAULT_RESTAURANT_ID } from './types/marketplace';
 import { initializeAnalytics, trackPageView } from './utils/analytics';
 import { queryClient } from './admin/api/queryClient';
 import PromotionalAddonLaunchDialog, {
@@ -38,13 +41,8 @@ function AddressLaunchDialog() {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const isFoodList =
-      location.pathname === '/bobs/foodList' ||
-      location.pathname === '/bobs' ||
-      location.pathname === '/bobs/menu';
-
     if (
-      isFoodList &&
+      isBrowsePath(location.pathname) &&
       addresses.length > 0 &&
       selectedAddress &&
       !hasShownAddressConfirmThisSession()
@@ -65,7 +63,7 @@ function AddressLaunchDialog() {
       onConfirm={() => setOpen(false)}
       onChange={() => {
         setOpen(false);
-        navigate('/addresses?return=/bobs/foodList');
+        navigate(`/addresses?return=${encodeURIComponent(location.pathname)}`);
       }}
     />
   );
@@ -73,15 +71,11 @@ function AddressLaunchDialog() {
 
 function AppLayout() {
   const location = useLocation();
-  const isMenuLaunch =
-    location.pathname === '/bobs/foodList' ||
-    location.pathname === '/bobs' ||
-    location.pathname === '/bobs/menu';
+  const isMenuLaunch = isBrowsePath(location.pathname);
   const promoLaunch = usePromotionalAddonLaunch(isMenuLaunch);
   const shouldShowHeader =
     location.pathname !== '/bobs/landing' &&
     location.pathname !== '/bobs/menu' &&
-    location.pathname !== '/' &&
     !location.pathname.startsWith('/addresses');
 
   useEffect(() => {
@@ -101,11 +95,24 @@ function AppLayout() {
         }}
       >
         <Routes>
-          <Route path="/" element={<Navigate to="/bobs/foodList" replace />} />
+          {/* Browsing (D11): market → restaurant list → one restaurant's menu */}
+          <Route path="/" element={<RestaurantListPage />} />
+          <Route path="/m/:marketId" element={<RestaurantListPage />} />
+          <Route path="/m/:marketId/r/:slug" element={<RestaurantMenuPage />} />
+          {/* Legacy links and QR codes: Bob's own menu */}
           <Route path="/bobs/landing" element={<StaticLanding />} />
-          <Route path="/bobs/foodList" element={<FoodList />} />
-          <Route path="/bobs" element={<FoodList />} />
-          <Route path="/bobs/menu" element={<FoodList />} />
+          <Route
+            path="/bobs/foodList"
+            element={<RestaurantMenuPage slug={DEFAULT_RESTAURANT_ID} />}
+          />
+          <Route
+            path="/bobs"
+            element={<RestaurantMenuPage slug={DEFAULT_RESTAURANT_ID} />}
+          />
+          <Route
+            path="/bobs/menu"
+            element={<RestaurantMenuPage slug={DEFAULT_RESTAURANT_ID} />}
+          />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/addresses" element={<AddressesPage />} />
@@ -140,7 +147,9 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <Router>
         <AddressProvider>
-          <AppLayout />
+          <CartGuardProvider>
+            <AppLayout />
+          </CartGuardProvider>
         </AddressProvider>
       </Router>
     </QueryClientProvider>

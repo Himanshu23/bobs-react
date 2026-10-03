@@ -1,7 +1,7 @@
-import { useDispatch } from 'react-redux';
 import { Box, Button, Card, Chip, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import { addToCart } from '../../redux/store';
+import { useGuardedAddToCart } from '../../context/CartGuardContext';
+import { useRestaurantDirectory } from '../../data/hooks/useRestaurants';
 import { FoodItem } from '../../types';
 import { PromotionalAddonsResponseDTO } from '../../types/promotionalAddons';
 import { createPromotionalAddonCartItem } from '../../utils/cartUtils';
@@ -24,7 +24,9 @@ const PromotionalAddonSection = ({
   menuItems,
   isUpdating = false,
 }: PromotionalAddonSectionProps) => {
-  const dispatch = useDispatch();
+  const addToCartGuarded = useGuardedAddToCart();
+  // Restaurant name/market for the added item (cart page and checkout alike).
+  const { restaurantRefsById } = useRestaurantDirectory();
 
   if (
     !promoData?.eligible ||
@@ -42,8 +44,14 @@ const PromotionalAddonSection = ({
     const product = menuItems.find((m) => m.id === promoItem.foodItemId);
     if (!product) return;
 
-    const cartItem = createPromotionalAddonCartItem(promoItem, product);
-    dispatch(addToCart(cartItem));
+    const cartItem = createPromotionalAddonCartItem(
+      promoItem,
+      product,
+      1,
+      null,
+      restaurantRefsById
+    );
+    addToCartGuarded(cartItem);
 
     trackEvent('add_promotional_addon', {
       item_id: promoItem.foodItemId,

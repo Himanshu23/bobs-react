@@ -11,49 +11,39 @@ import {
   useTheme,
   Stack,
 } from '@mui/material';
-import { Order, OrderStatus, OrderFulfillmentType } from '../../types';
+import { OrderFulfillmentType } from '../../types';
 import OrderDeleteButton from '../../components/OrderDeleteButton';
+import { AdminFullOrder } from '../../admin/types/orders';
+import {
+  formatItemVariant,
+  formatRupees,
+  getStatusChipColor,
+  isLegacyOrder,
+  overallStatusNote,
+  subOrderProgressText,
+} from '../../admin/utils/adminOrders';
+import RestaurantOrderSections from './RestaurantOrderSections';
+import OrderTotals from './OrderTotals';
+import OverallStatusSelect from './OverallStatusSelect';
 
 interface OrderCardProps {
-  order: Order;
-  onViewDetails?: (order: Order) => void;
+  order: AdminFullOrder;
+  onViewDetails?: (order: AdminFullOrder) => void;
   onDeleteSuccess?: () => void;
   isMobile?: boolean;
+  /** Restaurant picked in the filter; its section is highlighted. */
+  highlightRestaurantId?: string;
+  /** Show the overall status control (PATCH /orders/{id}/status). */
+  showStatusControl?: boolean;
 }
-
-const getStatusColor = (
-  status?: OrderStatus
-):
-  | 'default'
-  | 'primary'
-  | 'secondary'
-  | 'error'
-  | 'info'
-  | 'success'
-  | 'warning' => {
-  switch (status) {
-    case OrderStatus.PENDING:
-      return 'warning';
-    case OrderStatus.CONFIRMED:
-      return 'info';
-    case OrderStatus.PREPARING:
-      return 'info';
-    case OrderStatus.READY:
-      return 'success';
-    case OrderStatus.COMPLETED:
-      return 'success';
-    case OrderStatus.CANCELLED:
-      return 'error';
-    default:
-      return 'default';
-  }
-};
 
 const OrderCard: React.FC<OrderCardProps> = ({
   order,
   onViewDetails,
   onDeleteSuccess,
   isMobile: propIsMobile,
+  highlightRestaurantId,
+  showStatusControl = false,
 }) => {
   const theme = useTheme();
   const isMobile = propIsMobile ?? useMediaQuery(theme.breakpoints.down('sm'));
@@ -65,21 +55,9 @@ const OrderCard: React.FC<OrderCardProps> = ({
         ? 'Scheduled'
         : 'Delivery';
 
-  const itemSubtotal = order.items.reduce(
-    (sum, item) => sum + item.unitPrice * item.quantity,
-    0
-  );
-  const promotionalSavings =
-    order.promotionalSavings ??
-    order.items.reduce(
-      (sum, item) =>
-        sum +
-        (item.isPromotionalAddon && item.originalPrice
-          ? (item.originalPrice - item.unitPrice) * item.quantity
-          : 0),
-      0
-    );
-  const discountAmount = order.discountAmount ?? 0;
+  const legacy = isLegacyOrder(order);
+  const progress = subOrderProgressText(order);
+  const statusNote = overallStatusNote(order);
 
   return (
     <Card
@@ -137,11 +115,25 @@ const OrderCard: React.FC<OrderCardProps> = ({
           </Box> */}
           <Chip
             label={order.status || 'PENDING'}
-            color={getStatusColor(order.status)}
+            color={getStatusChipColor(order.status)}
             size="small"
             sx={{ flexShrink: 0, fontSize: isMobile ? '0.65rem' : '0.75rem' }}
           />
+          {progress && (
+            <Typography variant="caption" color="text.secondary">
+              {progress}
+            </Typography>
+          )}
         </Box>
+        {statusNote && (
+          <Typography
+            variant="caption"
+            color="warning.main"
+            sx={{ display: 'block', mb: 1 }}
+          >
+            {statusNote}
+          </Typography>
+        )}
 
         <Divider sx={{ my: isMobile ? 0.8 : 1.2 }} />
 
@@ -237,7 +229,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
                 color: '#2e7d32',
               }}
             >
-              ₹{order.totalAmount.toFixed(2)}
+              {formatRupees(order.totalAmount)}
             </Typography>
           </Box>
 
@@ -329,8 +321,19 @@ const OrderCard: React.FC<OrderCardProps> = ({
           </>
         )}
 
-        {/* Items Details */}
-        {order.items && order.items.length > 0 && (
+        {/* Items: one section per restaurant; legacy orders keep the flat list */}
+        {!legacy && (
+          <>
+            <Divider sx={{ my: isMobile ? 0.8 : 1.2 }} />
+            <RestaurantOrderSections
+              order={order}
+              isMobile={isMobile}
+              highlightRestaurantId={highlightRestaurantId}
+            />
+          </>
+        )}
+        {/* Items Details (legacy order) */}
+        {legacy && order.items && order.items.length > 0 && (
           <>
             <Divider sx={{ my: isMobile ? 0.8 : 1.2 }} />
             <Box>
@@ -349,12 +352,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
               </Typography>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
                 {order.items.map((item, idx) => {
-                  const variants = [];
-                  if (item.size) variants.push(item.size);
-                  if (item.style) variants.push(item.style);
-                  if (item.base) variants.push(item.base);
-                  const variantText =
-                    variants.length > 0 ? ` (${variants.join(', ')})` : '';
+                  const variantText = formatItemVariant(item);
 
                   return (
                     <Typography
@@ -393,32 +391,10 @@ const OrderCard: React.FC<OrderCardProps> = ({
 
       <Box sx={{ px: isMobile ? 1.25 : 2, pb: 1.5 }}>
         <Divider sx={{ mb: 1 }} />
-        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Typography variant="caption" color="text.secondary">
-            Items subtotal
-          </Typography>
-          <Typography variant="caption">
-            ₹{(order.subtotal ?? itemSubtotal).toFixed(2)}
-          </Typography>
-        </Box>
-        {promotionalSavings > 0 && (
-          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Typography variant="caption" color="success.main">
-              Promo savings
-            </Typography>
-            <Typography variant="caption" color="success.main">
-              -₹{promotionalSavings.toFixed(2)}
-            </Typography>
-          </Box>
-        )}
-        {discountAmount > 0 && (
-          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Typography variant="caption" color="success.main">
-              {order.discountName || order.discountCode || 'Discount'}
-            </Typography>
-            <Typography variant="caption" color="success.main">
-              -₹{discountAmount.toFixed(2)}
-            </Typography>
+        <OrderTotals order={order} />
+        {showStatusControl && (
+          <Box sx={{ mt: 1.5 }}>
+            <OverallStatusSelect order={order} />
           </Box>
         )}
       </Box>

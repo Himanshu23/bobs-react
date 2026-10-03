@@ -33,9 +33,9 @@ const Header: React.FC = () => {
 
   const handleHeaderClick = () => {
     trackEvent('header_brand_click', {
-      destination: '/bobs/foodList',
+      destination: '/',
     });
-    navigate('/bobs/foodList');
+    navigate('/');
   };
 
   const handleCartClick = () => {

@@ -2,13 +2,14 @@ import React from 'react';
 import { Box, IconButton, Typography } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useAddressBook } from '../../context/AddressContext';
 import { formatAddressForDelivery } from '../../types/address';
 import { trackEvent } from '../../utils/analytics';
 
 const AddressHeaderBar: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { selectedAddress } = useAddressBook();
 
   if (!selectedAddress) {
@@ -19,7 +20,7 @@ const AddressHeaderBar: React.FC = () => {
     trackEvent('header_address_edit_click', {
       address_id: selectedAddress.id,
     });
-    navigate('/addresses?return=/bobs/foodList');
+    navigate(`/addresses?return=${encodeURIComponent(location.pathname)}`);
   };
 
   return (

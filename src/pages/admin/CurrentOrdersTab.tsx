@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useTheme, useMediaQuery } from '@mui/material';
 import {
   Grid,
@@ -19,13 +19,31 @@ import {
   IconButton,
   Tooltip,
   Stack,
+  Chip,
 } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import VolumeOffIcon from '@mui/icons-material/VolumeOff';
-import { Order, OrderStatus, OrderFulfillmentType } from '../../types';
+import { OrderStatus, OrderFulfillmentType } from '../../types';
+import { AdminFullOrder } from '../../admin/types/orders';
+import {
+  buildRestaurantFilterOptions,
+  currentOrdersBucket,
+  filterOrdersByRestaurant,
+  formatItemVariant,
+  formatRupees,
+  getStatusChipColor,
+  isLegacyOrder,
+  overallStatusNote,
+  statusErrorMessage,
+  subOrderProgressText,
+} from '../../admin/utils/adminOrders';
+import { useAdminRestaurants } from '../../admin/hooks/useMarketplaceAdmin';
+import RestaurantOrderSections from './RestaurantOrderSections';
+import RestaurantFilterSelect from './RestaurantFilterSelect';
+import OrderTotals from './OrderTotals';
 import {
   useCurrentOrders,
   useUpdateOrderStatus,
@@ -39,8 +57,12 @@ import OrderDeleteButton from '../../components/OrderDeleteButton';
 const CurrentOrdersTab: React.FC = () => {
   const [subTab, setSubTab] = useState(0);
   const [soundEnabled, setSoundEnabled] = useState(true);
-  const [newOrderAlert, setNewOrderAlert] = useState<Order | null>(null);
-  const [wsOrders, setWsOrders] = useState<Order[]>([]);
+  const [newOrderAlert, setNewOrderAlert] = useState<AdminFullOrder | null>(
+    null
+  );
+  const [wsOrders, setWsOrders] = useState<AdminFullOrder[]>([]);
+  const [restaurantId, setRestaurantId] = useState('');
+  const [statusError, setStatusError] = useState<string | null>(null);
   const [alertingOrderId, setAlertingOrderId] = useState<string | null>(null);
   const alertTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -49,7 +71,7 @@ const CurrentOrdersTab: React.FC = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const {
-    data: fetchedOrders = { orders: [], total: 0 },
+    data: fetchedOrders = { orders: [], totalAmount: 0 },
     isLoading,
     error,
     refetch,
@@ -58,13 +80,21 @@ const CurrentOrdersTab: React.FC = () => {
     useUpdateOrderStatus();
   const [updatingOrderId, setUpdatingOrderId] = useState<string | null>(null);
 
+  const { data: restaurants = [] } = useAdminRestaurants();
+
   // Merge WebSocket orders with fetched orders, removing duplicates
-  const orders = [
+  const allOrders = [
     ...wsOrders,
     ...fetchedOrders.orders.filter(
       (fo) => !wsOrders.some((wo) => wo.id === fo.id)
     ),
   ];
+  const restaurantOptions = useMemo(
+    () => buildRestaurantFilterOptions(restaurants, fetchedOrders.orders),
+    [restaurants, fetchedOrders.orders]
+  );
+  // Client-side restaurant filter on restaurantOrders[].restaurantId (§5.8).
+  const orders = filterOrdersByRestaurant(allOrders, restaurantId);
 
   console.log({ fetchedOrders });
 
@@ -93,13 +123,15 @@ const CurrentOrdersTab: React.FC = () => {
 
   // Filter orders by status
   const newOrders = orders.filter(
-    (o) =>
-      o.status === OrderStatus.PENDING || o.status === OrderStatus.CONFIRMED
+    (o) => currentOrdersBucket(o.status) === 'new'
   );
+  // Includes READY (all restaurants ready, waiting for pickup/delivery).
   const preparingOrders = orders.filter(
-    (o) => o.status === OrderStatus.PREPARING
+    (o) => currentOrdersBucket(o.status) === 'preparing'
   );
-  const doneOrders = orders.filter((o) => o.status === OrderStatus.COMPLETED);
+  const doneOrders = orders.filter(
+    (o) => currentOrdersBucket(o.status) === 'done'
+  );
 
   // Debug logging
   useEffect(() => {
@@ -121,7 +153,7 @@ const CurrentOrdersTab: React.FC = () => {
     doneOrders.length,
   ]);
 
-  const handleAcceptOrder = (order: Order) => {
+  const handleAcceptOrder = (order: AdminFullOrder) => {
     if (order.id) {
       // Stop the repeating alert sound
       if (alertingOrderId === order.id) {
@@ -132,6 +164,7 @@ const CurrentOrdersTab: React.FC = () => {
       // Clear the alert message
       setNewOrderAlert(null);
 
+      setStatusError(null);
       setUpdatingOrderId(order.id);
       updateStatus(
         { orderId: order.id, status: OrderStatus.PREPARING },
@@ -143,6 +176,7 @@ const CurrentOrdersTab: React.FC = () => {
             // Immediately refetch to get the updated order
             void refetch();
           },
+          onError: (err) => setStatusError(statusErrorMessage(err)),
           onSettled: () => {
             setUpdatingOrderId(null);
           },
@@ -151,8 +185,9 @@ const CurrentOrdersTab: React.FC = () => {
     }
   };
 
-  const handleMarkDone = (order: Order) => {
+  const handleMarkDone = (order: AdminFullOrder) => {
     if (order.id) {
+      setStatusError(null);
       setUpdatingOrderId(order.id);
       updateStatus(
         { orderId: order.id, status: OrderStatus.COMPLETED },
@@ -163,6 +198,7 @@ const CurrentOrdersTab: React.FC = () => {
             // Immediately refetch to get the updated order
             void refetch();
           },
+          onError: (err) => setStatusError(statusErrorMessage(err)),
           onSettled: () => {
             setUpdatingOrderId(null);
           },
@@ -264,7 +300,7 @@ const CurrentOrdersTab: React.FC = () => {
                 color="text.secondary"
                 sx={{ mt: 0.25, display: 'block' }}
               >
-                Total: ₹{newOrderAlert.totalAmount.toFixed(2)} (
+                Total: {formatRupees(newOrderAlert.totalAmount)} (
                 {newOrderAlert.items?.length || 0} items)
               </Typography>
               {soundEnabled && (
@@ -323,6 +359,12 @@ const CurrentOrdersTab: React.FC = () => {
           >
             🔵 {isMobile ? 'Orders' : 'Active Orders'}: {orders.length}
           </Typography>
+          <RestaurantFilterSelect
+            value={restaurantId}
+            options={restaurantOptions}
+            onChange={setRestaurantId}
+            fullWidth={isMobile}
+          />
         </Box>
         <Box
           sx={{ display: 'flex', gap: 1, width: isMobile ? '100%' : 'auto' }}
@@ -348,6 +390,16 @@ const CurrentOrdersTab: React.FC = () => {
         </Box>
       </Box>
 
+      {statusError && (
+        <Alert
+          severity="error"
+          sx={{ mb: 2 }}
+          onClose={() => setStatusError(null)}
+        >
+          {statusError}
+        </Alert>
+      )}
+
       {/* Sub-Tabs */}
       <Box sx={{ mb: 3, borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={subTab} onChange={(_, nextTab) => setSubTab(nextTab)}>
@@ -364,7 +416,7 @@ const CurrentOrdersTab: React.FC = () => {
             label={
               isMobile
                 ? `🍳 (${preparingOrders.length})`
-                : `🍳 Preparing (${preparingOrders.length})`
+                : `🍳 Preparing / Ready (${preparingOrders.length})`
             }
             icon={<LocalShippingIcon />}
             iconPosition="start"
@@ -402,6 +454,7 @@ const CurrentOrdersTab: React.FC = () => {
             onAccept={handleAcceptOrder}
             onMarkDone={handleMarkDone}
             isMobile={isMobile}
+            highlightRestaurantId={restaurantId}
           />
         ))}
       </Grid>
@@ -410,13 +463,14 @@ const CurrentOrdersTab: React.FC = () => {
 };
 
 interface OrderCardProps {
-  order: Order;
+  order: AdminFullOrder;
   subTab: number;
   isUpdating: boolean;
   updatingOrderId: string | null;
-  onAccept: (order: Order) => void;
-  onMarkDone: (order: Order) => void;
+  onAccept: (order: AdminFullOrder) => void;
+  onMarkDone: (order: AdminFullOrder) => void;
   isMobile: boolean;
+  highlightRestaurantId?: string;
 }
 
 const OrderCard: React.FC<OrderCardProps> = ({
@@ -427,7 +481,11 @@ const OrderCard: React.FC<OrderCardProps> = ({
   onAccept,
   onMarkDone,
   isMobile,
+  highlightRestaurantId,
 }) => {
+  const legacy = isLegacyOrder(order);
+  const progress = subOrderProgressText(order);
+  const statusNote = overallStatusNote(order);
   const borderColor =
     order.status === OrderStatus.COMPLETED
       ? '#4CAF50'
@@ -473,6 +531,37 @@ const OrderCard: React.FC<OrderCardProps> = ({
 
           <Divider sx={{ my: 1.5 }} /> */}
 
+          {/* Overall (derived) status as returned by the server */}
+          <Box
+            sx={{
+              mb: 1,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+              flexWrap: 'wrap',
+            }}
+          >
+            <Chip
+              label={order.status || OrderStatus.PENDING}
+              color={getStatusChipColor(order.status)}
+              size="small"
+            />
+            {progress && (
+              <Typography variant="caption" color="text.secondary">
+                {progress}
+              </Typography>
+            )}
+          </Box>
+          {statusNote && (
+            <Typography
+              variant="caption"
+              color="warning.main"
+              sx={{ display: 'block', mb: 1 }}
+            >
+              {statusNote}
+            </Typography>
+          )}
+
           {/* Customer Info */}
           <Box sx={{ mb: isMobile ? 1.5 : 2 }}>
             <Typography
@@ -502,91 +591,57 @@ const OrderCard: React.FC<OrderCardProps> = ({
             <Typography variant="caption">{order.deliveryAddress}</Typography>
           </Box>
 
-          {/* Items */}
-          <Box sx={{ mb: isMobile ? 1.5 : 2 }}>
-            <Typography
-              variant={isMobile ? 'caption' : 'subtitle2'}
-              sx={{ fontWeight: 'bold', mb: 1 }}
-            >
-              📦 Items ({order.items.length})
-            </Typography>
-            <List sx={{ py: 0, px: 0 }}>
-              {order.items.map((item, idx) => {
-                const variants = [];
-                if (item.size) variants.push(item.size);
-                if (item.style) variants.push(item.style);
-                if (item.base) variants.push(item.base);
-                const variantText =
-                  variants.length > 0 ? ` (${variants.join(', ')})` : '';
+          {/* Items: one section per restaurant (with its status control);
+              legacy orders keep the flat list */}
+          {!legacy ? (
+            <Box sx={{ mb: isMobile ? 1.5 : 2 }}>
+              <RestaurantOrderSections
+                order={order}
+                isMobile={isMobile}
+                highlightRestaurantId={highlightRestaurantId}
+              />
+            </Box>
+          ) : (
+            <Box sx={{ mb: isMobile ? 1.5 : 2 }}>
+              <Typography
+                variant={isMobile ? 'caption' : 'subtitle2'}
+                sx={{ fontWeight: 'bold', mb: 1 }}
+              >
+                📦 Items ({order.items.length})
+              </Typography>
+              <List sx={{ py: 0, px: 0 }}>
+                {order.items.map((item, idx) => {
+                  const variantText = formatItemVariant(item);
 
-                return (
-                  <ListItem
-                    key={idx}
-                    sx={{
-                      py: isMobile ? 0.25 : 0.5,
-                      px: 0,
-                      fontSize: isMobile ? '0.75rem' : '0.875rem',
-                    }}
-                  >
-                    <ListItemText
-                      primary={`${item.itemName}${variantText.length > 20 && isMobile ? '' : variantText} ×${item.quantity}${item.isPromotionalAddon ? ' · PROMO' : ''}${item.isFreeClaim ? ' · FREE' : ''}`}
-                      secondary={`₹${(item.unitPrice * item.quantity).toFixed(2)}`}
-                      primaryTypographyProps={{
-                        variant: isMobile ? 'caption' : 'body2',
+                  return (
+                    <ListItem
+                      key={idx}
+                      sx={{
+                        py: isMobile ? 0.25 : 0.5,
+                        px: 0,
+                        fontSize: isMobile ? '0.75rem' : '0.875rem',
                       }}
-                      secondaryTypographyProps={{
-                        variant: 'caption',
-                      }}
-                    />
-                  </ListItem>
-                );
-              })}
-            </List>
-          </Box>
-
-          <Divider sx={{ my: isMobile ? 1 : 1.5 }} />
-
-          {((order.discountAmount ?? 0) > 0 ||
-            (order.promotionalSavings ?? 0) > 0) && (
-            <Box sx={{ mb: 1.5 }}>
-              {(order.promotionalSavings ?? 0) > 0 && (
-                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <Typography variant="caption" color="success.main">
-                    Promo savings
-                  </Typography>
-                  <Typography variant="caption" color="success.main">
-                    -₹{order.promotionalSavings!.toFixed(2)}
-                  </Typography>
-                </Box>
-              )}
-              {(order.discountAmount ?? 0) > 0 && (
-                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <Typography variant="caption" color="success.main">
-                    {order.discountName || order.discountCode || 'Discount'}
-                  </Typography>
-                  <Typography variant="caption" color="success.main">
-                    -₹{order.discountAmount!.toFixed(2)}
-                  </Typography>
-                </Box>
-              )}
+                    >
+                      <ListItemText
+                        primary={`${item.itemName}${variantText.length > 20 && isMobile ? '' : variantText} ×${item.quantity}${item.isPromotionalAddon ? ' · PROMO' : ''}${item.isFreeClaim ? ' · FREE' : ''}`}
+                        secondary={`₹${(item.unitPrice * item.quantity).toFixed(2)}`}
+                        primaryTypographyProps={{
+                          variant: isMobile ? 'caption' : 'body2',
+                        }}
+                        secondaryTypographyProps={{
+                          variant: 'caption',
+                        }}
+                      />
+                    </ListItem>
+                  );
+                })}
+              </List>
             </Box>
           )}
 
-          {/* Total */}
-          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Typography
-              variant={isMobile ? 'caption' : 'subtitle2'}
-              sx={{ fontWeight: 'bold' }}
-            >
-              Total:
-            </Typography>
-            <Typography
-              variant={isMobile ? 'caption' : 'subtitle2'}
-              sx={{ fontWeight: 'bold', color: '#ff6b6b' }}
-            >
-              ₹{order.totalAmount.toFixed(2)}
-            </Typography>
-          </Box>
+          <Divider sx={{ my: isMobile ? 1 : 1.5 }} />
+
+          <OrderTotals order={order} />
         </CardContent>
 
         {/* Action Buttons */}

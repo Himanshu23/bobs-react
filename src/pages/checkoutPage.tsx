@@ -38,11 +38,14 @@ import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import PrintIcon from '@mui/icons-material/Print';
 import SaveIcon from '@mui/icons-material/Save';
 import { RootState } from '../redux/store';
-import { addToCart, clearCart } from '../redux/store';
+import { clearCart } from '../redux/store';
 import {
+  buildRestaurantSectionsFromCart,
   formatOrderMessage,
+  formatRupees,
   openWhatsApp,
   OrderMessage,
+  WhatsAppRestaurantSection,
 } from '../utils/whatsappService';
 import {
   getCheckoutFormFromLocalStorage,
@@ -54,13 +57,32 @@ import { DISCOUNTS, calculateDiscountAmount } from '../data/discounts';
 import { trackEvent } from '../utils/analytics';
 import Receipt from '../components/Receipt';
 import { printReceipt } from '../utils/printService';
-import { useCreateOrder } from '../data/hooks/useOrders';
+import { usePlaceOrder } from '../data/hooks/usePlaceOrder';
 import { useFoodItems } from '../data/hooks/useFoodItems';
-import { CartItem, FoodItem, OrderFulfillmentType, OrderItem } from '../types';
+import { useDeliveryArea } from '../data/hooks/useMarkets';
+import { useRestaurantDirectory } from '../data/hooks/useRestaurants';
+import { useGuardedAddToCart } from '../context/CartGuardContext';
+import { FoodItem } from '../types';
 import { useAddressBook } from '../context/AddressContext';
 import { formatAddressForDelivery, SavedAddress } from '../types/address';
 import CustomerOtpDialog from '../components/auth/CustomerOtpDialog';
-import { RESTAURANT_LOCATION } from '../config/restaurantLocation';
+import RestaurantPhoneLink from '../components/marketplace/RestaurantPhoneLink';
+import { DeliveryArea, isWithinDeliveryArea } from '../utils/geo';
+import { getCartItemMarketId, groupCartByRestaurant } from '../utils/cartUtils';
+import {
+  buildCreateOrderRequest,
+  computePayableTotal,
+  createFreeClaimCartItem,
+  getDisplayDeliveryFee,
+  getFreeClaimOptions,
+  getFulfillmentType,
+  describePlaceOrderError,
+  PlaceOrderErrorInfo,
+  isOrderRejected,
+  getCheckoutOrders,
+  summarizePlacedCheckout,
+  willSplitPickup,
+} from '../utils/checkoutOrder';
 import { CustomerAuthResponseDTO } from '../types/customerAuth';
 import { usePromotionalAddons } from '../data/hooks/usePromotionalAddons';
 import PromotionalAddonBanner from '../components/promotionalAddons/PromotionalAddonBanner';
@@ -73,18 +95,30 @@ import {
 
 const WHATSAPP_PHONE = '9643310092'; // Replace with your number
 const GUEST_MINIMUM_ORDER_VALUE = 299;
-const GUEST_DELIVERY_FEE = 20;
 
-const getPickupAddressFallback = (): SavedAddress => {
+/** What the confirmation dialog shows after WhatsApp opens. */
+interface PlacedOrderSummary {
+  /** D12 split pickup: each row is its own order (with `orderId`). */
+  split: boolean;
+  restaurants: WhatsAppRestaurantSection[];
+  deliveryFee: number;
+  /** The server's fee differs from the one shown before placing. */
+  feeChanged: boolean;
+  total: number;
+  /** False when saving failed and WhatsApp was opened anyway. */
+  saved: boolean;
+}
+
+const getPickupAddressFallback = (area: DeliveryArea): SavedAddress => {
   const now = Date.now();
   return {
     id: 'pickup-default',
     label: 'Other',
-    formattedAddress: "Bob's kitchen — Pickup",
+    formattedAddress: `${area.name} — Pickup`,
     line1: 'Pickup',
     landmark: '',
-    lat: RESTAURANT_LOCATION.lat,
-    lng: RESTAURANT_LOCATION.lng,
+    lat: area.center.lat,
+    lng: area.center.lng,
     createdAt: now,
     updatedAt: now,
   };
@@ -139,7 +173,13 @@ const CheckoutPage: React.FC = () => {
   const dispatch = useDispatch();
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const { data: menuItems = [] } = useFoodItems();
-  const { mutateAsync: createOrder } = useCreateOrder();
+  const { mutateAsync: placeOrder } = usePlaceOrder();
+  const addToCartGuarded = useGuardedAddToCart();
+  const { restaurantsById, restaurantRefsById } = useRestaurantDirectory();
+  // The cart is locked to one market (D5): its area and flat fee apply.
+  const cartMarketId =
+    cartItems.length > 0 ? getCartItemMarketId(cartItems[0]) : undefined;
+  const { area: deliveryArea, market } = useDeliveryArea(cartMarketId);
   const { selectedAddress, addresses } = useAddressBook();
   const addressSectionRef = useRef<HTMLDivElement | null>(null);
   const receiptRef = useRef<HTMLDivElement | null>(null);
@@ -177,6 +217,12 @@ const CheckoutPage: React.FC = () => {
   const [addressError, setAddressError] = useState<string>('');
   const [scheduleError, setScheduleError] = useState<string>('');
   const [freeClaimDialogOpen, setFreeClaimDialogOpen] = useState(false);
+  const [placedOrder, setPlacedOrder] = useState<PlacedOrderSummary | null>(
+    null
+  );
+  const [orderError, setOrderError] = useState<PlaceOrderErrorInfo | null>(
+    null
+  );
 
   useEffect(() => {
     if (selectedAddress) {
@@ -231,25 +277,51 @@ const CheckoutPage: React.FC = () => {
     !isAdminLoggedIn && !isCustomerLoggedIn && !isAuthenticated();
   const isGuestOrderBelowMinimum =
     isGuestOrder && totalPrice < GUEST_MINIMUM_ORDER_VALUE;
-  const deliveryFee = isGuestOrder ? GUEST_DELIVERY_FEE : 0;
-  const finalTotal = totalAfterDiscount + deliveryFee;
+  const fulfillmentType = getFulfillmentType(deliveryMethod, orderTiming);
+  // Server rule, for every customer: market fee for delivery, ₹0 for pickup.
+  const deliveryFee = getDisplayDeliveryFee(
+    fulfillmentType,
+    market?.deliveryFee
+  );
+  const finalTotal = computePayableTotal(
+    totalPrice,
+    discountAmount,
+    deliveryFee
+  );
+  const restaurantGroups = groupCartByRestaurant(cartItems);
+  const cartRestaurantNames = restaurantGroups.map(
+    (group) =>
+      restaurantsById.get(group.restaurantId)?.name || group.restaurantName
+  );
+  const restaurantNames = cartRestaurantNames.join(', ');
+  // D12: the server places this as one order per restaurant.
+  const isSplitPickup = willSplitPickup(
+    fulfillmentType,
+    restaurantGroups.length
+  );
+  // Only checked against the market from the API; with the fallback area the
+  // server has the final say.
+  const isSelectedAddressOutsideArea = Boolean(
+    deliveryMethod === 'delivery' &&
+      selectedAddress &&
+      !deliveryArea.isFallback &&
+      !isWithinDeliveryArea(
+        selectedAddress.lat,
+        selectedAddress.lng,
+        deliveryArea
+      )
+  );
+  const outsideAreaMessage = `This address is outside the ${deliveryArea.name} delivery area (${deliveryArea.radiusKm} km). Choose another address or switch to pickup.`;
   const appliedDiscountCode =
     discountAmount > 0 ? selectedDiscount?.code : undefined;
   const discountLabel = appliedDiscountCode
     ? `Discount (${appliedDiscountCode})`
     : 'Discount';
-  const freeClaimOptions = menuItems.filter((item) => {
-    if (!item.freeClaimPortion) {
-      return false;
-    }
-
-    return !cartItems.some(
-      (cartItem) =>
-        cartItem.isFreeClaim &&
-        cartItem.id === item.id &&
-        cartItem.option?.size === item.freeClaimPortion
-    );
-  });
+  const freeClaimOptions = getFreeClaimOptions(
+    menuItems,
+    cartItems,
+    restaurantRefsById
+  );
   const scheduledTimeLabel = scheduledTime
     ? formatScheduledTime(scheduledTime)
     : '';
@@ -265,6 +337,11 @@ const CheckoutPage: React.FC = () => {
     }
 
     if (hasSelectedSavedAddress) {
+      if (isSelectedAddressOutsideArea) {
+        setAddressError(outsideAreaMessage);
+        addressSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
+        return false;
+      }
       return true;
     }
 
@@ -273,61 +350,66 @@ const CheckoutPage: React.FC = () => {
     return false;
   };
 
-  const buildOrderObject = () => {
-    let deliveryAddress = '';
-    if (deliveryMethod === 'delivery') {
-      if (selectedAddress) {
-        deliveryAddress = formatAddressForDelivery(selectedAddress);
-      } else if (hasHabitatAddress) {
-        deliveryAddress = `${habitat} - Tower ${tower}, Flat ${flatNumber}`;
-      } else {
-        deliveryAddress = customAddress.trim();
-      }
-    } else {
-      deliveryAddress = 'Pickup';
+  const getDeliveryAddressText = (): string => {
+    if (deliveryMethod !== 'delivery') {
+      return 'Pickup';
     }
-
-    const orderItems: OrderItem[] = cartItems.map((item) => ({
-      foodItemId: item.id,
-      itemName: item.name,
-      quantity: item.quantity,
-      unitPrice: item.price,
-      size: item.option?.size,
-      style: item.option?.style,
-      base: item.option?.base,
-      isPromotionalAddon: item.isPromotionalAddon,
-      isFreeClaim: Boolean(item.isFreeClaim),
-      originalPrice: item.originalPrice,
-    }));
-
-    let fulfillmentType = OrderFulfillmentType.DELIVERY;
-    if (orderTiming === 'scheduled') {
-      fulfillmentType = OrderFulfillmentType.SCHEDULED;
+    if (selectedAddress) {
+      return formatAddressForDelivery(selectedAddress);
     }
-    if (deliveryMethod === 'pickup') {
-      fulfillmentType = OrderFulfillmentType.PICKUP;
+    if (hasHabitatAddress) {
+      return `${habitat} - Tower ${tower}, Flat ${flatNumber}`;
     }
+    return customAddress.trim();
+  };
 
-    return {
+  const buildOrderRequest = () =>
+    buildCreateOrderRequest({
+      cartItems,
       customerName: customerName || 'Guest',
       customerPhone:
         verifiedCustomerPhone ||
         getCustomerAuthState().customer?.phoneNumber ||
         WHATSAPP_PHONE,
-      deliveryAddress,
+      deliveryAddress: getDeliveryAddressText(),
+      // The server checks it against the market area (delivery only).
+      deliveryLocation: selectedAddress
+        ? { lat: selectedAddress.lat, lng: selectedAddress.lng }
+        : null,
       fulfillmentType,
       scheduledTime: orderTiming === 'scheduled' ? scheduledTime : undefined,
-      items: orderItems,
-      subtotal: totalPrice,
-      discountAmount: discountAmount > 0 ? discountAmount : undefined,
+      discountAmount,
       discountCode: appliedDiscountCode,
       discountName: discountAmount > 0 ? selectedDiscount?.name : undefined,
-      promotionalSavings: promoSavings > 0 ? promoSavings : undefined,
-      deliveryFee: deliveryFee > 0 ? deliveryFee : undefined,
+      promotionalSavings: promoSavings,
       taxAmount: tax,
-      totalAmount: finalTotal,
       isPaidOnline: paidOnline,
+    });
+
+  const buildWhatsAppMessage = (
+    restaurants: WhatsAppRestaurantSection[],
+    fee: number,
+    total: number,
+    savedToServer: boolean,
+    separateOrders = false
+  ): string => {
+    const orderMessage: OrderMessage = {
+      restaurants,
+      total,
+      deliveryAddress: getDeliveryAddressText(),
+      customerName: customerName || 'Guest',
+      instructions: customerInstructions,
+      deliveryMethod,
+      discountCode: appliedDiscountCode,
+      discountName: discountAmount > 0 ? selectedDiscount?.name : undefined,
+      discountAmount: discountAmount > 0 ? discountAmount : undefined,
+      deliveryFee: fee,
+      tax,
+      scheduledTime: orderTiming === 'scheduled' ? scheduledTime : undefined,
+      savedToServer,
+      separateOrders,
     };
+    return formatOrderMessage(orderMessage);
   };
 
   const getAddressForOtp = (): SavedAddress | null => {
@@ -336,7 +418,7 @@ const CheckoutPage: React.FC = () => {
     }
 
     if (deliveryMethod === 'pickup') {
-      return getPickupAddressFallback();
+      return getPickupAddressFallback(deliveryArea);
     }
 
     return null;
@@ -356,91 +438,93 @@ const CheckoutPage: React.FC = () => {
     setScheduleError('');
     setIsProcessing(true);
 
-    const orderToCreate = buildOrderObject();
+    setOrderError(null);
+    const orderRequest = buildOrderRequest();
 
     try {
-      const savedOrder = await createOrder(orderToCreate);
-      console.log('Order saved to database:', savedOrder);
+      const savedOrder = await placeOrder(orderRequest);
+      // D12: a split pickup comes back as `groupOrders` (one per restaurant).
+      // The server's fee is authoritative once the orders exist.
+      const placed = summarizePlacedCheckout({
+        response: savedOrder,
+        cartItems,
+        contacts: restaurantsById,
+        displayedFee: deliveryFee,
+        cartTotal: totalPrice,
+        discountAmount,
+      });
+      console.log('Order(s) saved to database:', placed.orderIds.join(', '));
 
-      const orderMessage: OrderMessage = {
-        items: cartItems.map((item) => ({
-          name: item.name,
-          quantity: item.quantity,
-          price: item.price * item.quantity,
-          size: item.option?.size,
-        })),
-        total: finalTotal,
-        habitat:
-          deliveryMethod === 'delivery'
-            ? orderToCreate.deliveryAddress
-            : 'Pickup',
-        tower:
-          deliveryMethod === 'delivery'
-            ? hasHabitatAddress
-              ? tower
-              : 'Custom'
-            : 'N/A',
-        customerName: customerName || 'Guest',
-        phoneNumber: orderToCreate.customerPhone,
-        instructions: customerInstructions,
-        deliveryMethod: deliveryMethod as 'pickup' | 'delivery',
-        flatNumber: hasHabitatAddress ? flatNumber.trim() : undefined,
-        discountCode: appliedDiscountCode,
-        discountName: discountAmount > 0 ? selectedDiscount?.name : undefined,
-        discountAmount: discountAmount > 0 ? discountAmount : undefined,
-        deliveryFee: deliveryFee > 0 ? deliveryFee : undefined,
-        tax,
-        scheduledTime: orderTiming === 'scheduled' ? scheduledTime : undefined,
-      };
-
-      const message = formatOrderMessage(orderMessage);
       trackEvent('whatsapp_order_started', {
         delivery_method: deliveryMethod,
         item_count: cartItems.length,
-        value: finalTotal,
+        restaurant_count: placed.restaurants.length,
+        order_count: placed.orderIds.length,
+        value: placed.total,
         discount_id: selectedDiscountId || 'none',
       });
-      openWhatsApp(WHATSAPP_PHONE, message);
+      openWhatsApp(
+        WHATSAPP_PHONE,
+        buildWhatsAppMessage(
+          placed.restaurants,
+          placed.deliveryFee,
+          placed.total,
+          true,
+          placed.split
+        )
+      );
+      setPlacedOrder({
+        split: placed.split,
+        restaurants: placed.restaurants,
+        deliveryFee: placed.deliveryFee,
+        feeChanged: placed.feeChanged,
+        total: placed.total,
+        saved: true,
+      });
       setOrderConfirmationOpen(true);
     } catch (error) {
       console.error('Failed to save order to database:', error);
-      alert(
-        'Error saving order to database. Order still created, please share via WhatsApp.'
+
+      if (isOrderRejected(error)) {
+        // The server refused the order (outside the area, mixed markets,
+        // inactive restaurant/item…): it can't be fulfilled as is, so don't
+        // send it on WhatsApp. Let the customer fix it.
+        trackEvent('order_rejected', {
+          delivery_method: deliveryMethod,
+          item_count: cartItems.length,
+          reason: error instanceof Error ? error.message : 'unknown',
+        });
+        setOrderError(describePlaceOrderError(error));
+        return;
+      }
+
+      // Network error or server failure: the order itself is fine, so keep
+      // the old behaviour and still send it on WhatsApp (marked as not saved)
+      // with the fee shown on screen and the cart grouped by restaurant.
+      const restaurants = buildRestaurantSectionsFromCart(
+        cartItems,
+        restaurantsById
       );
-
-      const orderMessage: OrderMessage = {
-        items: cartItems.map((item) => ({
-          name: item.name,
-          quantity: item.quantity,
-          price: item.price * item.quantity,
-          size: item.option?.size,
-        })),
+      trackEvent('whatsapp_order_started', {
+        delivery_method: deliveryMethod,
+        item_count: cartItems.length,
+        restaurant_count: restaurants.length,
+        value: finalTotal,
+        discount_id: selectedDiscountId || 'none',
+        saved: false,
+      });
+      openWhatsApp(
+        WHATSAPP_PHONE,
+        buildWhatsAppMessage(restaurants, deliveryFee, finalTotal, false)
+      );
+      setPlacedOrder({
+        split: false,
+        restaurants,
+        deliveryFee,
+        feeChanged: false,
         total: finalTotal,
-        habitat:
-          deliveryMethod === 'delivery'
-            ? orderToCreate.deliveryAddress
-            : 'Pickup',
-        tower:
-          deliveryMethod === 'delivery'
-            ? hasHabitatAddress
-              ? tower
-              : 'Custom'
-            : 'N/A',
-        customerName: customerName || 'Guest',
-        phoneNumber: orderToCreate.customerPhone,
-        instructions: customerInstructions,
-        deliveryMethod: deliveryMethod as 'pickup' | 'delivery',
-        flatNumber: hasHabitatAddress ? flatNumber.trim() : undefined,
-        discountCode: appliedDiscountCode,
-        discountName: discountAmount > 0 ? selectedDiscount?.name : undefined,
-        discountAmount: discountAmount > 0 ? discountAmount : undefined,
-        deliveryFee: deliveryFee > 0 ? deliveryFee : undefined,
-        tax,
-        scheduledTime: orderTiming === 'scheduled' ? scheduledTime : undefined,
-      };
-
-      const message = formatOrderMessage(orderMessage);
-      openWhatsApp(WHATSAPP_PHONE, message);
+        saved: false,
+      });
       setOrderConfirmationOpen(true);
     } finally {
       setIsProcessing(false);
@@ -487,21 +571,10 @@ const CheckoutPage: React.FC = () => {
   };
 
   const handleClaimFreeItem = (foodItem: FoodItem) => {
-    const freeClaimSize = foodItem.freeClaimPortion || 'Full';
-    const freeClaimCartItem: CartItem = {
-      id: foodItem.id,
-      name: foodItem.name,
-      price: 0,
-      image: foodItem.image,
-      description: `Free ${freeClaimSize} portion`,
-      product: foodItem,
-      quantity: 1,
-      option: { size: freeClaimSize },
-      isFreeClaim: true,
-    };
-
+    // Stamped with the dish's own restaurant/market from the restaurants
+    // cache, not a market1 default.
     setSelectedDiscountId('');
-    dispatch(addToCart(freeClaimCartItem));
+    addToCartGuarded(createFreeClaimCartItem(foodItem, restaurantRefsById));
   };
 
   const handlePlaceOrderClick = () => {
@@ -530,15 +603,28 @@ const CheckoutPage: React.FC = () => {
 
     setAddressError('');
     setScheduleError('');
+    setOrderError(null);
     setIsProcessing(true);
 
     try {
-      const savedOrder = await createOrder(buildOrderObject());
-      console.log('Sale recorded to database:', savedOrder);
+      const savedOrder = await placeOrder(buildOrderRequest());
+      console.log(
+        'Sale recorded to database:',
+        getCheckoutOrders(savedOrder)
+          .map((order) => order.id)
+          .join(', ')
+      );
       setRecordSaleConfirmationOpen(true);
     } catch (error) {
       console.error('Failed to record sale:', error);
-      alert('Failed to record sale. Please try again.');
+      setOrderError(
+        isOrderRejected(error)
+          ? describePlaceOrderError(error)
+          : {
+              message: 'Failed to record sale. Please try again.',
+              action: 'dismiss',
+            }
+      );
     } finally {
       setIsProcessing(false);
     }
@@ -548,10 +634,11 @@ const CheckoutPage: React.FC = () => {
     trackEvent('purchase_confirmed', {
       delivery_method: deliveryMethod,
       item_count: cartItems.length,
-      value: finalTotal,
+      value: placedOrder?.total ?? finalTotal,
       currency: 'INR',
     });
     setOrderConfirmationOpen(false);
+    setPlacedOrder(null);
     dispatch(clearCart());
     navigate('/');
   };
@@ -780,6 +867,12 @@ const CheckoutPage: React.FC = () => {
                         delivery order.
                       </Alert>
                     )}
+                    {isSelectedAddressOutsideArea &&
+                    addressError !== outsideAreaMessage ? (
+                      <Alert severity="warning" sx={{ mb: 2 }}>
+                        {outsideAreaMessage}
+                      </Alert>
+                    ) : null}
 
                     <Button
                       variant="outlined"
@@ -797,7 +890,20 @@ const CheckoutPage: React.FC = () => {
                 {deliveryMethod === 'pickup' && (
                   <Alert severity="info">
                     🎉 You selected <strong>Pickup</strong>. Your order will be
-                    ready for pickup at Bob&apos;s kitchen.
+                    ready for pickup at {restaurantNames || 'the restaurant'}.
+                  </Alert>
+                )}
+                {isSplitPickup && (
+                  <Alert severity="warning" sx={{ mt: 2 }}>
+                    Pickup from multiple restaurants will be placed as separate
+                    orders, one per restaurant:
+                    <Box component="ul" sx={{ m: 0, mt: 0.5, pl: 2.5 }}>
+                      {cartRestaurantNames.map((name, index) => (
+                        <li key={restaurantGroups[index].restaurantId}>
+                          {name}
+                        </li>
+                      ))}
+                    </Box>
                   </Alert>
                 )}
               </CardContent>
@@ -1315,6 +1421,93 @@ const CheckoutPage: React.FC = () => {
             WhatsApp opened 😊 Confirm if you sent the order, or go back to edit
             your cart.
           </DialogContentText>
+          {placedOrder && !placedOrder.saved ? (
+            <Alert severity="warning" sx={{ mt: 2 }}>
+              We couldn&apos;t save your order in the app, but you can still
+              send it on WhatsApp and we&apos;ll take it from there.
+            </Alert>
+          ) : null}
+          {placedOrder && placedOrder.restaurants.length > 0 ? (
+            <Box sx={{ mt: 2 }}>
+              <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1 }}>
+                {placedOrder.split
+                  ? `Placed as ${placedOrder.restaurants.length} separate orders, one per restaurant`
+                  : 'Your order is from'}
+              </Typography>
+              {placedOrder.restaurants.map((restaurant) => (
+                <Box
+                  key={restaurant.restaurantId}
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'flex-start',
+                    gap: 1,
+                    py: 0.75,
+                    borderBottom: '1px solid #eee',
+                  }}
+                >
+                  <Box sx={{ minWidth: 0 }}>
+                    {placedOrder.split && restaurant.orderId ? (
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                        sx={{ display: 'block', wordBreak: 'break-all' }}
+                      >
+                        Order #{restaurant.orderId}
+                      </Typography>
+                    ) : null}
+                    <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                      {restaurant.name}
+                    </Typography>
+                    {restaurant.phone ? (
+                      <RestaurantPhoneLink
+                        phone={restaurant.phone}
+                        restaurantId={restaurant.restaurantId}
+                        source="order_confirmation"
+                      />
+                    ) : null}
+                  </Box>
+                  <Typography variant="body2">
+                    {formatRupees(restaurant.subtotal)}
+                  </Typography>
+                </Box>
+              ))}
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  mt: 1,
+                }}
+              >
+                <Typography variant="body2" color="text.secondary">
+                  Delivery fee
+                </Typography>
+                <Typography variant="body2">
+                  {placedOrder.deliveryFee > 0
+                    ? formatRupees(placedOrder.deliveryFee)
+                    : 'Free'}
+                </Typography>
+              </Box>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                <Typography variant="body2" sx={{ fontWeight: 700 }}>
+                  {placedOrder.split
+                    ? 'Total to pay (all orders)'
+                    : 'Total to pay'}
+                </Typography>
+                <Typography variant="body2" sx={{ fontWeight: 700 }}>
+                  {formatRupees(placedOrder.total)}
+                </Typography>
+              </Box>
+              {placedOrder.feeChanged ? (
+                <Alert severity="info" sx={{ mt: 1.5 }}>
+                  The delivery fee for this order is{' '}
+                  {formatRupees(placedOrder.deliveryFee)} (you were shown{' '}
+                  {formatRupees(deliveryFee)}). The total above and in WhatsApp
+                  uses the updated fee.
+                </Alert>
+              ) : null}
+            </Box>
+          ) : null}
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>
           <Button onClick={handleOrderNotSent} variant="outlined">
@@ -1322,6 +1515,45 @@ const CheckoutPage: React.FC = () => {
           </Button>
           <Button onClick={handleOrderSentConfirmation} variant="contained">
             Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={Boolean(orderError)}
+        onClose={() => setOrderError(null)}
+        fullWidth
+        maxWidth="xs"
+      >
+        <DialogTitle>Order not placed</DialogTitle>
+        <DialogContent>
+          <DialogContentText>{orderError?.message}</DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2 }}>
+          {orderError?.action === 'change-address' ? (
+            <Button
+              onClick={() => {
+                setOrderError(null);
+                goToAddressFlow();
+              }}
+              variant="contained"
+            >
+              Change address
+            </Button>
+          ) : null}
+          {orderError?.action === 'review-cart' ? (
+            <Button
+              onClick={() => {
+                setOrderError(null);
+                navigate('/cart');
+              }}
+              variant="contained"
+            >
+              Review cart
+            </Button>
+          ) : null}
+          <Button onClick={() => setOrderError(null)} variant="outlined">
+            {orderError?.action === 'dismiss' ? 'OK' : 'Close'}
           </Button>
         </DialogActions>
       </Dialog>
@@ -1388,6 +1620,7 @@ const CheckoutPage: React.FC = () => {
               totalPrice={totalPrice}
               discountAmount={discountAmount}
               finalTotal={finalTotal}
+              deliveryFee={deliveryFee}
               customerName={customerName}
               deliveryMethod={deliveryMethod}
               deliveryAddress={
@@ -1395,7 +1628,7 @@ const CheckoutPage: React.FC = () => {
                   ? hasHabitatAddress
                     ? `${habitat} - Tower ${tower}, Flat ${flatNumber}`
                     : customAddress.trim()
-                  : "Pickup from Bob's Kitchen"
+                  : `Pickup from ${restaurantNames || 'the restaurant'}`
               }
               customerInstructions={customerInstructions}
               scheduledTime={
@@ -1427,6 +1660,7 @@ const CheckoutPage: React.FC = () => {
           totalPrice={totalPrice}
           discountAmount={discountAmount}
           finalTotal={finalTotal}
+          deliveryFee={deliveryFee}
           customerName={customerName}
           deliveryMethod={deliveryMethod}
           deliveryAddress={
@@ -1434,7 +1668,7 @@ const CheckoutPage: React.FC = () => {
               ? hasHabitatAddress
                 ? `${habitat} - Tower ${tower}, Flat ${flatNumber}`
                 : customAddress.trim()
-              : "Pickup from Bob's Kitchen"
+              : `Pickup from ${restaurantNames || 'the restaurant'}`
           }
           customerInstructions={customerInstructions}
           scheduledTime={

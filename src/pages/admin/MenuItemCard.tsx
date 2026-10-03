@@ -4,6 +4,7 @@ import {
   Button,
   Card,
   CardContent,
+  Chip,
   Stack,
   Typography,
 } from '@mui/material';
@@ -18,6 +19,10 @@ interface MenuItemCardProps {
   onToggleAvailability?: (item: FoodItem) => void;
   backgroundColor?: string;
   hoverColor?: string;
+  /** Restaurant name shown as a chip (multi-restaurant admin view). */
+  restaurantLabel?: string;
+  /** Set when the item is hidden from the storefront by its restaurant/market. */
+  inactiveLabel?: string;
 }
 
 const MenuItemCard: React.FC<MenuItemCardProps> = ({
@@ -27,6 +32,8 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
   hoverColor = '#f5f5f5',
   onDeleteItem,
   onToggleAvailability,
+  restaurantLabel,
+  inactiveLabel,
 }) => {
   const deleteItem = (item: FoodItem) => {
     const confirmDelete = window.confirm(
@@ -59,8 +66,28 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
               <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 0.5 }}>
                 {item.name}
               </Typography>
+              {(restaurantLabel || inactiveLabel) && (
+                <Stack
+                  direction="row"
+                  spacing={0.5}
+                  flexWrap="wrap"
+                  useFlexGap
+                  sx={{ mb: 0.5 }}
+                >
+                  {restaurantLabel && (
+                    <Chip label={restaurantLabel} size="small" />
+                  )}
+                  {inactiveLabel && (
+                    <Chip label={inactiveLabel} size="small" color="warning" />
+                  )}
+                </Stack>
+              )}
               {item.available === false && (
-                <Typography variant="caption" color="error" sx={{ fontWeight: 700 }}>
+                <Typography
+                  variant="caption"
+                  color="error"
+                  sx={{ fontWeight: 700 }}
+                >
                   OUT OF STOCK
                 </Typography>
               )}

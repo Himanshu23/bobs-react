@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ENDPOINTS } from '../../config/api';
-import { getAuthState } from '../../admin/auth';
+import { fetchWithAdminAuth, getAdminHeaders } from '../../utils/authHelpers';
 import {
   PromotionalAddonConfigDTO,
   SavePromotionalAddonConfigDTO,
@@ -8,19 +8,10 @@ import {
 
 const PROMOTIONAL_ADDON_CONFIG_KEY = ['promotionalAddons', 'config'];
 
-const getHeaders = (): Record<string, string> => {
-  const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
-  };
-  const { token } = getAuthState();
-  if (token) headers.Authorization = `Bearer ${token}`;
-  return headers;
-};
-
 const fetchPromotionalAddonConfig =
   async (): Promise<PromotionalAddonConfigDTO> => {
     const response = await fetch(ENDPOINTS.PROMOTIONAL_ADDONS_CONFIG, {
-      headers: getHeaders(),
+      headers: getAdminHeaders(),
     });
     if (!response.ok) {
       throw new Error(
@@ -33,11 +24,13 @@ const fetchPromotionalAddonConfig =
 const savePromotionalAddonConfig = async (
   config: SavePromotionalAddonConfigDTO
 ): Promise<PromotionalAddonConfigDTO> => {
-  const response = await fetch(ENDPOINTS.PROMOTIONAL_ADDONS_CONFIG, {
-    method: config.id ? 'PUT' : 'POST',
-    headers: getHeaders(),
-    body: JSON.stringify(config),
-  });
+  const response = await fetchWithAdminAuth(
+    ENDPOINTS.PROMOTIONAL_ADDONS_CONFIG,
+    {
+      method: config.id ? 'PUT' : 'POST',
+      body: JSON.stringify(config),
+    }
+  );
   if (!response.ok) {
     throw new Error(
       `Failed to save promotional config: ${response.statusText}`

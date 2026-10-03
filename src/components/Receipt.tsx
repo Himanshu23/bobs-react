@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
 import { CartItem } from '../types';
+import { buildReceiptLayout } from '../utils/receiptSections';
 
 interface ReceiptProps {
   cartItems: CartItem[];
@@ -13,6 +14,8 @@ interface ReceiptProps {
   customerInstructions: string;
   scheduledTime?: string;
   discountCode?: string;
+  /** Delivery fee, shown as its own line when given (include it in finalTotal). */
+  deliveryFee?: number;
 }
 
 const Receipt = React.forwardRef<HTMLDivElement, ReceiptProps>(
@@ -28,9 +31,13 @@ const Receipt = React.forwardRef<HTMLDivElement, ReceiptProps>(
       customerInstructions,
       scheduledTime,
       discountCode,
+      deliveryFee,
     },
     ref
   ) => {
+    // Items grouped by restaurant, with a subtotal each (multi-restaurant cart).
+    const layout = buildReceiptLayout(cartItems);
+
     const formatTime = (time: string): string => {
       if (!time) return '';
       const [hoursText, minutes] = time.split(':');
@@ -102,61 +109,113 @@ const Receipt = React.forwardRef<HTMLDivElement, ReceiptProps>(
           </Typography>
         </Box>
 
-        {/* Items */}
+        {/* Items, grouped by restaurant */}
         <Box sx={{ mb: 1, pb: 1, borderBottom: '1px solid #000' }}>
-          {cartItems.map((item, idx) => (
+          {layout.sections.map((section, sectionIdx) => (
             <Box
-              key={idx}
+              key={section.restaurantId}
               sx={{
-                mb: 0.6,
-                fontFamily: "'Courier New', monospace",
-                fontSize: '9px',
+                mt: sectionIdx > 0 ? 0.8 : 0,
+                pt: sectionIdx > 0 ? 0.6 : 0,
+                borderTop: sectionIdx > 0 ? '1px dashed #000' : 'none',
               }}
             >
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  mb: 0.2,
-                }}
-              >
+              {layout.showHeadings && (
                 <Typography
                   sx={{
                     fontSize: '10px',
                     fontWeight: 'bold',
                     fontFamily: "'Courier New', monospace",
-                    flex: 1,
-                    wordBreak: 'break-word',
+                    textTransform: 'uppercase',
+                    mb: 0.4,
                   }}
                 >
-                  {item.name}
+                  {section.restaurantName}
                 </Typography>
-              </Box>
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  fontSize: '9px',
-                }}
-              >
-                <Typography
+              )}
+              {section.lines.map((line) => (
+                <Box
+                  key={line.key}
                   sx={{
+                    mb: 0.6,
                     fontFamily: "'Courier New', monospace",
                     fontSize: '9px',
                   }}
                 >
-                  {item.option?.size} x{item.quantity} @ ₹{item.price}
-                </Typography>
-                <Typography
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      mb: 0.2,
+                    }}
+                  >
+                    <Typography
+                      sx={{
+                        fontSize: '10px',
+                        fontWeight: 'bold',
+                        fontFamily: "'Courier New', monospace",
+                        flex: 1,
+                        wordBreak: 'break-word',
+                      }}
+                    >
+                      {line.name}
+                    </Typography>
+                  </Box>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      fontSize: '9px',
+                    }}
+                  >
+                    <Typography
+                      sx={{
+                        fontFamily: "'Courier New', monospace",
+                        fontSize: '9px',
+                      }}
+                    >
+                      {line.detail}
+                    </Typography>
+                    <Typography
+                      sx={{
+                        fontWeight: 'bold',
+                        fontFamily: "'Courier New', monospace",
+                        fontSize: '9px',
+                      }}
+                    >
+                      ₹{line.amount.toFixed(2)}
+                    </Typography>
+                  </Box>
+                </Box>
+              ))}
+              {layout.showSubtotals && (
+                <Box
                   sx={{
-                    fontWeight: 'bold',
+                    display: 'flex',
+                    justifyContent: 'space-between',
                     fontFamily: "'Courier New', monospace",
-                    fontSize: '9px',
                   }}
                 >
-                  ₹{(item.quantity * item.price).toFixed(2)}
-                </Typography>
-              </Box>
+                  <Typography
+                    sx={{
+                      fontFamily: "'Courier New', monospace",
+                      fontSize: '9px',
+                      fontStyle: 'italic',
+                    }}
+                  >
+                    {section.restaurantName} subtotal
+                  </Typography>
+                  <Typography
+                    sx={{
+                      fontWeight: 'bold',
+                      fontFamily: "'Courier New', monospace",
+                      fontSize: '9px',
+                    }}
+                  >
+                    ₹{section.subtotal.toFixed(2)}
+                  </Typography>
+                </Box>
+              )}
             </Box>
           ))}
         </Box>
@@ -203,6 +262,22 @@ const Receipt = React.forwardRef<HTMLDivElement, ReceiptProps>(
                 }}
               >
                 -₹{discountAmount.toFixed(2)}
+              </Typography>
+            </Box>
+          )}
+          {deliveryFee !== undefined && (
+            <Box
+              sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.3 }}
+            >
+              <Typography
+                sx={{ fontFamily: "'Courier New', monospace", fontSize: '9px' }}
+              >
+                Delivery fee
+              </Typography>
+              <Typography
+                sx={{ fontFamily: "'Courier New', monospace", fontSize: '9px' }}
+              >
+                ₹{deliveryFee.toFixed(2)}
               </Typography>
             </Box>
           )}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   Grid,
   Card,
@@ -18,6 +18,15 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import { formatPrice } from '../../utils/priceUtils';
 import { useOrdersByDateRange } from '../../data/hooks/useOrders';
 import OrderCard from './OrderCard';
+import RestaurantFilterSelect from './RestaurantFilterSelect';
+import { useAdminRestaurants } from '../../admin/hooks/useMarketplaceAdmin';
+import {
+  buildRestaurantFilterOptions,
+  filterOrdersByRestaurant,
+  formatRupees,
+  restaurantItemsTotal,
+} from '../../admin/utils/adminOrders';
+import { UTC_DAY_NOTE } from '../../admin/utils/adminReports';
 
 const formatDate = (date: Date): string => {
   return date.toISOString().split('T')[0];
@@ -41,6 +50,20 @@ const OrdersTab: React.FC = () => {
     error,
     refetch,
   } = useOrdersByDateRange(fromDate, toDate);
+  const { data: restaurants = [] } = useAdminRestaurants();
+  const [restaurantId, setRestaurantId] = useState('');
+
+  const restaurantOptions = useMemo(
+    () => buildRestaurantFilterOptions(restaurants, allOrders.orders),
+    [restaurants, allOrders.orders]
+  );
+  const visibleOrders = useMemo(
+    () => filterOrdersByRestaurant(allOrders.orders, restaurantId),
+    [allOrders.orders, restaurantId]
+  );
+  const restaurantName =
+    restaurantOptions.find((option) => option.id === restaurantId)?.name ??
+    restaurantId;
 
   const handleResetToToday = () => {
     setFromDate(today);
@@ -80,8 +103,8 @@ const OrdersTab: React.FC = () => {
                   gridTemplateColumns: isMobile
                     ? '1fr 1fr'
                     : isTablet
-                      ? '1fr 1fr 1fr 0.1fr'
-                      : '1fr 1fr 1fr 0.1fr',
+                      ? '1fr 1fr 1fr 1fr 0.1fr'
+                      : '1fr 1fr 1fr 1fr 0.1fr',
                   gap: isMobile ? 0.8 : 1.5,
                   alignItems: 'flex-end',
                 }}
@@ -107,6 +130,12 @@ const OrdersTab: React.FC = () => {
                   }}
                   size="small"
                   fullWidth
+                />
+                <RestaurantFilterSelect
+                  value={restaurantId}
+                  options={restaurantOptions}
+                  onChange={setRestaurantId}
+                  minWidth={0}
                 />
                 <Button
                   variant="outlined"
@@ -135,6 +164,13 @@ const OrdersTab: React.FC = () => {
                   </IconButton>
                 </Tooltip>
               </Box>
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{ display: 'block', mt: 1 }}
+              >
+                {UTC_DAY_NOTE}
+              </Typography>
             </CardContent>
           </Card>
         </Grid>
@@ -173,7 +209,9 @@ const OrdersTab: React.FC = () => {
                     fontWeight: 500,
                   }}
                 >
-                  Total: {allOrders.orders.length}
+                  {restaurantId
+                    ? `${restaurantName}: ${visibleOrders.length} of ${allOrders.orders.length}`
+                    : `Total: ${allOrders.orders.length}`}
                 </Typography>
                 <Typography
                   sx={{
@@ -184,6 +222,20 @@ const OrdersTab: React.FC = () => {
                 >
                   Total Amount: {formatPrice(allOrders.totalAmount ?? 0)}
                 </Typography>
+                {restaurantId && (
+                  <Typography
+                    sx={{
+                      color: '#1976d2',
+                      fontSize: isMobile ? '0.9rem' : '1.1rem',
+                      fontWeight: 500,
+                    }}
+                  >
+                    {restaurantName} items:{' '}
+                    {formatRupees(
+                      restaurantItemsTotal(visibleOrders, restaurantId)
+                    )}
+                  </Typography>
+                )}
               </Box>
             </CardContent>
           </Card>
@@ -208,10 +260,12 @@ const OrdersTab: React.FC = () => {
         )}
 
         {/* Empty State */}
-        {!isLoading && !error && allOrders.orders.length === 0 && (
+        {!isLoading && !error && visibleOrders.length === 0 && (
           <Grid item xs={12}>
             <Alert severity="info">
-              No orders found for the selected date range.
+              {restaurantId && allOrders.orders.length > 0
+                ? `No ${restaurantName} orders in the selected date range.`
+                : 'No orders found for the selected date range.'}
             </Alert>
           </Grid>
         )}
@@ -219,13 +273,15 @@ const OrdersTab: React.FC = () => {
         {/* Orders Grid - Mobile Friendly Card Layout */}
         {!isLoading &&
           !error &&
-          allOrders.orders.length > 0 &&
-          allOrders.orders.map((order) => (
+          visibleOrders.length > 0 &&
+          visibleOrders.map((order) => (
             <Grid key={order.id} item xs={12} sm={6} md={4} lg={3}>
               <OrderCard
                 order={order}
                 isMobile={isMobile}
                 onDeleteSuccess={() => refetch()}
+                highlightRestaurantId={restaurantId}
+                showStatusControl
               />
             </Grid>
           ))}

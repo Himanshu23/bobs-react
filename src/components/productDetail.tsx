@@ -1,6 +1,4 @@
 import React, { useMemo, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { addToCart } from '../redux/store';
 import {
   Box,
   Button,
@@ -18,6 +16,9 @@ import { FoodItem, ItemOptions } from '../types';
 import { createCartItem } from '../utils/cartUtils';
 import PriceDisplay from './PriceDisplay';
 import { trackEvent } from '../utils/analytics';
+import { useCurrentRestaurant } from '../context/CurrentRestaurantContext';
+import { useGuardedAddToCart } from '../context/CartGuardContext';
+import { useRestaurantDirectory } from '../data/hooks/useRestaurants';
 
 interface ProductDetailModalProps {
   open: boolean;
@@ -30,7 +31,9 @@ const ProductDetailModal = ({
   onClose,
   product,
 }: ProductDetailModalProps) => {
-  const dispatch = useDispatch();
+  const addToCartGuarded = useGuardedAddToCart();
+  const currentRestaurant = useCurrentRestaurant();
+  const { restaurantRefsById } = useRestaurantDirectory();
 
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState<ItemOptions['size']>('Full');
@@ -96,7 +99,9 @@ const ProductDetailModal = ({
       quantity,
       selectedSize,
       selectedType,
-      selectedBase
+      selectedBase,
+      currentRestaurant,
+      restaurantRefsById
     );
     trackEvent('add_to_cart', {
       item_id: newCartItem.id,
@@ -107,8 +112,9 @@ const ProductDetailModal = ({
       size: newCartItem.option.size,
       style: newCartItem.option.style,
       base: newCartItem.option.base,
+      restaurant_id: newCartItem.restaurantId,
     });
-    dispatch(addToCart(newCartItem));
+    addToCartGuarded(newCartItem);
     setQuantity(1);
     onClose();
   };

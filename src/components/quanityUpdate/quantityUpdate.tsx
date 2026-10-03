@@ -74,7 +74,15 @@ const QuantityUpdate = ({ open, onClose, itemID }: QuantityUpdateProps) => {
         quantity: variant.quantity,
         source: 'quantity_update',
       });
-      dispatch(removeFromCart({ id: variant.id, option: variant.option }));
+      dispatch(
+        removeFromCart({
+          id: variant.id,
+          option: variant.option,
+          isPromotionalAddon: !!variant.isPromotionalAddon,
+          isFreeClaim: !!variant.isFreeClaim,
+          restaurantId: variant.restaurantId,
+        })
+      );
       return;
     }
 
@@ -91,6 +99,9 @@ const QuantityUpdate = ({ open, onClose, itemID }: QuantityUpdateProps) => {
         id: variant.id,
         option: variant.option,
         quantity: nextQuantity,
+        isPromotionalAddon: !!variant.isPromotionalAddon,
+        isFreeClaim: !!variant.isFreeClaim,
+        restaurantId: variant.restaurantId,
       })
     );
   };

@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Expense } from '../../types';
 import { ENDPOINTS } from '../../config/api';
-import { fetchWithAuth } from '../../utils/authHelpers';
+import { fetchWithAdminAuth } from '../../utils/authHelpers';
 
 const fetchExpenses = async (
   filters: Partial<{
@@ -18,7 +18,7 @@ const fetchExpenses = async (
   if (filters.madeBy) params.append('madeBy', filters.madeBy);
 
   const url = `${ENDPOINTS.EXPENSES}?${params.toString()}`;
-  const response = await fetchWithAuth(url, {
+  const response = await fetchWithAdminAuth(url, {
     method: 'GET',
   });
 
@@ -32,7 +32,7 @@ const fetchExpenses = async (
 const createExpense = async (
   expense: Omit<Expense, 'id' | 'createdAt' | 'updatedAt' | 'categoryName'>
 ): Promise<Expense> => {
-  const response = await fetchWithAuth(ENDPOINTS.EXPENSES, {
+  const response = await fetchWithAdminAuth(ENDPOINTS.EXPENSES, {
     method: 'POST',
     body: JSON.stringify(expense),
   });
@@ -45,10 +45,13 @@ const createExpense = async (
 };
 
 const updateExpense = async (expense: Expense): Promise<Expense> => {
-  const response = await fetchWithAuth(`${ENDPOINTS.EXPENSES}/${expense.id}`, {
-    method: 'PUT',
-    body: JSON.stringify(expense),
-  });
+  const response = await fetchWithAdminAuth(
+    `${ENDPOINTS.EXPENSES}/${expense.id}`,
+    {
+      method: 'PUT',
+      body: JSON.stringify(expense),
+    }
+  );
 
   if (!response.ok) {
     throw new Error(`Failed to update expense: ${response.statusText}`);
@@ -58,9 +61,12 @@ const updateExpense = async (expense: Expense): Promise<Expense> => {
 };
 
 const deleteExpense = async (expenseId: string): Promise<void> => {
-  const response = await fetchWithAuth(`${ENDPOINTS.EXPENSES}/${expenseId}`, {
-    method: 'DELETE',
-  });
+  const response = await fetchWithAdminAuth(
+    `${ENDPOINTS.EXPENSES}/${expenseId}`,
+    {
+      method: 'DELETE',
+    }
+  );
 
   if (!response.ok) {
     throw new Error(`Failed to delete expense: ${response.statusText}`);

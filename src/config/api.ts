@@ -15,10 +15,15 @@ export const API_BASE_SOCKET_URL =
 // API Endpoints
 export const ENDPOINTS = {
   FOOD_ITEMS: `${API_BASE_URL}/food-items`,
+  MARKETS: `${API_BASE_URL}/markets`,
+  RESTAURANTS: `${API_BASE_URL}/restaurants`,
   AUTH_LOGIN: `${API_BASE_URL}/auth/login`,
   CUSTOMER_SEND_OTP: `${API_BASE_URL}/auth/customer/send-otp`,
   CUSTOMER_VERIFY_OTP: `${API_BASE_URL}/auth/customer/verify-otp`,
   CREATE_ORDER: `${API_BASE_URL}/orders`,
+  ADMIN_PAYOUTS: `${API_BASE_URL}/admin/payouts`,
+  ADMIN_PAYOUTS_MARK_PAID: `${API_BASE_URL}/admin/payouts/mark-paid`,
+  REPORTING_SALES: `${API_BASE_URL}/reporting/sales`,
   SEND_VOICE: `${API_BASE_URL}/voice`,
   CATEGORIES: `${API_BASE_URL}/expense-categories`,
   EXPENSES: `${API_BASE_URL}/expenses`,

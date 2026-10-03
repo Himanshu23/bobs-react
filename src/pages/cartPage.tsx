@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -33,6 +33,14 @@ import {
   getCartPromoSavings,
   getQualifyingCartSubtotal,
 } from '../utils/promotionalAddonStrategy';
+import { useRestaurantDirectory } from '../data/hooks/useRestaurants';
+import RestaurantInfoButton from '../components/marketplace/RestaurantInfoSheet';
+import {
+  getCartItemRestaurantId,
+  getCartItemsTotal,
+  getCartLineKey,
+  groupCartByRestaurant,
+} from '../utils/cartUtils';
 
 interface RootState {
   cart: {
@@ -45,12 +53,13 @@ const CartPage: React.FC = () => {
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const dispatch = useDispatch();
   const { data: menuItems = [] } = useFoodItems();
+  const { restaurantsById } = useRestaurantDirectory();
 
-  const totalPrice = cartItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
+  const totalPrice = getCartItemsTotal(cartItems);
+  const restaurantGroups = useMemo(
+    () => groupCartByRestaurant(cartItems),
+    [cartItems]
   );
-
   const { data: promoData, isFetching: isPromoFetching } =
     usePromotionalAddons(cartItems);
   const promoSavings = getCartPromoSavings(cartItems);
@@ -66,7 +75,11 @@ const CartPage: React.FC = () => {
     id: string,
     option: ItemOptions,
     newQuantity: number,
-    itemFlags?: { isPromotionalAddon?: boolean; isFreeClaim?: boolean }
+    itemFlags?: {
+      isPromotionalAddon?: boolean;
+      isFreeClaim?: boolean;
+      restaurantId?: string;
+    }
   ) => {
     if (newQuantity > 0) {
       trackEvent('update_cart_quantity', {
@@ -94,7 +107,11 @@ const CartPage: React.FC = () => {
   const handleRemove = (
     id: string,
     option: ItemOptions,
-    itemFlags?: { isPromotionalAddon?: boolean; isFreeClaim?: boolean }
+    itemFlags?: {
+      isPromotionalAddon?: boolean;
+      isFreeClaim?: boolean;
+      restaurantId?: string;
+    }
   ) => {
     trackEvent('remove_from_cart', {
       item_id: id,
@@ -111,12 +128,10 @@ const CartPage: React.FC = () => {
     navigate('/checkout');
   };
 
-  const getItemKey = (item: CartItem) =>
-    `${item.id}-${JSON.stringify(item.option)}-${item.isPromotionalAddon ? 'promo' : ''}-${item.isFreeClaim ? 'free' : ''}`;
-
   const getItemFlags = (item: CartItem) => ({
-    isPromotionalAddon: item.isPromotionalAddon,
-    isFreeClaim: item.isFreeClaim,
+    isPromotionalAddon: !!item.isPromotionalAddon,
+    isFreeClaim: !!item.isFreeClaim,
+    restaurantId: getCartItemRestaurantId(item),
   });
 
   const getOptionLabel = (item: CartItem): string => {
@@ -161,135 +176,197 @@ const CartPage: React.FC = () => {
 
           {/* Cart Items Section */}
           <Grid item xs={12} md={8}>
-            {cartItems.map((item) => (
-              <Card
-                key={getItemKey(item)}
-                sx={{
-                  display: 'flex',
-                  mb: 2,
-                  transition: 'all 0.3s ease',
-                  '&:hover': {
-                    boxShadow: 4,
-                  },
-                }}
-              >
-                {/* Product Image */}
-                <FoodImage
-                  src={item.image}
-                  alt={item.name}
-                  size={120}
-                  sx={{ borderRadius: 0 }}
-                />
-
-                {/* Product Details */}
-                <CardContent
-                  sx={{
-                    flex: 1,
-                    display: 'flex',
-                    flexDirection: 'column',
-                  }}
+            {restaurantGroups.map((group) => {
+              const restaurant = restaurantsById.get(group.restaurantId);
+              return (
+                <Box
+                  key={group.restaurantId}
+                  component="section"
+                  aria-label={`Items from ${restaurant?.name ?? group.restaurantName}`}
+                  sx={{ mb: 3 }}
                 >
                   <Box
                     sx={{
                       display: 'flex',
                       justifyContent: 'space-between',
-                      alignItems: 'start',
-                    }}
-                  >
-                    <Box>
-                      <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-                        {item.name}
-                      </Typography>
-                      <Typography variant="body2" color="textSecondary">
-                        {getOptionLabel(item)}
-                        {item.isPromotionalAddon && (
-                          <Chip
-                            label="₹9 Deal"
-                            size="small"
-                            sx={{
-                              ml: 1,
-                              height: 18,
-                              fontSize: '0.65rem',
-                              bgcolor: '#e8f5e9',
-                              color: '#2e7d32',
-                            }}
-                          />
-                        )}
-                      </Typography>
-                    </Box>
-                    <CartItemPriceDisplay item={item} showEach />
-                  </Box>
-
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
                       alignItems: 'center',
-                      mt: 2,
+                      gap: 1,
+                      mb: 1,
                     }}
                   >
-                    {/* Quantity Controls */}
                     <Box
                       sx={{
+                        minWidth: 0,
                         display: 'flex',
                         alignItems: 'center',
-                        border: '1px solid #ddd',
-                        borderRadius: 1,
+                        gap: 0.25,
                       }}
                     >
-                      <IconButton
-                        size="small"
-                        onClick={() =>
-                          handleQuantityChange(
-                            item.id,
-                            item.option as ItemOptions,
-                            item.quantity - 1,
-                            getItemFlags(item)
-                          )
-                        }
-                        disabled={item.quantity <= 1}
-                      >
-                        <RemoveIcon fontSize="small" />
-                      </IconButton>
                       <Typography
-                        sx={{ px: 2, minWidth: 30, textAlign: 'center' }}
+                        variant="subtitle1"
+                        component="h2"
+                        sx={{ fontWeight: 700, lineHeight: 1.2, mb: 0 }}
                       >
-                        {item.quantity}
+                        {restaurant?.name ?? group.restaurantName}
                       </Typography>
-                      <IconButton
-                        size="small"
-                        onClick={() =>
-                          handleQuantityChange(
-                            item.id,
-                            item.option as ItemOptions,
-                            item.quantity + 1,
-                            getItemFlags(item)
-                          )
-                        }
-                        disabled={item.isPromotionalAddon && item.quantity >= 1}
-                      >
-                        <AddIcon fontSize="small" />
-                      </IconButton>
+                      {restaurant && (
+                        <RestaurantInfoButton
+                          restaurant={restaurant}
+                          source="cart_group"
+                        />
+                      )}
                     </Box>
-
-                    {/* Delete Button - Removes entire item */}
-                    <IconButton
-                      color="error"
-                      onClick={() =>
-                        handleRemove(
-                          item.id,
-                          item.option as ItemOptions,
-                          getItemFlags(item)
-                        )
-                      }
-                      title="Delete entire item from cart"
+                    <Typography
+                      variant="body2"
+                      color="textSecondary"
+                      sx={{ flexShrink: 0 }}
                     >
-                      <DeleteIcon />
-                    </IconButton>
+                      Subtotal:{' '}
+                      <Box
+                        component="span"
+                        sx={{ fontWeight: 700, color: 'text.primary' }}
+                      >
+                        ₹{group.subtotal.toFixed(2)}
+                      </Box>
+                    </Typography>
                   </Box>
-                </CardContent>
-              </Card>
-            ))}
+                  {group.items.map((item) => (
+                    <Card
+                      key={getCartLineKey(item)}
+                      sx={{
+                        display: 'flex',
+                        mb: 2,
+                        transition: 'all 0.3s ease',
+                        '&:hover': {
+                          boxShadow: 4,
+                        },
+                      }}
+                    >
+                      {/* Product Image */}
+                      <FoodImage
+                        src={item.image}
+                        alt={item.name}
+                        size={120}
+                        sx={{ borderRadius: 0 }}
+                      />
+
+                      {/* Product Details */}
+                      <CardContent
+                        sx={{
+                          flex: 1,
+                          display: 'flex',
+                          flexDirection: 'column',
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'start',
+                          }}
+                        >
+                          <Box>
+                            <Typography
+                              variant="h6"
+                              sx={{ fontWeight: 'bold' }}
+                            >
+                              {item.name}
+                            </Typography>
+                            <Typography variant="body2" color="textSecondary">
+                              {getOptionLabel(item)}
+                              {item.isPromotionalAddon && (
+                                <Chip
+                                  label="₹9 Deal"
+                                  size="small"
+                                  sx={{
+                                    ml: 1,
+                                    height: 18,
+                                    fontSize: '0.65rem',
+                                    bgcolor: '#e8f5e9',
+                                    color: '#2e7d32',
+                                  }}
+                                />
+                              )}
+                            </Typography>
+                          </Box>
+                          <CartItemPriceDisplay item={item} showEach />
+                        </Box>
+
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            mt: 2,
+                          }}
+                        >
+                          {/* Quantity Controls */}
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              border: '1px solid #ddd',
+                              borderRadius: 1,
+                            }}
+                          >
+                            <IconButton
+                              size="small"
+                              onClick={() =>
+                                handleQuantityChange(
+                                  item.id,
+                                  item.option as ItemOptions,
+                                  item.quantity - 1,
+                                  getItemFlags(item)
+                                )
+                              }
+                              disabled={item.quantity <= 1}
+                            >
+                              <RemoveIcon fontSize="small" />
+                            </IconButton>
+                            <Typography
+                              sx={{ px: 2, minWidth: 30, textAlign: 'center' }}
+                            >
+                              {item.quantity}
+                            </Typography>
+                            <IconButton
+                              size="small"
+                              onClick={() =>
+                                handleQuantityChange(
+                                  item.id,
+                                  item.option as ItemOptions,
+                                  item.quantity + 1,
+                                  getItemFlags(item)
+                                )
+                              }
+                              disabled={
+                                item.isPromotionalAddon && item.quantity >= 1
+                              }
+                            >
+                              <AddIcon fontSize="small" />
+                            </IconButton>
+                          </Box>
+
+                          {/* Delete Button - Removes entire item */}
+                          <IconButton
+                            color="error"
+                            onClick={() =>
+                              handleRemove(
+                                item.id,
+                                item.option as ItemOptions,
+                                getItemFlags(item)
+                              )
+                            }
+                            title="Delete entire item from cart"
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </Box>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </Box>
+              );
+            })}
           </Grid>
 
           {/* Order Summary Section */}
@@ -301,6 +378,26 @@ const CartPage: React.FC = () => {
               <Divider sx={{ my: 2 }} />
 
               <Box sx={{ mb: 2 }}>
+                {restaurantGroups.length > 1 &&
+                  restaurantGroups.map((group) => (
+                    <Box
+                      key={group.restaurantId}
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        gap: 1,
+                        mb: 0.5,
+                      }}
+                    >
+                      <Typography variant="body2" color="textSecondary" noWrap>
+                        {restaurantsById.get(group.restaurantId)?.name ??
+                          group.restaurantName}
+                      </Typography>
+                      <Typography variant="body2" color="textSecondary">
+                        ₹{group.subtotal.toFixed(2)}
+                      </Typography>
+                    </Box>
+                  ))}
                 <Box
                   sx={{
                     display: 'flex',

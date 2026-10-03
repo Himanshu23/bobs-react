@@ -5,6 +5,12 @@ import {
   saveCartToLocalStorage,
   getCartFromLocalStorage,
 } from '../utils/cartStorage';
+import {
+  CartLineKey,
+  findCartLineIndex,
+  isSameCartLine,
+  normalizeCartItem,
+} from '../utils/cartUtils';
 
 // Define cart state type
 interface CartState {
@@ -12,104 +18,85 @@ interface CartState {
   totalItems: number;
 }
 
-// Initial state - Load from localStorage if available
+// Initial state - Load from localStorage if available (migrated on read)
 const savedItems = getCartFromLocalStorage();
 const initialState: CartState = {
   items: savedItems,
   totalItems: savedItems.reduce((sum, item) => sum + item.quantity, 0),
 };
 
-const findItem = (
-  items: CartItem[],
-  item: {
-    id: string;
-    option: ItemOptions;
-    isFreeClaim?: boolean;
-    isPromotionalAddon?: boolean;
+const findItem = (items: CartItem[], key: CartLineKey) =>
+  items.find((cartItem) => isSameCartLine(cartItem, key));
+
+/** Adds a line, or increases the quantity of the matching line. */
+const addLine = (state: CartState, payload: CartItem) => {
+  const {
+    id,
+    name,
+    price,
+    image,
+    quantity,
+    option,
+    description,
+    product,
+    isFreeClaim,
+    isPromotionalAddon,
+    originalPrice,
+    restaurantId,
+    restaurantName,
+    marketId,
+  } = normalizeCartItem(payload);
+  // Flags are exact here (missing = false): a regular add must never merge
+  // into a promo or free-claim line of the same dish.
+  const existingItem = findItem(state.items, {
+    id,
+    option,
+    isFreeClaim: !!isFreeClaim,
+    isPromotionalAddon: !!isPromotionalAddon,
+    restaurantId,
+  });
+  if (existingItem) {
+    if (isPromotionalAddon) {
+      return;
+    }
+    existingItem.quantity += quantity;
+  } else {
+    state.items.push({
+      id,
+      name,
+      price,
+      image,
+      quantity,
+      option,
+      description,
+      product,
+      isFreeClaim,
+      isPromotionalAddon,
+      originalPrice,
+      restaurantId,
+      restaurantName,
+      marketId,
+    });
   }
-) => {
-  const { id, option, isFreeClaim, isPromotionalAddon } = item;
-  return items.find(
-    (cartItem) =>
-      cartItem.id === id &&
-      cartItem.option?.base === option?.base &&
-      cartItem.option?.size === option?.size &&
-      cartItem.option?.style === option?.style &&
-      (isFreeClaim === undefined || cartItem.isFreeClaim === isFreeClaim) &&
-      (isPromotionalAddon === undefined ||
-        cartItem.isPromotionalAddon === isPromotionalAddon)
-  );
+
+  state.totalItems += quantity;
 };
 
-const findItemIndex = (
-  items: CartItem[],
-  item: {
-    id: string;
-    option: ItemOptions;
-    isFreeClaim?: boolean;
-    isPromotionalAddon?: boolean;
-  }
-) => {
-  const { id, option, isFreeClaim, isPromotionalAddon } = item;
-  return items.findIndex(
-    (cartItem) =>
-      cartItem.id === id &&
-      cartItem.option?.base === option?.base &&
-      cartItem.option?.size === option?.size &&
-      cartItem.option?.style === option?.style &&
-      (isFreeClaim === undefined || cartItem.isFreeClaim === isFreeClaim) &&
-      (isPromotionalAddon === undefined ||
-        cartItem.isPromotionalAddon === isPromotionalAddon)
-  );
-};
 // Create slice
 const cartSlice = createSlice({
   name: 'cart',
   initialState,
   reducers: {
     addToCart: (state, action: PayloadAction<CartItem>) => {
-      const {
-        id,
-        name,
-        price,
-        image,
-        quantity,
-        option,
-        description,
-        product,
-        isFreeClaim,
-        isPromotionalAddon,
-        originalPrice,
-      } = action.payload;
-      const existingItem = findItem(state.items, {
-        id,
-        option,
-        isFreeClaim,
-        isPromotionalAddon,
-      });
-      if (existingItem) {
-        if (isPromotionalAddon) {
-          return;
-        }
-        existingItem.quantity += quantity;
-      } else {
-        state.items.push({
-          id,
-          name,
-          price,
-          image,
-          quantity,
-          option,
-          description,
-          product,
-          isFreeClaim,
-          isPromotionalAddon,
-          originalPrice,
-        });
-      }
-
-      state.totalItems += quantity;
+      addLine(state, action.payload);
       // Save to localStorage
+      saveCartToLocalStorage(state.items);
+    },
+    /** Market guard (D5) "start a new cart": empty the cart, then add the item. */
+    startNewCartWith: (state, action: PayloadAction<CartItem>) => {
+      state.items = [];
+      state.totalItems = 0;
+      addLine(state, action.payload);
       saveCartToLocalStorage(state.items);
     },
     updateQuantity: (
@@ -120,16 +107,11 @@ const cartSlice = createSlice({
         quantity: number;
         isFreeClaim?: boolean;
         isPromotionalAddon?: boolean;
+        restaurantId?: string;
       }>
     ) => {
-      const { id, option, quantity, isFreeClaim, isPromotionalAddon } =
-        action.payload;
-      const item = findItem(state.items, {
-        id,
-        option,
-        isFreeClaim,
-        isPromotionalAddon,
-      });
+      const { quantity, ...key } = action.payload;
+      const item = findItem(state.items, key);
 
       if (item) {
         state.totalItems += quantity - item.quantity;
@@ -138,16 +120,8 @@ const cartSlice = createSlice({
         saveCartToLocalStorage(state.items);
       }
     },
-    removeFromCart: (
-      state,
-      action: PayloadAction<{
-        id: string;
-        option: ItemOptions;
-        isFreeClaim?: boolean;
-        isPromotionalAddon?: boolean;
-      }>
-    ) => {
-      const itemIndex = findItemIndex(state.items, action.payload);
+    removeFromCart: (state, action: PayloadAction<CartLineKey>) => {
+      const itemIndex = findCartLineIndex(state.items, action.payload);
       if (itemIndex !== -1) {
         const item = state.items[itemIndex];
         // Remove entire item completely regardless of quantity
@@ -183,12 +157,15 @@ const cartSlice = createSlice({
 // Export actions
 export const {
   addToCart,
+  startNewCartWith,
   updateQuantity,
   removeFromCart,
   removePromotionalAddons,
   clearCart,
-} =
-  cartSlice.actions;
+} = cartSlice.actions;
+
+/** Cart reducer, exported for unit tests. */
+export const cartReducer = cartSlice.reducer;
 
 // Configure store with types
 const store = configureStore({

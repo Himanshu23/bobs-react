@@ -76,6 +76,7 @@ export interface PromotionalAddonItemDTO {
   size: ItemOptions['size'];
   style?: ItemOptions['style'];
   base?: ItemOptions['base'];
+  disabled: boolean;
 }
 
 /**

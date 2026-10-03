@@ -10,12 +10,13 @@ import {
   Typography,
 } from '@mui/material';
 import MyLocationIcon from '@mui/icons-material/MyLocation';
-import { RESTAURANT_LOCATION } from '../../config/restaurantLocation';
+import { FALLBACK_DELIVERY_AREA } from '../../config/restaurantLocation';
 import { useGoogleMaps } from '../../hooks/useGoogleMaps';
 import { AddressLabel } from '../../types/address';
 import {
+  DeliveryArea,
   getServiceabilityMessage,
-  isWithinServiceRadius,
+  isWithinDeliveryArea,
 } from '../../utils/geo';
 
 export interface AddressFormValues {
@@ -30,6 +31,8 @@ export interface AddressFormValues {
 
 interface AddressMapPickerProps {
   initial?: Partial<AddressFormValues>;
+  /** The market's delivery area (from the API, or the fallback). */
+  area: DeliveryArea;
   onChange: (values: AddressFormValues, serviceable: boolean) => void;
 }
 
@@ -38,12 +41,13 @@ const DEFAULT_VALUES: AddressFormValues = {
   formattedAddress: '',
   line1: '',
   landmark: '',
-  lat: RESTAURANT_LOCATION.lat,
-  lng: RESTAURANT_LOCATION.lng,
+  lat: FALLBACK_DELIVERY_AREA.center.lat,
+  lng: FALLBACK_DELIVERY_AREA.center.lng,
 };
 
 const AddressMapPicker: React.FC<AddressMapPickerProps> = ({
   initial,
+  area,
   onChange,
 }) => {
   const { maps, loading, error, isReady } = useGoogleMaps();
@@ -60,12 +64,15 @@ const AddressMapPicker: React.FC<AddressMapPickerProps> = ({
   const geocoderRef = useRef<google.maps.Geocoder | null>(null);
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
   const onChangeRef = useRef(onChange);
+  // Latest area for the map listeners, which are bound once.
+  const areaRef = useRef(area);
+  areaRef.current = area;
 
   const [values, setValues] = useState<AddressFormValues>({
     ...DEFAULT_VALUES,
     ...initial,
-    lat: initial?.lat ?? DEFAULT_VALUES.lat,
-    lng: initial?.lng ?? DEFAULT_VALUES.lng,
+    lat: initial?.lat ?? area.center.lat,
+    lng: initial?.lng ?? area.center.lng,
   });
   const [geoError, setGeoError] = useState<string | null>(null);
   const [locating, setLocating] = useState(false);
@@ -84,16 +91,16 @@ const AddressMapPicker: React.FC<AddressMapPickerProps> = ({
   }, [onChange]);
 
   useEffect(() => {
-    const serviceable = isWithinServiceRadius(values.lat, values.lng);
+    const serviceable = isWithinDeliveryArea(values.lat, values.lng, area);
     onChangeRef.current(values, serviceable);
-  }, [values]);
+  }, [values, area]);
 
   const fitRouteBounds = (
     map: google.maps.Map,
     destination: { lat: number; lng: number }
   ) => {
     const bounds = new google.maps.LatLngBounds();
-    bounds.extend(RESTAURANT_LOCATION);
+    bounds.extend(areaRef.current.center);
     bounds.extend(destination);
     map.fitBounds(bounds, 48);
   };
@@ -103,7 +110,7 @@ const AddressMapPicker: React.FC<AddressMapPickerProps> = ({
       return;
     }
 
-    routeLineRef.current.setPath([RESTAURANT_LOCATION, destination]);
+    routeLineRef.current.setPath([areaRef.current.center, destination]);
 
     if (mapRef.current) {
       fitRouteBounds(mapRef.current, destination);
@@ -126,10 +133,10 @@ const AddressMapPicker: React.FC<AddressMapPickerProps> = ({
 
     const restaurantMarker = new maps.maps.Marker({
       map,
-      position: RESTAURANT_LOCATION,
-      title: "Bob's",
+      position: area.center,
+      title: area.name,
       label: {
-        text: 'B',
+        text: 'M',
         color: '#ffffff',
         fontWeight: '700',
       },
@@ -146,7 +153,7 @@ const AddressMapPicker: React.FC<AddressMapPickerProps> = ({
 
     const routeLine = new maps.maps.Polyline({
       map,
-      path: [RESTAURANT_LOCATION, destination],
+      path: [area.center, destination],
       geodesic: true,
       strokeColor: '#f25c19',
       strokeOpacity: 0.9,
@@ -224,9 +231,18 @@ const AddressMapPicker: React.FC<AddressMapPickerProps> = ({
 
   useEffect(() => {
     const valid = validateFields();
-    const serviceable = isWithinServiceRadius(values.lat, values.lng);
+    const serviceable = isWithinDeliveryArea(values.lat, values.lng, area);
     onChangeRef.current(values, valid && serviceable);
-  }, [values]);
+  }, [values, area]);
+
+  // The market loads after the map: move the center marker and the line.
+  useEffect(() => {
+    restaurantMarkerRef.current?.setPosition(area.center);
+    restaurantMarkerRef.current?.setTitle(area.name);
+    if (routeLineRef.current) {
+      updateRouteLine({ lat: values.lat, lng: values.lng });
+    }
+  }, [area.center.lat, area.center.lng, area.name]);
 
   useEffect(() => {
     if (!mapRef.current || !markerRef.current || !routeLineRef.current) {
@@ -292,8 +308,8 @@ const AddressMapPicker: React.FC<AddressMapPickerProps> = ({
     );
   };
 
-  const serviceable = isWithinServiceRadius(values.lat, values.lng);
-  const serviceMessage = getServiceabilityMessage(values.lat, values.lng);
+  const serviceable = isWithinDeliveryArea(values.lat, values.lng, area);
+  const serviceMessage = getServiceabilityMessage(values.lat, values.lng, area);
 
   return (
     <Box>
