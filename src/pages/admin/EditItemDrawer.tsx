@@ -28,6 +28,9 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { Controller, useForm } from 'react-hook-form';
 import { FoodItem, FoodCategory } from '../../types';
 import FoodImage from '../../components/FoodImage';
+import ImageCropDialog from './ImageCropDialog';
+import { validateImageFile } from '../../admin/utils/imageCrop';
+import { DecodedImage, decodeImageFile } from '../../admin/utils/imageCanvas';
 import {
   useCreateFoodItem,
   useUpdateFoodItem,
@@ -86,6 +89,8 @@ const EditItemDrawer: React.FC<EditItemDrawerProps> = ({
   const [restaurantError, setRestaurantError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  // Photo being cropped; the crop dialog is open while this is set.
+  const [cropImage, setCropImage] = useState<DecodedImage | null>(null);
   const createItemMutation = useCreateFoodItem();
   const updateItemMutation = useUpdateFoodItem();
   const {
@@ -167,34 +172,46 @@ const EditItemDrawer: React.FC<EditItemDrawerProps> = ({
     });
   };
 
+  /**
+   * Choose a file → validate → decode (EXIF-orientated) → crop dialog. The
+   * current image only changes on "Use photo"; an existing URL is left as is.
+   */
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+    const input = e.target;
+    const file = input.files?.[0];
+    // Reset so choosing the same file again (after Cancel) fires onChange.
+    input.value = '';
     if (!file) return;
 
-    setIsUploading(true);
     setUploadError(null);
+    const invalid = validateImageFile(file);
+    if (invalid) {
+      setUploadError(invalid);
+      return;
+    }
 
+    setIsUploading(true);
     try {
-      const dataUrl = await new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          resolve(event.target?.result as string);
-        };
-        reader.onerror = () => reject(new Error('Failed to read image file'));
-        reader.readAsDataURL(file);
-      });
-
-      setFormData((current) => ({
-        ...current!,
-        image: dataUrl,
-      }));
-      setIsUploading(false);
+      setCropImage(await decodeImageFile(file));
     } catch (error) {
       setUploadError(
-        error instanceof Error ? error.message : 'Failed to upload image'
+        error instanceof Error ? error.message : 'Failed to open image'
       );
+    } finally {
       setIsUploading(false);
     }
+  };
+
+  const closeCropDialog = () => {
+    cropImage?.release();
+    setCropImage(null);
+  };
+
+  const handleCropConfirm = (dataUrl: string) => {
+    setFormData((current) =>
+      current ? { ...current, image: dataUrl } : current
+    );
+    closeCropDialog();
   };
 
   const handleSave = () => {
@@ -275,16 +292,6 @@ const EditItemDrawer: React.FC<EditItemDrawerProps> = ({
             {isCreating ? 'Add Item' : 'Edit Item'}
           </Typography>
         </Stack>
-
-        {uploadError && (
-          <Alert
-            severity="error"
-            onClose={() => setUploadError(null)}
-            sx={{ mb: 2 }}
-          >
-            {uploadError}
-          </Alert>
-        )}
 
         {updateItemMutation.isError && (
           <Alert
@@ -482,7 +489,7 @@ const EditItemDrawer: React.FC<EditItemDrawerProps> = ({
                   disabled={isUploading}
                   fullWidth
                 >
-                  {isUploading ? 'Uploading...' : 'Upload Image'}
+                  {isUploading ? 'Opening...' : 'Upload Image'}
                   <input
                     type="file"
                     accept="image/*"
@@ -491,8 +498,15 @@ const EditItemDrawer: React.FC<EditItemDrawerProps> = ({
                   />
                 </Button>
                 <Typography variant="caption" color="text.secondary">
-                  Supported: JPG, PNG, AVIF
+                  JPG, PNG, WebP or HEIC (where supported), up to 15 MB. You can
+                  crop it before it is used.
                 </Typography>
+                {uploadError && (
+                  <Alert severity="error" onClose={() => setUploadError(null)}>
+                    {uploadError}
+                  </Alert>
+                )}
+
                 {!formData.image && (
                   <Alert severity="warning" sx={{ mb: 1 }}>
                     An image is required.
@@ -736,6 +750,11 @@ const EditItemDrawer: React.FC<EditItemDrawerProps> = ({
           </Button>
         </Stack>
       </Box>
+      <ImageCropDialog
+        image={cropImage}
+        onCancel={closeCropDialog}
+        onConfirm={handleCropConfirm}
+      />
     </Drawer>
   );
 };

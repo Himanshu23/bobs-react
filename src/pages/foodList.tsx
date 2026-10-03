@@ -36,8 +36,18 @@ import QuantityUpdate from '../components/quanityUpdate/quantityUpdate';
 import VariantRemovalModal from '../components/variantRemovalModal';
 import { trackEvent } from '../utils/analytics';
 import { getLowestNowPrice } from '../utils/priceUtils';
-import { getCartItemRestaurantId } from '../utils/cartUtils';
 import { DEFAULT_RESTAURANT_ID } from '../types/marketplace';
+import { useCurrentRestaurant } from '../context/CurrentRestaurantContext';
+import {
+  AnalyticsRestaurant,
+  buildCartItemsParams,
+  buildViewItemListParams,
+  buildViewItemParams,
+} from '../utils/analyticsItems';
+import {
+  getCartItemRestaurantId,
+  resolveCartRestaurant,
+} from '../utils/cartUtils';
 
 const normalizeSearchText = (value: string) =>
   value
@@ -168,6 +178,26 @@ const FoodListPage: React.FC<FoodListPageProps> = ({
     isLoading,
     error,
   } = useRestaurantFoodItems({ restaurantId });
+  // Restaurant for analytics (brand of each item): the menu page's, else the
+  // id with the default name fallback.
+  const currentRestaurant = useCurrentRestaurant();
+  const analyticsRestaurant = useMemo<AnalyticsRestaurant>(
+    () => resolveCartRestaurant({ restaurantId }, currentRestaurant),
+    [restaurantId, currentRestaurant]
+  );
+
+  // GA4 view_item_list once per restaurant per mount, when its items load.
+  const lastItemListRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (isLoading || items.length === 0) return;
+    if (lastItemListRef.current === analyticsRestaurant.id) return;
+    lastItemListRef.current = analyticsRestaurant.id;
+    trackEvent(
+      'view_item_list',
+      buildViewItemListParams(analyticsRestaurant, items)
+    );
+  }, [isLoading, items, analyticsRestaurant]);
+
   const { data: allMostReorderedItems = [] } = useMostReorderedItems();
   const mostReorderedItems = useMemo(
     () =>
@@ -297,6 +327,7 @@ const FoodListPage: React.FC<FoodListPageProps> = ({
           });
         } else {
           trackEvent('view_item', {
+            ...buildViewItemParams(foodItem, analyticsRestaurant),
             item_id: foodItem.id,
             item_name: foodItem.name,
             category: foodItem.category,
@@ -320,6 +351,7 @@ const FoodListPage: React.FC<FoodListPageProps> = ({
       } else if (itemVariants.length === 1) {
         // Single variant - remove directly
         trackEvent('remove_from_cart', {
+          ...buildCartItemsParams([itemVariants[0]]),
           item_id: id,
           quantity: itemVariants[0].quantity,
         });
@@ -339,6 +371,7 @@ const FoodListPage: React.FC<FoodListPageProps> = ({
   const handleVariantRemovalSelect = (variant: any) => {
     if (variant.option) {
       trackEvent('remove_from_cart', {
+        ...buildCartItemsParams([variant]),
         item_id: variant.id,
         item_name: variant.name,
         quantity: variant.quantity,

@@ -23,6 +23,7 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { trackEvent } from '../utils/analytics';
+import { buildCartItemsParams } from '../utils/analyticsItems';
 import { usePromotionalAddons } from '../data/hooks/usePromotionalAddons';
 import { useFoodItems } from '../data/hooks/useFoodItems';
 import PromotionalAddonBanner from '../components/promotionalAddons/PromotionalAddonBanner';
@@ -40,6 +41,7 @@ import {
   getCartItemsTotal,
   getCartLineKey,
   groupCartByRestaurant,
+  isSameCartLine,
 } from '../utils/cartUtils';
 
 interface RootState {
@@ -71,6 +73,22 @@ const CartPage: React.FC = () => {
     }
   }, [dispatch, promoData]);
 
+  // GA items for the cart line being removed (whole line).
+  const findCartLineParams = (
+    id: string,
+    option: ItemOptions,
+    itemFlags?: {
+      isPromotionalAddon?: boolean;
+      isFreeClaim?: boolean;
+      restaurantId?: string;
+    }
+  ) => {
+    const line = cartItems.find((item) =>
+      isSameCartLine(item, { id, option, ...itemFlags })
+    );
+    return line ? buildCartItemsParams([line]) : {};
+  };
+
   const handleQuantityChange = (
     id: string,
     option: ItemOptions,
@@ -97,6 +115,7 @@ const CartPage: React.FC = () => {
       );
     } else if (newQuantity === 0) {
       trackEvent('remove_from_cart', {
+        ...findCartLineParams(id, option, itemFlags),
         item_id: id,
         source: 'cart_page',
       });
@@ -114,6 +133,7 @@ const CartPage: React.FC = () => {
     }
   ) => {
     trackEvent('remove_from_cart', {
+      ...findCartLineParams(id, option, itemFlags),
       item_id: id,
       source: 'cart_page',
     });
@@ -122,6 +142,7 @@ const CartPage: React.FC = () => {
 
   const handleProceedToCheckout = () => {
     trackEvent('begin_checkout', {
+      ...buildCartItemsParams(cartItems),
       item_count: cartItems.length,
       value: totalPrice,
     });

@@ -55,6 +55,10 @@ import { isAuthenticated, isAuthenticatedAndAdmin } from '../admin/auth';
 import { getCustomerAuthState } from '../customer/auth';
 import { DISCOUNTS, calculateDiscountAmount } from '../data/discounts';
 import { trackEvent } from '../utils/analytics';
+import {
+  buildCartItemsParams,
+  buildPurchaseEvents,
+} from '../utils/analyticsItems';
 import Receipt from '../components/Receipt';
 import { printReceipt } from '../utils/printService';
 import { usePlaceOrder } from '../data/hooks/usePlaceOrder';
@@ -455,6 +459,23 @@ const CheckoutPage: React.FC = () => {
       });
       console.log('Order(s) saved to database:', placed.orderIds.join(', '));
 
+      // GA4 purchase: one per saved order (a split pickup is N orders, each
+      // with its own transaction id and its restaurant's items). Not sent
+      // for the unsaved WhatsApp fallback below.
+      buildPurchaseEvents({
+        response: savedOrder,
+        cartItems,
+        discountAmount,
+        discountCode: appliedDiscountCode,
+        deliveryFee: placed.deliveryFee,
+      }).forEach((purchaseParams) =>
+        trackEvent('purchase', {
+          ...purchaseParams,
+          delivery_method: deliveryMethod,
+          split_pickup: placed.split,
+        })
+      );
+
       trackEvent('whatsapp_order_started', {
         delivery_method: deliveryMethod,
         item_count: cartItems.length,
@@ -574,7 +595,13 @@ const CheckoutPage: React.FC = () => {
     // Stamped with the dish's own restaurant/market from the restaurants
     // cache, not a market1 default.
     setSelectedDiscountId('');
-    addToCartGuarded(createFreeClaimCartItem(foodItem, restaurantRefsById));
+    const freeClaimItem = createFreeClaimCartItem(foodItem, restaurantRefsById);
+    trackEvent('add_to_cart', {
+      ...buildCartItemsParams([freeClaimItem]),
+      item_id: freeClaimItem.id,
+      source: 'free_claim',
+    });
+    addToCartGuarded(freeClaimItem);
   };
 
   const handlePlaceOrderClick = () => {

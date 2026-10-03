@@ -7,6 +7,7 @@ import { PromotionalAddonsResponseDTO } from '../../types/promotionalAddons';
 import { createPromotionalAddonCartItem } from '../../utils/cartUtils';
 import { getPromoItemSavings } from '../../utils/promotionalAddonStrategy';
 import { trackEvent } from '../../utils/analytics';
+import { buildCartItemsParams } from '../../utils/analyticsItems';
 import PriceDisplay from '../PriceDisplay';
 import FoodImage from '../FoodImage';
 
@@ -57,6 +58,12 @@ const PromotionalAddonSection = ({
       item_id: promoItem.foodItemId,
       promotional_price: promoItem.promotionalPrice,
       original_price: promoItem.originalPrice,
+      source: 'promo_addon_section',
+    });
+    // Standard GA4 ecommerce event, at the ₹9 price the customer pays.
+    trackEvent('add_to_cart', {
+      ...buildCartItemsParams([cartItem]),
+      item_id: promoItem.foodItemId,
       source: 'promo_addon_section',
     });
   };

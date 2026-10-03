@@ -17,6 +17,7 @@ import { RootState } from '../../redux/store';
 import { useEffect, useMemo, useState } from 'react';
 import { selectFoodItemById } from '../../redux/selectors';
 import { trackEvent } from '../../utils/analytics';
+import { buildCartItemsParams } from '../../utils/analyticsItems';
 
 interface QuantityUpdateProps {
   open: boolean;
@@ -69,6 +70,7 @@ const QuantityUpdate = ({ open, onClose, itemID }: QuantityUpdateProps) => {
 
     if (nextQuantity === 0) {
       trackEvent('remove_from_cart', {
+        ...buildCartItemsParams([variant]),
         item_id: variant.id,
         item_name: variant.name,
         quantity: variant.quantity,

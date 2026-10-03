@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import {
   Box,
   Button,
@@ -24,6 +24,9 @@ import {
   marketPath,
   restaurantPath,
 } from '../utils/marketplaceRoutes';
+import { trackEvent, trackPageView } from '../utils/analytics';
+import { getPageTitle, getRestaurantEntry } from '../utils/analyticsConfig';
+import { restaurantParams } from '../utils/analyticsItems';
 
 interface RestaurantMenuPageProps {
   /** Fixed restaurant (legacy `/bobs/*` routes); otherwise read from `:slug`. */
@@ -60,15 +63,62 @@ const RestaurantMenuPage: React.FC<RestaurantMenuPageProps> = ({ slug }) => {
 
   // Canonical URL: `/m/<restaurant's market>/r/<slug>`. Only for the `/m/...`
   // route; the legacy `/bobs/*` paths stay as they are.
+  const needsCanonicalRedirect = Boolean(
+    data &&
+      !slug &&
+      params.marketId &&
+      (params.marketId !== data.marketId || params.slug !== data.slug)
+  );
   useEffect(() => {
-    if (!data || slug || !params.marketId) return;
-    if (params.marketId !== data.marketId || params.slug !== data.slug) {
+    if (data && needsCanonicalRedirect) {
       navigate(restaurantPath(data.marketId, data.slug), {
         replace: true,
         state: location.state,
       });
     }
-  }, [data, slug, params.marketId, params.slug, navigate, location.state]);
+  }, [data, needsCanonicalRedirect, navigate, location.state]);
+
+  // "<Restaurant> · Grokheads" once the name is known ("Grokheads" until then).
+  const pageTitle = getPageTitle(location.pathname, restaurant?.name);
+  useEffect(() => {
+    document.title = pageTitle;
+  }, [pageTitle]);
+
+  // Analytics: this page owns the page_view of menu routes (App.tsx skips
+  // them) so it carries the restaurant title and params. One page_view +
+  // one view_restaurant per visit (restaurant id + location.key): re-renders
+  // and StrictMode's double effect don't repeat it; back navigation remounts
+  // the page and counts as a new visit. Skipped while loading and while the
+  // canonical redirect is pending (it is sent for the redirected URL).
+  const lastTrackedVisitRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (isLoading || needsCanonicalRedirect) return;
+    const visitKey = `${restaurant?.id ?? `missing:${idOrSlug}`}|${location.key}`;
+    if (lastTrackedVisitRef.current === visitKey) return;
+    lastTrackedVisitRef.current = visitKey;
+
+    const page = `${location.pathname}${location.search}`;
+    if (!restaurant) {
+      trackPageView(page, pageTitle, { restaurant_slug: idOrSlug });
+      return;
+    }
+    const restaurantFields = restaurantParams(restaurant);
+    trackPageView(page, pageTitle, restaurantFields);
+    trackEvent('view_restaurant', {
+      ...restaurantFields,
+      entry: getRestaurantEntry(location.state),
+    });
+  }, [
+    isLoading,
+    needsCanonicalRedirect,
+    restaurant,
+    idOrSlug,
+    location.key,
+    location.pathname,
+    location.search,
+    location.state,
+    pageTitle,
+  ]);
 
   // Pop back to the list when we came from it; otherwise replace this entry
   // with the list, so hardware/browser back never bounces list ↔ menu.

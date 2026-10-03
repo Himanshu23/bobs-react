@@ -2,16 +2,16 @@
 
 ## Environment Variables
 
-Create a `.env` file in the project root if you want Google Analytics enabled:
+Google Analytics is configured with a Vite env variable (e.g. in `.env.local`):
 
 ```env
-REACT_APP_GA_MEASUREMENT_ID=G-XXXXXXXXXX
+VITE_GA_MEASUREMENT_ID=G-XXXXXXXXXX
 ```
 
 Notes:
 
-- This app reads the value from `REACT_APP_GA_MEASUREMENT_ID` in `src/utils/analytics.ts`.
-- If the variable is missing, analytics stays disabled.
+- This app reads `VITE_GA_MEASUREMENT_ID` in `src/utils/analytics.ts` (rules in `src/utils/analyticsConfig.ts`).
+- If the variable is missing, production builds use the production property and dev builds / localhost send nothing. When set on a dev build or localhost, GA debug mode is on (GA Admin → DebugView). See `../docs/ANALYTICS.md`.
 - Restart the dev server after adding or changing env values.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

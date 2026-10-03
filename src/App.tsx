@@ -5,7 +5,7 @@ import {
   useLocation,
   useNavigate,
 } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { QueryClientProvider } from '@tanstack/react-query';
 
 import StaticLanding from './pages/staticLanding';
@@ -26,6 +26,7 @@ import { RestaurantHeaderProvider } from './context/RestaurantHeaderContext';
 import { isBrowsePath } from './utils/marketplaceRoutes';
 import { DEFAULT_RESTAURANT_ID } from './types/marketplace';
 import { initializeAnalytics, trackPageView } from './utils/analytics';
+import { getPageTitle, isPageViewSentByPage } from './utils/analyticsConfig';
 import { queryClient } from './admin/api/queryClient';
 import PromotionalAddonLaunchDialog, {
   usePromotionalAddonLaunch,
@@ -83,8 +84,21 @@ function AppLayout() {
     initializeAnalytics();
   }, []);
 
+  // Title + one page_view per route change. Restaurant menus send their own
+  // once the restaurant name (the title) is known: see RestaurantMenuPage.
+  // The ref keeps StrictMode's double effect from sending it twice.
+  const lastPageViewRef = useRef<string | null>(null);
   useEffect(() => {
-    trackPageView(`${location.pathname}${location.search}`);
+    const page = `${location.pathname}${location.search}`;
+    const isNewPage = lastPageViewRef.current !== page;
+    lastPageViewRef.current = page;
+    // Menu pages set their own title and page_view (this effect runs after
+    // theirs, so don't overwrite the restaurant title).
+    if (isPageViewSentByPage(location.pathname)) return;
+    document.title = getPageTitle(location.pathname);
+    if (isNewPage) {
+      trackPageView(page, document.title);
+    }
   }, [location.pathname, location.search]);
 
   return (

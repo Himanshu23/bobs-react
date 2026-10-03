@@ -16,6 +16,7 @@ import { FoodItem, ItemOptions } from '../types';
 import { createCartItem } from '../utils/cartUtils';
 import PriceDisplay from './PriceDisplay';
 import { trackEvent } from '../utils/analytics';
+import { buildCartItemsParams } from '../utils/analyticsItems';
 import { useCurrentRestaurant } from '../context/CurrentRestaurantContext';
 import { useGuardedAddToCart } from '../context/CartGuardContext';
 import { useRestaurantDirectory } from '../data/hooks/useRestaurants';
@@ -104,6 +105,7 @@ const ProductDetailModal = ({
       restaurantRefsById
     );
     trackEvent('add_to_cart', {
+      ...buildCartItemsParams([newCartItem]),
       item_id: newCartItem.id,
       item_name: newCartItem.name,
       item_category: newCartItem.product.category,
