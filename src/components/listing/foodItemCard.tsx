@@ -93,6 +93,9 @@ const getHighlightedSegments = (text: string, searchQuery?: string) => {
   return segments;
 };
 
+/** Widest a dish card gets; on phones it fills the row instead. */
+export const FOOD_CARD_MAX_WIDTH = 400;
+
 const FoodItemCard = ({ item, handleCart, searchQuery }: FoodItemCardProps) => {
   const totalQuantity = useSelector(
     selectProductTotalQuantity(item.id, item.restaurantId || undefined)
@@ -118,10 +121,10 @@ const FoodItemCard = ({ item, handleCart, searchQuery }: FoodItemCardProps) => {
         display: 'flex',
         alignItems: 'stretch',
         gap: 2,
-        // Fill the row on phones (a fixed 360px overflowed the screen and the
+        // Fill the row on phones (a fixed width overflowed the screen and the
         // image touched the right edge); 16px padding keeps it off the edge.
         width: '100%',
-        maxWidth: 360,
+        maxWidth: FOOD_CARD_MAX_WIDTH,
         boxSizing: 'border-box',
         padding: 2,
         borderRadius: 2,

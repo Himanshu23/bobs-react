@@ -30,7 +30,9 @@ import { useRestaurantFoodItems } from '../data/hooks/useRestaurantFoodItems';
 import { useMostReorderedItems } from '../data/hooks/useMostReorderedItems';
 import { CartActions, CATEGORY_ORDER, FoodItem } from '../types';
 import MostReorderedSection from '../components/MostReorderedSection';
-import FoodItemCard from '../components/listing/foodItemCard';
+import FoodItemCard, {
+  FOOD_CARD_MAX_WIDTH,
+} from '../components/listing/foodItemCard';
 import FoodImage from '../components/FoodImage';
 import ProductDetailModal from '../components/productDetail';
 import QuantityUpdate from '../components/quanityUpdate/quantityUpdate';
@@ -52,13 +54,14 @@ import {
 } from '../utils/cartUtils';
 
 /**
- * Slot around each dish card: the full row on phones, 360px max, so every card
- * gets the same width (the card fills its slot) and never runs off the screen.
+ * Slot around each dish card: the full row on phones, at most
+ * FOOD_CARD_MAX_WIDTH, so every card gets the same width (the card fills its
+ * slot) and never runs off the screen.
  */
 const FOOD_CARD_SLOT_SX = {
   position: 'relative',
   width: '100%',
-  maxWidth: 360,
+  maxWidth: FOOD_CARD_MAX_WIDTH,
 } as const;
 
 /** Tab value for the "All" tab (every dish); the default tab. */
@@ -594,7 +597,8 @@ const FoodListPage: React.FC<FoodListPageProps> = ({
                     flexWrap: 'wrap',
                     gap: 2,
                     justifyContent: 'center',
-                    padding: 1,
+                    // No side padding: more width for the cards on phones.
+                    py: 1,
                     width: '100%',
                   }}
                 >
@@ -698,7 +702,8 @@ const FoodListPage: React.FC<FoodListPageProps> = ({
                         flexWrap: 'wrap',
                         gap: 2,
                         justifyContent: 'center',
-                        padding: 1,
+                        // No side padding: more width for the cards on phones.
+                        py: 1,
                         width: '100%',
                       }}
                     >
@@ -771,7 +776,8 @@ const FoodListPage: React.FC<FoodListPageProps> = ({
                         flexWrap: 'wrap',
                         gap: 2,
                         justifyContent: 'center',
-                        padding: 1,
+                        // No side padding: more width for the cards on phones.
+                        py: 1,
                         width: '100%',
                       }}
                     >
