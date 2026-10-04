@@ -8,6 +8,12 @@ describe('getSizeLabel', () => {
     expect(getSizeLabel('Quarter', 'Coffee')).toBe('Small');
   });
 
+  it('shows Taco/Cone/Cup for Ice Cream', () => {
+    expect(getSizeLabel('Full', 'Ice Cream')).toBe('Taco');
+    expect(getSizeLabel('Half', 'Ice Cream')).toBe('Cone');
+    expect(getSizeLabel('Quarter', 'Ice Cream')).toBe('Cup');
+  });
+
   it('keeps Full/Half/Quarter for every other category', () => {
     expect(getSizeLabel('Full', 'Starters')).toBe('Full');
     expect(getSizeLabel('Half', 'Drinks')).toBe('Half');

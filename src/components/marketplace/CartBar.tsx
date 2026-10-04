@@ -3,6 +3,7 @@ import { ChevronRight as ChevronRightIcon } from '@mui/icons-material';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { RootState } from '../../redux/store';
+import { FALLBACK_IMAGE } from '../FoodImage';
 import {
   getCartItemsTotal,
   getCartLineKey,
@@ -81,7 +82,7 @@ const CartBar = () => {
             <Avatar
               key={getCartLineKey(item)}
               alt={item.name}
-              src={item.image}
+              src={item.image || FALLBACK_IMAGE}
               sx={{ width: 40, height: 40 }}
             />
           ))}

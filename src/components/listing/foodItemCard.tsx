@@ -1,10 +1,10 @@
 import { Box, Typography, Button, Badge } from '@mui/material';
-import { CircleSharp, ImageNotSupported } from '@mui/icons-material'; // Veg & Non-Veg Icons
+import { CircleSharp } from '@mui/icons-material'; // Veg & Non-Veg Icons
 import { CartActions, FoodItem, ItemOptions } from '../../types';
 import { useSelector } from 'react-redux';
 import { selectProductTotalQuantity } from '../../redux/selectors';
-import { useState } from 'react';
 import PriceDisplay from '../PriceDisplay';
+import FoodImage from '../FoodImage';
 import { useMenuOrdering } from '../../context/MenuOrderingContext';
 import { getLowestNowPrice, getLowestWasPrice } from '../../utils/priceUtils';
 
@@ -100,13 +100,8 @@ const FoodItemCard = ({ item, handleCart, searchQuery }: FoodItemCardProps) => {
   const totalQuantity = useSelector(
     selectProductTotalQuantity(item.id, item.restaurantId || undefined)
   );
-  const [imageError, setImageError] = useState(false);
   // Restaurant closed (D15): menu stays browsable, cart controls are disabled.
   const { orderable } = useMenuOrdering();
-
-  const handleImageError = () => {
-    setImageError(true);
-  };
 
   const lowestNowPrice = getLowestNowPrice(item);
   const lowestWasPrice = getLowestWasPrice(item);
@@ -260,37 +255,8 @@ const FoodItemCard = ({ item, handleCart, searchQuery }: FoodItemCardProps) => {
         )}
       </Box>
 
-      {imageError ? (
-        <Box
-          sx={{
-            width: 110,
-            height: 110,
-            borderRadius: 1,
-            backgroundColor: '#f5f5f5',
-            border: '2px dashed #ccc',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexShrink: 0,
-          }}
-        >
-          <ImageNotSupported sx={{ color: '#999', fontSize: 40 }} />
-        </Box>
-      ) : (
-        <Box
-          component="img"
-          src={item.image}
-          alt={item.name}
-          onError={handleImageError}
-          sx={{
-            width: 110,
-            height: 110,
-            borderRadius: 1,
-            objectFit: 'cover',
-            flexShrink: 0,
-          }}
-        />
-      )}
+      {/* No image or a broken link → the no-image picture (FoodImage). */}
+      <FoodImage src={item.image} alt={item.name} size={110} />
     </Box>
   );
 };

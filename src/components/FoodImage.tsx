@@ -10,7 +10,8 @@ interface FoodImageProps {
   showPlaceholder?: boolean;
 }
 
-const FALLBACK_IMAGE = '/imgs/no-image.jpeg';
+/** Shown for a dish without an image, or when its image fails to load. */
+export const FALLBACK_IMAGE = '/imgs/no-image.jpeg';
 
 const FoodImage = ({
   src,
