@@ -14,6 +14,8 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import { FoodItem, ItemOptions } from '../types';
 import { createCartItem } from '../utils/cartUtils';
+import { getAvailableSizes } from '../utils/priceUtils';
+import { getSizeLabel } from '../utils/sizeLabels';
 import PriceDisplay from './PriceDisplay';
 import { trackEvent } from '../utils/analytics';
 import { buildCartItemsParams } from '../utils/analyticsItems';
@@ -37,7 +39,10 @@ const ProductDetailModal = ({
   const { restaurantRefsById } = useRestaurantDirectory();
 
   const [quantity, setQuantity] = useState(1);
-  const [selectedSize, setSelectedSize] = useState<ItemOptions['size']>('Full');
+  const availableSizes = useMemo(() => getAvailableSizes(product), [product]);
+  const [selectedSize, setSelectedSize] = useState<ItemOptions['size']>(
+    availableSizes[0] ?? 'Full'
+  );
   const [selectedType, setSelectedType] = useState<ItemOptions['style']>();
   const [selectedBase, setSelectedBase] = useState<ItemOptions['base']>();
 
@@ -184,7 +189,7 @@ const ProductDetailModal = ({
           }}
         >
           {/* Size Options */}
-          {product.priceOptions.nowPrice.size && (
+          {availableSizes.length > 0 && (
             <Box
               sx={{
                 border: '1px solid',
@@ -223,23 +228,19 @@ const ProductDetailModal = ({
                   }
                   sx={{ columnGap: 1, rowGap: 0.25, flexWrap: 'wrap' }}
                 >
-                  {Object.entries(product.priceOptions.nowPrice.size).map(
-                    ([size, price]) => (
-                      <FormControlLabel
-                        key={size}
-                        value={size}
-                        control={<Radio />}
-                        label={renderOptionPriceLabel(
-                          size,
-                          price,
-                          product.priceOptions.wasPrice?.size[
-                            size as ItemOptions['size']
-                          ]
-                        )}
-                        sx={{ mr: 0.75, ml: 0 }}
-                      />
-                    )
-                  )}
+                  {availableSizes.map((size) => (
+                    <FormControlLabel
+                      key={size}
+                      value={size}
+                      control={<Radio />}
+                      label={renderOptionPriceLabel(
+                        getSizeLabel(size, product.category),
+                        product.priceOptions.nowPrice.size[size],
+                        product.priceOptions.wasPrice?.size?.[size]
+                      )}
+                      sx={{ mr: 0.75, ml: 0 }}
+                    />
+                  ))}
                 </RadioGroup>
               </FormControl>
             </Box>

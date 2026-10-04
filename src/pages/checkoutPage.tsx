@@ -103,6 +103,7 @@ import {
   getCartPromoSavings,
   getQualifyingCartSubtotal,
 } from '../utils/promotionalAddonStrategy';
+import { getSizeLabel } from '../utils/sizeLabels';
 
 const WHATSAPP_PHONE = '9643310092'; // Replace with your number
 const GUEST_MINIMUM_ORDER_VALUE = 299;
@@ -808,7 +809,8 @@ const CheckoutPage: React.FC = () => {
                       {item.name}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      Free {item.freeClaimPortion} portion
+                      Free {getSizeLabel(item.freeClaimPortion, item.category)}{' '}
+                      portion
                     </Typography>
                   </Box>
                   <Button
@@ -1113,7 +1115,9 @@ const CheckoutPage: React.FC = () => {
                       >
                         <ListItemText
                           primary={`${item.name} ${
-                            item.option?.size ? `(${item.option.size})` : ''
+                            item.option?.size
+                              ? `(${getSizeLabel(item.option.size, item.product?.category)})`
+                              : ''
                           }${item.isPromotionalAddon ? ' · ₹9 Deal' : ''}`}
                           secondary={
                             item.isPromotionalAddon && item.originalPrice ? (

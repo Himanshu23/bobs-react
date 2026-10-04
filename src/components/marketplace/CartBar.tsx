@@ -10,6 +10,18 @@ import {
 } from '../../utils/cartUtils';
 
 /**
+ * Bottom padding a page needs so its last content isn't hidden behind the
+ * cart bar: the bar (~80px incl. its padding), a 24px gap, and the phone's
+ * bottom safe area (home indicator / gesture bar), which the bar also adds.
+ */
+export const CART_BAR_CLEARANCE =
+  'calc(104px + env(safe-area-inset-bottom, 0px))';
+
+/** Bottom padding when there's no cart bar: a gap plus the safe area. */
+export const PAGE_BOTTOM_CLEARANCE =
+  'calc(32px + env(safe-area-inset-bottom, 0px))';
+
+/**
  * Persistent bottom bar (item count + total + "View cart") shown on the
  * restaurant list and every restaurant menu. The cart spans restaurants.
  */

@@ -5,6 +5,7 @@
 import { CartItem } from '../types';
 import { DEFAULT_RESTAURANT_ID } from '../types/marketplace';
 import { groupCartByRestaurant } from './cartUtils';
+import { getSizeLabel } from './sizeLabels';
 
 export interface ReceiptLine {
   key: string;
@@ -33,7 +34,11 @@ const round2 = (value: number) =>
   Math.round((value + Number.EPSILON) * 100) / 100;
 
 const lineDetail = (item: CartItem): string => {
-  const variant = [item.option?.size, item.option?.style, item.option?.base]
+  const variant = [
+    getSizeLabel(item.option?.size, item.product?.category),
+    item.option?.style,
+    item.option?.base,
+  ]
     .filter(Boolean)
     .join(' ');
   const price = item.isFreeClaim && !item.price ? 'FREE' : `₹${item.price}`;

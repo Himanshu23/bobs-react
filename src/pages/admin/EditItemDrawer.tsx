@@ -28,6 +28,7 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { Controller, useForm } from 'react-hook-form';
 import { FoodItem, FoodCategory } from '../../types';
 import FoodImage from '../../components/FoodImage';
+import { getSizeLabel } from '../../utils/sizeLabels';
 import ImageCropDialog from './ImageCropDialog';
 import { validateImageFile } from '../../admin/utils/imageCrop';
 import { DecodedImage, decodeImageFile } from '../../admin/utils/imageCanvas';
@@ -532,7 +533,9 @@ const EditItemDrawer: React.FC<EditItemDrawerProps> = ({
               <TableBody>
                 {sizes.map((size) => (
                   <TableRow key={`size-${size}`}>
-                    <TableCell>{size}</TableCell>
+                    <TableCell>
+                      {getSizeLabel(size, formData.category)}
+                    </TableCell>
                     <TableCell>
                       <TextField
                         type="number"

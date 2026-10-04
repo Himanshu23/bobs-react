@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Cropper, { Area } from 'react-easy-crop';
 import {
   Alert,
@@ -19,7 +19,11 @@ import {
 } from '@mui/material';
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import ZoomOutIcon from '@mui/icons-material/ZoomOut';
-import { ASPECT_PRESETS } from '../../admin/utils/imageCrop';
+import {
+  ASPECT_PRESETS,
+  MAX_CROP_ZOOM,
+  fitZoom,
+} from '../../admin/utils/imageCrop';
 import { DecodedImage, cropToDataUrl } from '../../admin/utils/imageCanvas';
 
 interface ImageCropDialogProps {
@@ -28,38 +32,59 @@ interface ImageCropDialogProps {
   onCancel: () => void;
   /** Cropped, downscaled `data:image/...;base64,` string. */
   onConfirm: (dataUrl: string) => void;
+  /** Starting aspect ratio; defaults to the first preset (1:1). */
+  defaultAspect?: number;
 }
 
-const MIN_ZOOM = 1;
-const MAX_ZOOM = 4;
-
 /**
- * Crop step for the food-item photo: drag, pinch/scroll or slider zoom,
- * aspect presets (1:1 default, 4:3, 16:9). Full screen on phones.
+ * Crop step for food-item and restaurant photos: drag, pinch/scroll or slider
+ * zoom, aspect presets (1:1 default, 4:3, 16:9). Zooming out below "fill"
+ * fits the whole photo, padded with white. Full screen on phones.
  */
 const ImageCropDialog: React.FC<ImageCropDialogProps> = ({
   image,
   onCancel,
   onConfirm,
+  defaultAspect = ASPECT_PRESETS[0].value,
 }) => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
-  const [aspect, setAspect] = useState(ASPECT_PRESETS[0].value);
+  const [aspect, setAspect] = useState(defaultAspect);
   const [areaPixels, setAreaPixels] = useState<Area | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Lowest zoom = the whole photo inside the frame (1 = photo fills the frame).
+  const minZoom = useMemo(
+    () => (image ? fitZoom(aspect, image) : 1),
+    [aspect, image]
+  );
+
+  // A new shape can raise the minimum; keep the zoom in range.
+  useEffect(() => {
+    setZoom((current) => Math.max(current, minZoom));
+  }, [minZoom]);
+
+  const showWholePhoto = () => {
+    setCrop({ x: 0, y: 0 });
+    setZoom(minZoom);
+  };
+
+  const fillFrame = () => {
+    setCrop({ x: 0, y: 0 });
+    setZoom(1);
+  };
 
   // Fresh state for every new photo.
   useEffect(() => {
     setCrop({ x: 0, y: 0 });
     setZoom(1);
-    setAspect(ASPECT_PRESETS[0].value);
+    setAspect(defaultAspect);
     setAreaPixels(null);
     setBusy(false);
     setError(null);
-  }, [image]);
+  }, [image, defaultAspect]);
 
   const handleConfirm = () => {
     if (!image || !areaPixels) return;
@@ -95,7 +120,10 @@ const ImageCropDialog: React.FC<ImageCropDialogProps> = ({
             height: fullScreen ? 'auto' : 360,
             flex: fullScreen ? 1 : undefined,
             minHeight: 280,
-            bgcolor: '#222',
+            // White, like the padding the exported photo gets when zoomed out.
+            bgcolor: '#fff',
+            border: '1px solid',
+            borderColor: 'divider',
             borderRadius: 1,
             overflow: 'hidden',
           }}
@@ -105,9 +133,12 @@ const ImageCropDialog: React.FC<ImageCropDialogProps> = ({
               image={image.url}
               crop={crop}
               zoom={zoom}
-              minZoom={MIN_ZOOM}
-              maxZoom={MAX_ZOOM}
+              minZoom={minZoom}
+              maxZoom={MAX_CROP_ZOOM}
               aspect={aspect}
+              // Below "fill" the photo is smaller than the frame and must be
+              // free to sit inside it.
+              restrictPosition={zoom >= 1}
               onCropChange={setCrop}
               onZoomChange={setZoom}
               onCropComplete={(_, pixels) => setAreaPixels(pixels)}
@@ -120,13 +151,33 @@ const ImageCropDialog: React.FC<ImageCropDialogProps> = ({
           <ZoomOutIcon color="action" />
           <Slider
             value={zoom}
-            min={MIN_ZOOM}
-            max={MAX_ZOOM}
+            min={minZoom}
+            max={MAX_CROP_ZOOM}
             step={0.01}
             onChange={(_, value) => setZoom(value as number)}
             aria-label="Zoom"
           />
           <ZoomInIcon color="action" />
+        </Stack>
+
+        <Stack direction="row" spacing={1}>
+          <Button
+            size="small"
+            variant={zoom <= minZoom + 0.001 ? 'contained' : 'outlined'}
+            onClick={showWholePhoto}
+            disabled={minZoom >= 1}
+            fullWidth
+          >
+            Fit whole photo
+          </Button>
+          <Button
+            size="small"
+            variant={Math.abs(zoom - 1) < 0.001 ? 'contained' : 'outlined'}
+            onClick={fillFrame}
+            fullWidth
+          >
+            Fill frame
+          </Button>
         </Stack>
 
         <Stack
@@ -153,7 +204,8 @@ const ImageCropDialog: React.FC<ImageCropDialogProps> = ({
         </Stack>
 
         <Typography variant="caption" color="text.secondary">
-          Drag to position. Pinch, scroll or use the slider to zoom.
+          Drag to position. Pinch, scroll or use the slider to zoom; zoom out to
+          keep the whole photo (the edges are filled with white).
         </Typography>
         {error && <Alert severity="error">{error}</Alert>}
       </DialogContent>

@@ -25,6 +25,9 @@ export const ASPECT_PRESETS: AspectPreset[] = [
   { label: '16:9', value: 16 / 9 },
 ];
 
+/** Most zoom the cropper allows. */
+export const MAX_CROP_ZOOM = 4;
+
 const IMAGE_EXTENSIONS = [
   'jpg',
   'jpeg',
@@ -117,18 +120,40 @@ export interface PixelArea {
 }
 
 /**
- * Keeps a crop area (from the cropper, which can be off by a pixel or so)
- * inside the image, with whole-pixel coordinates.
+ * Cropper zoom at which the whole photo fits inside a crop frame of `aspect`
+ * (zoom 1 = the photo fills the frame). Never above 1.
  */
-export const clampCropArea = (area: PixelArea, image: Size): PixelArea => {
-  const x = Math.min(Math.max(0, Math.round(area.x)), image.width - 1);
-  const y = Math.min(Math.max(0, Math.round(area.y)), image.height - 1);
-  const width = Math.max(1, Math.min(Math.round(area.width), image.width - x));
-  const height = Math.max(
-    1,
-    Math.min(Math.round(area.height), image.height - y)
-  );
-  return { x, y, width, height };
+export const fitZoom = (aspect: number, image: Size): number => {
+  if (image.width <= 0 || image.height <= 0 || aspect <= 0) return 1;
+  const ratio = image.width / image.height;
+  return Math.min(1, ratio / aspect, aspect / ratio);
+};
+
+export interface DrawPlacement {
+  dx: number;
+  dy: number;
+  dWidth: number;
+  dHeight: number;
+}
+
+/**
+ * Where to draw the whole photo on an `out`-sized canvas so that it shows
+ * `area` (source px). The area may reach past the photo when zoomed out; that
+ * part of the canvas stays as the background (white).
+ */
+export const computeDrawPlacement = (
+  area: PixelArea,
+  image: Size,
+  out: Size
+): DrawPlacement => {
+  const scaleX = out.width / Math.max(1, area.width);
+  const scaleY = out.height / Math.max(1, area.height);
+  return {
+    dx: (0 - area.x) * scaleX, // 0 - x, not -x: avoids -0
+    dy: (0 - area.y) * scaleY,
+    dWidth: image.width * scaleX,
+    dHeight: image.height * scaleY,
+  };
 };
 
 /** True when `dataUrl` really is of `mime` (unsupported types fall back to PNG). */

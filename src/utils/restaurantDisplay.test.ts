@@ -6,60 +6,95 @@ import {
   getRestaurantInfoRows,
   groupDishImagesByRestaurant,
   hasOwnRestaurantImage,
+  pickRandom,
   resolveCardMeta,
   RESTAURANT_IMAGE_FALLBACK,
   SAMPLE_CARD_META,
   shouldAutoRotate,
 } from './restaurantDisplay';
 
+describe('pickRandom', () => {
+  it('picks without repeats, driven by the random source', () => {
+    // 0 always takes the first remaining item → original order.
+    expect(pickRandom(['a', 'b', 'c', 'd'], 2, () => 0)).toEqual(['a', 'b']);
+    // 0.99 always swaps in the last remaining item: [d,b,c,a] then [d,a,c,b].
+    expect(pickRandom(['a', 'b', 'c', 'd'], 2, () => 0.99)).toEqual(['d', 'a']);
+  });
+
+  it('returns everything when asking for more than there is', () => {
+    expect(pickRandom(['a', 'b'], 5, () => 0).sort()).toEqual(['a', 'b']);
+    expect(pickRandom([], 3)).toEqual([]);
+  });
+
+  it('does not change the input', () => {
+    const input = ['a', 'b', 'c'];
+    pickRandom(input, 3, () => 0.99);
+    expect(input).toEqual(['a', 'b', 'c']);
+  });
+});
+
 describe('getRestaurantImages', () => {
   const dishes = ['/d1.jpg', '/d2.jpg'];
+  const first = () => 0; // pickRandom keeps menu order
 
-  it('prefers imageUrls, trimmed, without blanks or duplicates', () => {
+  it('puts the restaurant image first, then dish images', () => {
+    expect(
+      getRestaurantImages({ imageUrl: ' /single.jpg ' }, dishes, first)
+    ).toEqual(['/single.jpg', '/d1.jpg', '/d2.jpg']);
+  });
+
+  it('uses imageUrls (trimmed, no blanks or duplicates) as the own images', () => {
     expect(
       getRestaurantImages(
         {
           imageUrls: [' /a.jpg ', '', '   ', '/b.jpg', '/a.jpg'],
           imageUrl: '/single.jpg',
         },
-        dishes
+        dishes,
+        first
       )
-    ).toEqual(['/a.jpg', '/b.jpg']);
-  });
-
-  it('falls back to imageUrl when imageUrls is missing, null or all blank', () => {
-    expect(getRestaurantImages({ imageUrl: '/single.jpg' }, dishes)).toEqual([
-      '/single.jpg',
-    ]);
-    expect(
-      getRestaurantImages({ imageUrls: null, imageUrl: ' /single.jpg ' })
-    ).toEqual(['/single.jpg']);
+    ).toEqual(['/a.jpg', '/b.jpg', '/d1.jpg', '/d2.jpg']);
     expect(
       getRestaurantImages(
         { imageUrls: ['', ' '], imageUrl: '/single.jpg' },
-        dishes
+        [],
+        first
       )
     ).toEqual(['/single.jpg']);
   });
 
-  it("then uses the restaurant's own dish images, de-duplicated, max 5", () => {
-    expect(getRestaurantImages({ imageUrl: ' ' }, dishes)).toEqual(dishes);
+  it('shows only the restaurant image when no dish has one', () => {
+    expect(getRestaurantImages({ imageUrl: '/single.jpg' })).toEqual([
+      '/single.jpg',
+    ]);
     expect(
-      getRestaurantImages({}, [
-        '/1.jpg',
-        ' /1.jpg',
-        '',
-        null,
-        '/2.jpg',
-        '/3.jpg',
-        '/4.jpg',
-        '/5.jpg',
-        '/6.jpg',
-      ])
-    ).toEqual(['/1.jpg', '/2.jpg', '/3.jpg', '/4.jpg', '/5.jpg']);
+      getRestaurantImages({ imageUrl: '/single.jpg' }, ['', null, '  '])
+    ).toEqual(['/single.jpg']);
   });
 
-  it('ends with the single no-image picture', () => {
+  it('picks at most 5 random dish images, without repeating the own image', () => {
+    const many = [
+      '/single.jpg',
+      ' /1.jpg',
+      '/1.jpg',
+      '/2.jpg',
+      '/3.jpg',
+    ].concat(['/4.jpg', '/5.jpg', '/6.jpg', '/7.jpg']);
+    const images = getRestaurantImages({ imageUrl: '/single.jpg' }, many);
+    expect(images[0]).toBe('/single.jpg');
+    expect(images).toHaveLength(6);
+    expect(new Set(images).size).toBe(6);
+    images.slice(1).forEach((url) => expect(url).toMatch(/^\/[1-7]\.jpg$/));
+  });
+
+  it('uses random dish images when the restaurant has no image', () => {
+    expect(getRestaurantImages({ imageUrl: ' ' }, dishes, () => 0.99)).toEqual([
+      '/d2.jpg',
+      '/d1.jpg',
+    ]);
+  });
+
+  it('falls back to the no-image picture when there is nothing', () => {
     expect(getRestaurantImages({})).toEqual([RESTAURANT_IMAGE_FALLBACK]);
     expect(getRestaurantImages({ imageUrls: [] }, ['', '  '])).toEqual([
       RESTAURANT_IMAGE_FALLBACK,
@@ -102,17 +137,24 @@ describe('groupDishImagesByRestaurant', () => {
     expect(grouped.get('r2')).toEqual(['/x.jpg']);
   });
 
-  it('caps at 5 by default and files items without restaurantId under bobs', () => {
+  it('keeps all images by default and files items without restaurantId under bobs', () => {
     const items = Array.from({ length: 8 }, (_, i) => ({
       image: `/${i}.jpg`,
     }));
-    expect(groupDishImagesByRestaurant(items).get('bobs')).toEqual([
-      '/0.jpg',
-      '/1.jpg',
-      '/2.jpg',
-      '/3.jpg',
-      '/4.jpg',
-    ]);
+    expect(groupDishImagesByRestaurant(items).get('bobs')).toHaveLength(8);
+  });
+
+  it('skips the admin form placeholder image', () => {
+    expect(
+      groupDishImagesByRestaurant([
+        {
+          restaurantId: 'r1',
+          image:
+            'https://x.blob.core.windows.net/dishesh/default-placeholder.jpg',
+        },
+        { restaurantId: 'r1', image: '/real.jpg' },
+      ]).get('r1')
+    ).toEqual(['/real.jpg']);
   });
 
   it('leaves out restaurants with no usable image', () => {

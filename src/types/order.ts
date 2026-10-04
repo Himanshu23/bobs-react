@@ -57,6 +57,8 @@ export interface PublicOrderItem {
   isFreeClaim?: boolean | null;
   restaurantId?: string | null;
   restaurantName?: string | null;
+  /** Dish category, stamped by the server (newer orders only). */
+  category?: string | null;
 }
 
 /** `PublicRestaurantOrderDTO`: no commission/payout fields. */

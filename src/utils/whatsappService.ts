@@ -6,6 +6,7 @@
 import { CartItem } from '../types';
 import { PublicOrder, PublicRestaurantOrder } from '../types/order';
 import { getCartItemRestaurantId, groupCartByRestaurant } from './cartUtils';
+import { getSizeLabel } from './sizeLabels';
 
 /** One item line, priced as the customer pays it (cart price × quantity). */
 export interface WhatsAppItemLine {
@@ -76,7 +77,7 @@ const toItemLine = (item: CartItem): WhatsAppItemLine => ({
   name: item.name,
   quantity: item.quantity,
   price: roundMoney(item.price * item.quantity),
-  size: item.option?.size,
+  size: getSizeLabel(item.option?.size, item.product?.category) || undefined,
   style: item.option?.style,
   base: item.option?.base,
   isFreeClaim: Boolean(item.isFreeClaim),

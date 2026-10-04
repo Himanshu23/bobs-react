@@ -21,7 +21,14 @@ import { useCurrentMarketId, useMarkets } from '../data/hooks/useMarkets';
 import { useRestaurants } from '../data/hooks/useRestaurants';
 import { useFoodItems } from '../data/hooks/useFoodItems';
 import RestaurantCard from '../components/marketplace/RestaurantCard';
-import CartBar from '../components/marketplace/CartBar';
+import {
+  RESTAURANT_CARD_ASPECT_RATIO,
+  RESTAURANT_CARD_MIN_HEIGHT,
+} from '../components/marketplace/RestaurantImageCarousel';
+import CartBar, {
+  CART_BAR_CLEARANCE,
+  PAGE_BOTTOM_CLEARANCE,
+} from '../components/marketplace/CartBar';
 import {
   DEFAULT_MARKET_ID,
   DEFAULT_RESTAURANT_ID,
@@ -48,8 +55,12 @@ const RestaurantCardSkeleton = () => (
     <Skeleton
       variant="rectangular"
       animation="wave"
-      height={190}
-      sx={{ borderRadius: 2 }}
+      height="auto"
+      sx={{
+        borderRadius: 2,
+        aspectRatio: RESTAURANT_CARD_ASPECT_RATIO,
+        minHeight: RESTAURANT_CARD_MIN_HEIGHT,
+      }}
     />
     <Box sx={{ px: 0.75, pt: 1.25, pb: 0.75 }}>
       <Skeleton variant="text" width="55%" sx={{ fontSize: '1.15rem' }} />
@@ -235,8 +246,8 @@ const RestaurantListPage: React.FC = () => {
         sx={{
           px: { xs: 2, sm: 3 },
           pt: { xs: 1.5, sm: 2.5 },
-          // Clear the cart bar when it shows.
-          pb: totalItems > 0 ? 12 : 4,
+          // Keep the last card fully visible above the cart bar / safe area.
+          pb: totalItems > 0 ? CART_BAR_CLEARANCE : PAGE_BOTTOM_CLEARANCE,
         }}
       >
         {/* Fixed height, so the line never shifts the list while loading. */}

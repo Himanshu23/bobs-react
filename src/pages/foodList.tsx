@@ -50,6 +50,9 @@ import {
   resolveCartRestaurant,
 } from '../utils/cartUtils';
 
+/** Tab value for the "All" tab (every dish); the default tab. */
+const ALL_CATEGORY = 'All';
+
 const normalizeSearchText = (value: string) =>
   value
     .toLowerCase()
@@ -212,7 +215,8 @@ const FoodListPage: React.FC<FoodListPageProps> = ({
   const [quantityUpdateModal, setQuantityUpdateModal] = useState(false);
   const [quantityUpdateItemID, setquantityUpdateItemID] = useState<string>();
   const [product, setProduct] = useState<FoodItem>();
-  const [selectedCategory, setSelectedCategory] = useState<string>('Starters');
+  const [selectedCategory, setSelectedCategory] =
+    useState<string>(ALL_CATEGORY);
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
   const [variantRemovalModal, setVariantRemovalModal] = useState(false);
   const [variantRemovalItemID, setVariantRemovalItemID] = useState<
@@ -274,32 +278,33 @@ const FoodListPage: React.FC<FoodListPageProps> = ({
       results = Array.from(dedupedResults.values()).sort((left, right) =>
         compareSearchResults(left, right, trimmedSearchQuery, scoreById)
       );
-    } else {
-      // If no search, filter by selected category
+    } else if (selectedCategory !== ALL_CATEGORY) {
+      // If no search, filter by selected category ("All" keeps every dish)
       results = results.filter((item) => item.category === selectedCategory);
     }
 
     return results;
   }, [searchQuery, selectedCategory, items, fuse]);
 
+  // Search keeps relevance order; "All" groups by category, then cheapest first.
+  const compareMenuItems = (a: FoodItem, b: FoodItem) => {
+    if (searchQuery.trim() !== '') {
+      return 0;
+    }
+    if (selectedCategory === ALL_CATEGORY) {
+      const byCategory =
+        CATEGORY_ORDER.indexOf(a.category) - CATEGORY_ORDER.indexOf(b.category);
+      if (byCategory !== 0) return byCategory;
+    }
+    return (getLowestNowPrice(a) ?? 0) - (getLowestNowPrice(b) ?? 0);
+  };
+
   const vegFilteredItems = filteredItems
     .filter((item) => item.veg)
-    .sort((a, b) => {
-      if (searchQuery.trim() !== '') {
-        return 0;
-      }
-
-      return (getLowestNowPrice(a) ?? 0) - (getLowestNowPrice(b) ?? 0);
-    });
+    .sort(compareMenuItems);
   const nonVegFilteredItems = filteredItems
     .filter((item) => !item.veg)
-    .sort((a, b) => {
-      if (searchQuery.trim() !== '') {
-        return 0;
-      }
-
-      return (getLowestNowPrice(a) ?? 0) - (getLowestNowPrice(b) ?? 0);
-    });
+    .sort(compareMenuItems);
 
   useEffect(() => {
     if (scrollToItemId && itemsContainerRef.current) {
@@ -437,8 +442,11 @@ const FoodListPage: React.FC<FoodListPageProps> = ({
 
   // Another restaurant may not serve the default category.
   useEffect(() => {
-    if (!(categories as string[]).includes(selectedCategory)) {
-      setSelectedCategory(categories[0]);
+    if (
+      selectedCategory !== ALL_CATEGORY &&
+      !(categories as string[]).includes(selectedCategory)
+    ) {
+      setSelectedCategory(ALL_CATEGORY);
     }
   }, [categories, selectedCategory]);
 
@@ -553,6 +561,7 @@ const FoodListPage: React.FC<FoodListPageProps> = ({
               },
             }}
           >
+            <Tab label="All" value={ALL_CATEGORY} />
             {categories.map((category) => (
               <Tab key={category} label={category} value={category} />
             ))}
@@ -560,13 +569,15 @@ const FoodListPage: React.FC<FoodListPageProps> = ({
         </Box>
 
         {/* Results Display */}
-        <Box sx={{ mt: 2, mb: totalItems > 0 ? 15 : 2 }}>
+        <Box
+          ref={itemsContainerRef}
+          sx={{ mt: 2, mb: totalItems > 0 ? 15 : 2 }}
+        >
           {searchQuery.trim() !== '' ? (
             // Search Results - Show all items together, ignore veg/non-veg
             <>
               {filteredItems.length > 0 ? (
                 <Box
-                  ref={itemsContainerRef}
                   sx={{
                     display: 'flex',
                     flexWrap: 'wrap',
@@ -626,60 +637,61 @@ const FoodListPage: React.FC<FoodListPageProps> = ({
           ) : (
             // Category View - Show veg/non-veg accordions
             <>
-              {/* Vegetarian Accordion */}
-              <Accordion
-                slotProps={{ heading: { component: 'h4' } }}
-                defaultExpanded
-                expanded={vegAccordionExpanded}
-                onChange={() => setVegAccordionExpanded(!vegAccordionExpanded)}
-                sx={{
-                  width: '100%',
-                  backgroundColor: 'transparent',
-                  boxShadow: 'none',
-                  border: 'none',
-                  transition: 'all 0.3s ease-in-out',
-                  '&:before': {
-                    display: 'none',
-                  },
-                }}
-              >
-                <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
+              {/* Vegetarian Accordion (hidden when there are no veg dishes) */}
+              {vegFilteredItems.length > 0 && (
+                <Accordion
+                  slotProps={{ heading: { component: 'h4' } }}
+                  defaultExpanded
+                  expanded={vegAccordionExpanded}
+                  onChange={() =>
+                    setVegAccordionExpanded(!vegAccordionExpanded)
+                  }
                   sx={{
-                    padding: '0px 16px',
-                    minHeight: '20px !important',
-                    height: '20px',
-                    alignItems: 'center',
+                    width: '100%',
+                    backgroundColor: 'transparent',
+                    boxShadow: 'none',
+                    border: 'none',
                     transition: 'all 0.3s ease-in-out',
-                    '&.Mui-expanded': {
-                      minHeight: '20px !important',
+                    '&:before': {
+                      display: 'none',
                     },
                   }}
                 >
-                  <Typography variant="subtitle1" sx={{ lineHeight: 1 }}>
-                    Vegetarian ({vegFilteredItems.length})
-                  </Typography>
-                </AccordionSummary>
-                <AccordionDetails
-                  sx={{
-                    backgroundColor: 'transparent',
-                    padding: 1,
-                    transition: 'all 0.3s ease-in-out',
-                  }}
-                >
-                  <Box
-                    ref={itemsContainerRef}
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
                     sx={{
-                      display: 'flex',
-                      flexWrap: 'wrap',
-                      gap: 2,
-                      justifyContent: 'center',
-                      padding: 1,
-                      width: '100%',
+                      padding: '0px 16px',
+                      minHeight: '20px !important',
+                      height: '20px',
+                      alignItems: 'center',
+                      transition: 'all 0.3s ease-in-out',
+                      '&.Mui-expanded': {
+                        minHeight: '20px !important',
+                      },
                     }}
                   >
-                    {vegFilteredItems.length > 0 ? (
-                      vegFilteredItems.map((food: FoodItem) => (
+                    <Typography variant="subtitle1" sx={{ lineHeight: 1 }}>
+                      Vegetarian ({vegFilteredItems.length})
+                    </Typography>
+                  </AccordionSummary>
+                  <AccordionDetails
+                    sx={{
+                      backgroundColor: 'transparent',
+                      padding: 1,
+                      transition: 'all 0.3s ease-in-out',
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        gap: 2,
+                        justifyContent: 'center',
+                        padding: 1,
+                        width: '100%',
+                      }}
+                    >
+                      {vegFilteredItems.map((food: FoodItem) => (
                         <Box
                           key={`list_${food.id}`}
                           data-item-id={food.id}
@@ -691,71 +703,68 @@ const FoodListPage: React.FC<FoodListPageProps> = ({
                             searchQuery={searchQuery}
                           />
                         </Box>
-                      ))
-                    ) : (
-                      <Typography color="textSecondary">
-                        No vegetarian items found
-                      </Typography>
-                    )}
-                  </Box>
-                </AccordionDetails>
-              </Accordion>
-              <Divider sx={{ my: 1 }} />
-              {/* Non-Vegetarian Accordion */}
-              <Accordion
-                slotProps={{ heading: { component: 'h4' } }}
-                defaultExpanded
-                expanded={nonVegAccordionExpanded}
-                onChange={() =>
-                  setNonVegAccordionExpanded(!nonVegAccordionExpanded)
-                }
-                sx={{
-                  width: '100%',
-                  backgroundColor: 'transparent',
-                  boxShadow: 'none',
-                  border: 'none',
-                  transition: 'all 0.3s ease-in-out',
-                  '&:before': {
-                    display: 'none',
-                  },
-                }}
-              >
-                <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
+                      ))}
+                    </Box>
+                  </AccordionDetails>
+                </Accordion>
+              )}
+              {vegFilteredItems.length > 0 &&
+                nonVegFilteredItems.length > 0 && <Divider sx={{ my: 1 }} />}
+              {/* Non-Vegetarian Accordion (hidden when there are no non-veg dishes) */}
+              {nonVegFilteredItems.length > 0 && (
+                <Accordion
+                  slotProps={{ heading: { component: 'h4' } }}
+                  defaultExpanded
+                  expanded={nonVegAccordionExpanded}
+                  onChange={() =>
+                    setNonVegAccordionExpanded(!nonVegAccordionExpanded)
+                  }
                   sx={{
-                    padding: '0px 16px',
-                    minHeight: '20px !important',
-                    height: '20px',
-                    alignItems: 'center',
+                    width: '100%',
+                    backgroundColor: 'transparent',
+                    boxShadow: 'none',
+                    border: 'none',
                     transition: 'all 0.3s ease-in-out',
-                    '&.Mui-expanded': {
-                      minHeight: '20px !important',
+                    '&:before': {
+                      display: 'none',
                     },
                   }}
                 >
-                  <Typography variant="subtitle1" sx={{ lineHeight: 1 }}>
-                    Non-Vegetarian ({nonVegFilteredItems.length})
-                  </Typography>
-                </AccordionSummary>
-                <AccordionDetails
-                  sx={{
-                    backgroundColor: 'transparent',
-                    padding: 1,
-                    transition: 'all 0.3s ease-in-out',
-                  }}
-                >
-                  <Box
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
                     sx={{
-                      display: 'flex',
-                      flexWrap: 'wrap',
-                      gap: 2,
-                      justifyContent: 'center',
-                      padding: 1,
-                      width: '100%',
+                      padding: '0px 16px',
+                      minHeight: '20px !important',
+                      height: '20px',
+                      alignItems: 'center',
+                      transition: 'all 0.3s ease-in-out',
+                      '&.Mui-expanded': {
+                        minHeight: '20px !important',
+                      },
                     }}
                   >
-                    {nonVegFilteredItems.length > 0 ? (
-                      nonVegFilteredItems.map((food: FoodItem) => (
+                    <Typography variant="subtitle1" sx={{ lineHeight: 1 }}>
+                      Non-Vegetarian ({nonVegFilteredItems.length})
+                    </Typography>
+                  </AccordionSummary>
+                  <AccordionDetails
+                    sx={{
+                      backgroundColor: 'transparent',
+                      padding: 1,
+                      transition: 'all 0.3s ease-in-out',
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        gap: 2,
+                        justifyContent: 'center',
+                        padding: 1,
+                        width: '100%',
+                      }}
+                    >
+                      {nonVegFilteredItems.map((food: FoodItem) => (
                         <Box
                           key={`list_${food.id}`}
                           data-item-id={food.id}
@@ -767,15 +776,11 @@ const FoodListPage: React.FC<FoodListPageProps> = ({
                             searchQuery={searchQuery}
                           />
                         </Box>
-                      ))
-                    ) : (
-                      <Typography color="textSecondary">
-                        No non-vegetarian items found
-                      </Typography>
-                    )}
-                  </Box>
-                </AccordionDetails>
-              </Accordion>
+                      ))}
+                    </Box>
+                  </AccordionDetails>
+                </Accordion>
+              )}
 
               {/* Empty state message for category view */}
               {vegFilteredItems.length === 0 &&

@@ -2,6 +2,7 @@ import { Box, Button, Typography } from '@mui/material';
 import { CartItem } from '../../types';
 import PriceDisplay from '../PriceDisplay';
 import { getPriceForSize } from '../../utils/priceUtils';
+import { getSizeLabel } from '../../utils/sizeLabels';
 
 interface quantityUpdateCardProps {
   item: CartItem;
@@ -23,7 +24,10 @@ const QuantityUpdateCard = ({
   const formatVariant = (): string => {
     if (!item.option) return '';
     const parts = [];
-    if (item.option.size) parts.push(`Size: ${item.option.size}`);
+    if (item.option.size)
+      parts.push(
+        `Size: ${getSizeLabel(item.option.size, item.product?.category)}`
+      );
     if (item.option.style) parts.push(`Style: ${item.option.style}`);
     if (item.option.base) parts.push(`Base: ${item.option.base}`);
     return parts.length > 0 ? ` • ${parts.join(' • ')}` : '';

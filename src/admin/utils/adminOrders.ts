@@ -14,6 +14,7 @@ import {
   AdminRestaurantOrder,
   PayoutStatus,
 } from '../types/orders';
+import { getSizeLabel } from '../../utils/sizeLabels';
 
 // ------------------------------------------------------------- formatting
 
@@ -40,13 +41,18 @@ export const telHref = (phone?: string | null): string | null => {
   return cleaned ? `tel:${cleaned}` : null;
 };
 
-/** `(Full, Dry)` for an item's size/style/base, or '' when it has none. */
+/**
+ * `(Full, Dry)` for an item's size/style/base, or '' when it has none. Coffee
+ * and Shakes sizes read Large/Medium/Small (`category` is on newer orders).
+ */
 export const formatItemVariant = (
-  item: Pick<AdminOrderItem, 'size' | 'style' | 'base'>
+  item: Pick<AdminOrderItem, 'size' | 'style' | 'base' | 'category'>
 ): string => {
-  const parts = [item.size, item.style, item.base].filter(
-    (part): part is string => Boolean(part)
-  );
+  const parts = [
+    getSizeLabel(item.size, item.category),
+    item.style,
+    item.base,
+  ].filter((part): part is string => Boolean(part));
   return parts.length ? ` (${parts.join(', ')})` : '';
 };
 

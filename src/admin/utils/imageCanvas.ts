@@ -4,7 +4,7 @@
  */
 import {
   PixelArea,
-  clampCropArea,
+  computeDrawPlacement,
   computeOutputSize,
   decodeErrorMessage,
   exportImageDataUrl,
@@ -79,32 +79,23 @@ export const decodeImageFile = async (file: File): Promise<DecodedImage> => {
 
 /**
  * Draws `area` (source px) to a canvas, scaled so the longest side is at most
- * 1200 px, and returns a WebP (or JPEG fallback) data URL.
+ * 1200 px, and returns a WebP (or JPEG fallback) data URL. When zoomed out the
+ * area is bigger than the photo, and the gaps are filled with white.
  */
 export const cropToDataUrl = (image: DecodedImage, area: PixelArea): string => {
-  const crop = clampCropArea(area, image);
-  const out = computeOutputSize(crop);
+  const out = computeOutputSize(area);
   const canvas = document.createElement('canvas');
   canvas.width = out.width;
   canvas.height = out.height;
   const ctx = canvas.getContext('2d');
   if (!ctx) throw new Error('Could not prepare the image. Please try again.');
-  // JPEG has no transparency: use white instead of black behind PNG cut-outs.
+  // White behind PNG cut-outs (JPEG has no transparency) and zoomed-out gaps.
   ctx.fillStyle = '#ffffff';
   ctx.fillRect(0, 0, out.width, out.height);
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
-  ctx.drawImage(
-    image.source,
-    crop.x,
-    crop.y,
-    crop.width,
-    crop.height,
-    0,
-    0,
-    out.width,
-    out.height
-  );
+  const place = computeDrawPlacement(area, image, out);
+  ctx.drawImage(image.source, place.dx, place.dy, place.dWidth, place.dHeight);
   return exportImageDataUrl((mime, quality) => canvas.toDataURL(mime, quality))
     .dataUrl;
 };

@@ -18,6 +18,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { selectFoodItemById } from '../../redux/selectors';
 import { trackEvent } from '../../utils/analytics';
 import { buildCartItemsParams } from '../../utils/analyticsItems';
+import { getAvailableSizes } from '../../utils/priceUtils';
 
 interface QuantityUpdateProps {
   open: boolean;
@@ -29,8 +30,7 @@ const QuantityUpdate = ({ open, onClose, itemID }: QuantityUpdateProps) => {
   const dispatch = useDispatch();
   const foodItem = useSelector(selectFoodItemById(itemID));
   const hasMultipleSizes =
-    foodItem?.priceOptions.nowPrice.size &&
-    Object.keys(foodItem.priceOptions.nowPrice.size).length > 1;
+    foodItem !== undefined && getAvailableSizes(foodItem).length > 1;
   const hasMultipleBases =
     foodItem?.priceOptions.nowPrice.base &&
     Object.keys(foodItem.priceOptions.nowPrice.base).length > 1;

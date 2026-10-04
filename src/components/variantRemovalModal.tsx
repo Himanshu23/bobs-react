@@ -12,6 +12,7 @@ import {
   Typography,
 } from '@mui/material';
 import { CartItem } from '../types';
+import { getSizeLabel } from '../utils/sizeLabels';
 
 interface VariantRemovalModalProps {
   open: boolean;
@@ -30,7 +31,10 @@ const VariantRemovalModal = ({
     if (!variant.option) return 'No options';
 
     const parts = [];
-    if (variant.option.size) parts.push(`Size: ${variant.option.size}`);
+    if (variant.option.size)
+      parts.push(
+        `Size: ${getSizeLabel(variant.option.size, variant.product?.category)}`
+      );
     if (variant.option.style) parts.push(`Style: ${variant.option.style}`);
     if (variant.option.base) parts.push(`Base: ${variant.option.base}`);
 

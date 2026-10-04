@@ -1,4 +1,15 @@
-import { FoodItem } from '../types';
+import { FoodItem, ItemOptions } from '../types';
+
+const SIZE_ORDER: ItemOptions['size'][] = ['Full', 'Half', 'Quarter'];
+
+/**
+ * Portion sizes the dish is sold in (now price above 0), Full → Quarter.
+ * Older dishes may still store unsold sizes as 0; those are left out.
+ */
+export const getAvailableSizes = (item: FoodItem): ItemOptions['size'][] => {
+  const sizes = item.priceOptions?.nowPrice?.size ?? {};
+  return SIZE_ORDER.filter((size) => (sizes[size] ?? 0) > 0);
+};
 
 /**
  * Get the lowest now price from all available sizes
@@ -15,8 +26,8 @@ export const getLowestNowPrice = (item: FoodItem): number | undefined => {
  */
 export const getLowestWasPrice = (item: FoodItem): number | undefined => {
   if (!item.priceOptions.wasPrice) return undefined;
-  const prices = Object.values(item.priceOptions.wasPrice.size).filter(
-    (price): price is number => price !== undefined
+  const prices = Object.values(item.priceOptions.wasPrice.size ?? {}).filter(
+    (price): price is number => price !== undefined && price > 0
   );
   return prices.length > 0 ? Math.min(...prices) : undefined;
 };

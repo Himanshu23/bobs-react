@@ -13,13 +13,20 @@ import {
 } from '../../utils/restaurantDisplay';
 
 const ROTATE_INTERVAL_MS = 3500;
+
+/** Restaurant photos are cropped at 16:9 in the admin form. */
+export const RESTAURANT_CARD_ASPECT_RATIO = '16 / 9';
+/** Keeps the image area a little taller than 16:9 on narrow phones. */
+export const RESTAURANT_CARD_MIN_HEIGHT = 210;
 const SWIPE_THRESHOLD_PX = 40;
 
 interface RestaurantImageCarouselProps {
   images: string[];
   restaurantName: string;
-  /** Height of the image area, in px. */
-  height?: number;
+  /** Shape of the image area (CSS aspect-ratio); 16:9 fits restaurant photos. */
+  aspectRatio?: string;
+  /** Never shorter than this, in px (narrow phones). */
+  minHeight?: number;
   /** Images are still being looked up: show a skeleton instead. */
   loading?: boolean;
   /** Restaurant closed: greyscale, faded, no auto-rotation. */
@@ -67,7 +74,8 @@ const usePageVisible = () => {
 const RestaurantImageCarousel = ({
   images,
   restaurantName,
-  height = 180,
+  aspectRatio = RESTAURANT_CARD_ASPECT_RATIO,
+  minHeight = RESTAURANT_CARD_MIN_HEIGHT,
   loading = false,
   dimmed = false,
   overlay,
@@ -132,7 +140,8 @@ const RestaurantImageCarousel = ({
       }}
       sx={{
         position: 'relative',
-        height,
+        aspectRatio,
+        minHeight,
         overflow: 'hidden',
         borderRadius: 2,
         bgcolor: 'grey.100',
@@ -180,6 +189,7 @@ const RestaurantImageCarousel = ({
                 flex: '0 0 100%',
                 width: '100%',
                 height: '100%',
+                // Fill the card; the 16:9 frame matches restaurant photos.
                 objectFit: 'cover',
                 display: 'block',
                 userSelect: 'none',

@@ -24,7 +24,7 @@ import RestaurantInfoButton from './RestaurantInfoSheet';
 interface RestaurantCardProps extends RestaurantCardMeta {
   restaurant: Restaurant;
   onOpen: (restaurant: Restaurant) => void;
-  /** This restaurant's own dish photos (menu order), used when it has no image. */
+  /** This restaurant's dish photos; a random few follow its own image. */
   dishImages?: string[];
   /** Dish photos are still loading: show a skeleton rather than no-image. */
   dishImagesLoading?: boolean;
@@ -83,7 +83,6 @@ const RestaurantCard = ({
         <RestaurantImageCarousel
           images={images}
           restaurantName={restaurant.name}
-          height={190}
           loading={imagesLoading}
           dimmed={isClosed}
           overlay={

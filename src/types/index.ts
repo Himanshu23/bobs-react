@@ -16,6 +16,8 @@ export enum FoodCategory {
   Rice = 'Rice',
   COMBO = 'COMBO',
   Drinks = 'Drinks',
+  Coffee = 'Coffee',
+  Shakes = 'Shakes',
 }
 
 // Category order for display
@@ -34,6 +36,8 @@ export const CATEGORY_ORDER = [
   FoodCategory.Rice,
   FoodCategory.Sides,
   FoodCategory.Drinks,
+  FoodCategory.Coffee,
+  FoodCategory.Shakes,
 ];
 
 export interface FoodItem {
@@ -148,6 +152,8 @@ export interface OrderItem {
   isPromotionalAddon?: boolean;
   isFreeClaim?: boolean;
   originalPrice?: number;
+  /** Dish category, stamped by the server on newer orders (size labels). */
+  category?: string | null;
 }
 
 export interface Order {

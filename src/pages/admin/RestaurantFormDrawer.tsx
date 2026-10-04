@@ -14,6 +14,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { MarketAdmin, RestaurantAdmin } from '../../admin/types/marketplace';
 import {
   FormErrors,
@@ -30,6 +31,12 @@ import {
 } from '../../admin/utils/marketplaceForms';
 import { useSaveRestaurant } from '../../admin/hooks/useMarketplaceAdmin';
 import OpeningHoursEditor from './OpeningHoursEditor';
+import ImageCropDialog from './ImageCropDialog';
+import { validateImageFile } from '../../admin/utils/imageCrop';
+import { DecodedImage, decodeImageFile } from '../../admin/utils/imageCanvas';
+
+/** Restaurant cards are wide, so start the crop at 16:9. */
+const RESTAURANT_IMAGE_ASPECT = 16 / 9;
 
 interface RestaurantFormDrawerProps {
   open: boolean;
@@ -57,6 +64,10 @@ const RestaurantFormDrawer: React.FC<RestaurantFormDrawerProps> = ({
     emptyRestaurantForm(defaultMarketId)
   );
   const [errors, setErrors] = useState<FormErrors<RestaurantFormValues>>({});
+  const [isOpeningImage, setIsOpeningImage] = useState(false);
+  const [imageError, setImageError] = useState<string | null>(null);
+  // Photo being cropped; the crop dialog is open while this is set.
+  const [cropImage, setCropImage] = useState<DecodedImage | null>(null);
 
   useEffect(() => {
     if (open) {
@@ -66,6 +77,7 @@ const RestaurantFormDrawer: React.FC<RestaurantFormDrawerProps> = ({
           : emptyRestaurantForm(defaultMarketId)
       );
       setErrors({});
+      setImageError(null);
       saveMutation.reset();
     }
     // Reset only when the drawer (re)opens, not on every mutation render.
@@ -81,6 +93,48 @@ const RestaurantFormDrawer: React.FC<RestaurantFormDrawerProps> = ({
     setValues((current) => ({ ...current, [field]: value }));
     setErrors((current) => ({ ...current, [field]: undefined }));
   };
+
+  /**
+   * Choose a file → validate → decode → crop dialog. The cropped photo is sent
+   * as a data URL; the backend uploads it to the restaurant's blob folder.
+   */
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const input = e.target;
+    const file = input.files?.[0];
+    // Reset so choosing the same file again (after Cancel) fires onChange.
+    input.value = '';
+    if (!file) return;
+
+    setImageError(null);
+    const invalid = validateImageFile(file);
+    if (invalid) {
+      setImageError(invalid);
+      return;
+    }
+
+    setIsOpeningImage(true);
+    try {
+      setCropImage(await decodeImageFile(file));
+    } catch (error) {
+      setImageError(
+        error instanceof Error ? error.message : 'Failed to open image'
+      );
+    } finally {
+      setIsOpeningImage(false);
+    }
+  };
+
+  const closeCropDialog = () => {
+    cropImage?.release();
+    setCropImage(null);
+  };
+
+  const handleCropConfirm = (dataUrl: string) => {
+    setField('imageUrl', dataUrl);
+    closeCropDialog();
+  };
+
+  const hasUploadedImage = values.imageUrl.startsWith('data:');
 
   const handleSave = () => {
     const nextErrors = validateRestaurantForm(values);
@@ -247,12 +301,89 @@ const RestaurantFormDrawer: React.FC<RestaurantFormDrawerProps> = ({
                 helperText: 'Optional',
               })}
             </Stack>
-            <TextField
-              label="Image URL"
-              fullWidth
-              value={values.imageUrl}
-              onChange={(e) => setField('imageUrl', e.target.value)}
-            />
+            <Box>
+              <Typography variant="body2" sx={{ fontWeight: 600, mb: 1 }}>
+                Image
+              </Typography>
+              {values.imageUrl.trim() && (
+                <Box
+                  component="img"
+                  src={values.imageUrl}
+                  alt={values.name || 'Restaurant'}
+                  sx={{
+                    width: '100%',
+                    aspectRatio: '16 / 9',
+                    objectFit: 'cover',
+                    borderRadius: 1,
+                    mb: 1,
+                    bgcolor: '#f5f5f5',
+                  }}
+                />
+              )}
+              <Stack direction="row" spacing={1}>
+                <Button
+                  variant="outlined"
+                  component="label"
+                  startIcon={
+                    isOpeningImage ? (
+                      <CircularProgress size={20} />
+                    ) : (
+                      <CloudUploadIcon />
+                    )
+                  }
+                  disabled={isOpeningImage || saveMutation.isPending}
+                  fullWidth
+                >
+                  {isOpeningImage
+                    ? 'Opening...'
+                    : values.imageUrl.trim()
+                      ? 'Change Image'
+                      : 'Upload Image'}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    hidden
+                    onChange={handleImageUpload}
+                  />
+                </Button>
+                {values.imageUrl.trim() && (
+                  <Button
+                    variant="text"
+                    color="error"
+                    onClick={() => setField('imageUrl', '')}
+                    disabled={saveMutation.isPending}
+                  >
+                    Remove
+                  </Button>
+                )}
+              </Stack>
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{ display: 'block', mt: 0.5 }}
+              >
+                JPG, PNG, WebP or HEIC (where supported), up to 15 MB. You can
+                crop it before it is used.
+              </Typography>
+              {imageError && (
+                <Alert
+                  severity="error"
+                  onClose={() => setImageError(null)}
+                  sx={{ mt: 1 }}
+                >
+                  {imageError}
+                </Alert>
+              )}
+            </Box>
+            {!hasUploadedImage && (
+              <TextField
+                label="Image URL (optional)"
+                fullWidth
+                value={values.imageUrl}
+                onChange={(e) => setField('imageUrl', e.target.value)}
+                helperText="Or paste a link to an image that is already hosted"
+              />
+            )}
             <Autocomplete
               multiple
               freeSolo
@@ -403,7 +534,7 @@ const RestaurantFormDrawer: React.FC<RestaurantFormDrawerProps> = ({
             variant="contained"
             fullWidth
             onClick={handleSave}
-            disabled={saveMutation.isPending}
+            disabled={saveMutation.isPending || isOpeningImage}
             startIcon={
               saveMutation.isPending ? (
                 <CircularProgress size={20} />
@@ -426,6 +557,12 @@ const RestaurantFormDrawer: React.FC<RestaurantFormDrawerProps> = ({
           </Button>
         </Stack>
       </Box>
+      <ImageCropDialog
+        image={cropImage}
+        defaultAspect={RESTAURANT_IMAGE_ASPECT}
+        onCancel={closeCropDialog}
+        onConfirm={handleCropConfirm}
+      />
     </Drawer>
   );
 };
