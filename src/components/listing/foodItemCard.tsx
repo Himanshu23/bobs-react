@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { selectProductTotalQuantity } from '../../redux/selectors';
 import { useState } from 'react';
 import PriceDisplay from '../PriceDisplay';
+import { useMenuOrdering } from '../../context/MenuOrderingContext';
 import { getLowestNowPrice, getLowestWasPrice } from '../../utils/priceUtils';
 
 interface FoodItemCardProps {
@@ -97,6 +98,8 @@ const FoodItemCard = ({ item, handleCart, searchQuery }: FoodItemCardProps) => {
     selectProductTotalQuantity(item.id, item.restaurantId || undefined)
   );
   const [imageError, setImageError] = useState(false);
+  // Restaurant closed (D15): menu stays browsable, cart controls are disabled.
+  const { orderable } = useMenuOrdering();
 
   const handleImageError = () => {
     setImageError(true);
@@ -208,14 +211,16 @@ const FoodItemCard = ({ item, handleCart, searchQuery }: FoodItemCardProps) => {
                 variant="contained"
                 color="primary"
                 sx={{ textTransform: 'none', width: '100%' }}
+                disabled={!orderable}
                 onClick={() => handleCart(item.id, 'Add')}
               >
-                Add more
+                {orderable ? 'Add more' : 'Closed'}
               </Button>
               <Button
                 variant="outlined"
                 color="secondary"
                 sx={{ textTransform: 'none', width: '100%' }}
+                disabled={!orderable}
                 onClick={() => handleCart(item.id, 'Remove')}
               >
                 Remove
@@ -232,9 +237,13 @@ const FoodItemCard = ({ item, handleCart, searchQuery }: FoodItemCardProps) => {
               width: '220px',
               textTransform: 'none',
             }}
+            disabled={!orderable}
+            aria-label={
+              orderable ? undefined : `${item.name}: restaurant closed`
+            }
             onClick={() => handleCart(item.id, 'Add')}
           >
-            Add to Cart
+            {orderable ? 'Add to Cart' : 'Closed'}
           </Button>
         )}
       </Box>

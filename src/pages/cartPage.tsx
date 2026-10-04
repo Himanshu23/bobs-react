@@ -17,6 +17,7 @@ import {
   Divider,
   Container,
   Chip,
+  Alert,
 } from '@mui/material';
 import { CartItem, ItemOptions } from '../types';
 import AddIcon from '@mui/icons-material/Add';
@@ -36,6 +37,11 @@ import {
 } from '../utils/promotionalAddonStrategy';
 import { useRestaurantDirectory } from '../data/hooks/useRestaurants';
 import RestaurantInfoButton from '../components/marketplace/RestaurantInfoSheet';
+import {
+  getClosedBannerText,
+  getClosedCartGroups,
+  getClosedCheckoutMessage,
+} from '../utils/restaurantHours';
 import {
   getCartItemRestaurantId,
   getCartItemsTotal,
@@ -140,7 +146,43 @@ const CartPage: React.FC = () => {
     dispatch(removeFromCart({ id, option, ...itemFlags }));
   };
 
+  // D15: items from a closed restaurant block checkout until removed.
+  const closedGroups = useMemo(
+    () => getClosedCartGroups(restaurantGroups, restaurantsById),
+    [restaurantGroups, restaurantsById]
+  );
+  const closedCheckoutMessage = getClosedCheckoutMessage(
+    closedGroups.map((closed) => closed.name)
+  );
+  const closedGroupIds = new Set(
+    closedGroups.map((closed) => closed.group.restaurantId)
+  );
+
+  const handleRemoveGroup = (restaurantId: string) => {
+    const group = restaurantGroups.find(
+      (candidate) => candidate.restaurantId === restaurantId
+    );
+    if (!group) return;
+    trackEvent('remove_from_cart', {
+      ...buildCartItemsParams(group.items),
+      restaurant_id: restaurantId,
+      source: 'cart_closed_restaurant',
+    });
+    group.items.forEach((item) =>
+      dispatch(
+        removeFromCart({
+          id: item.id,
+          option: item.option,
+          isPromotionalAddon: !!item.isPromotionalAddon,
+          isFreeClaim: !!item.isFreeClaim,
+          restaurantId,
+        })
+      )
+    );
+  };
+
   const handleProceedToCheckout = () => {
+    if (closedCheckoutMessage) return;
     trackEvent('begin_checkout', {
       ...buildCartItemsParams(cartItems),
       item_count: cartItems.length,
@@ -251,6 +293,24 @@ const CartPage: React.FC = () => {
                       </Box>
                     </Typography>
                   </Box>
+                  {restaurant && closedGroupIds.has(group.restaurantId) && (
+                    <Alert
+                      severity="warning"
+                      sx={{ mb: 1.5, alignItems: 'center' }}
+                      action={
+                        <Button
+                          color="inherit"
+                          size="small"
+                          onClick={() => handleRemoveGroup(group.restaurantId)}
+                          sx={{ whiteSpace: 'nowrap' }}
+                        >
+                          Remove these items
+                        </Button>
+                      }
+                    >
+                      {getClosedBannerText(restaurant)}
+                    </Alert>
+                  )}
                   {group.items.map((item) => (
                     <Card
                       key={getCartLineKey(item)}
@@ -481,10 +541,16 @@ const CartPage: React.FC = () => {
                 </Typography>
               </Box>
 
+              {closedCheckoutMessage && (
+                <Alert severity="warning" sx={{ mb: 1.5 }} role="alert">
+                  {closedCheckoutMessage}
+                </Alert>
+              )}
               <Button
                 variant="contained"
                 fullWidth
                 size="large"
+                disabled={Boolean(closedCheckoutMessage)}
                 onClick={handleProceedToCheckout}
                 sx={{
                   mb: 1,
@@ -492,6 +558,10 @@ const CartPage: React.FC = () => {
                     'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                   textTransform: 'none',
                   fontSize: '1rem',
+                  '&.Mui-disabled': {
+                    background: 'none',
+                    bgcolor: 'action.disabledBackground',
+                  },
                 }}
               >
                 Proceed to Checkout

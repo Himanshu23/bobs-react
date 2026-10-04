@@ -25,6 +25,7 @@ import {
 import {
   restaurantDeactivationWarnings,
   restaurantFormToRequest,
+  restaurantOpenStatus,
   restaurantToForm,
 } from '../../admin/utils/marketplaceForms';
 import RestaurantFormDrawer from './RestaurantFormDrawer';
@@ -115,6 +116,37 @@ const RestaurantsTab: React.FC = () => {
     );
   };
 
+  // Pause/resume orders now (D15): same full-record PUT, only
+  // `acceptingOrders` flipped. The save hook refreshes the storefront too.
+  const [pausingId, setPausingId] = useState<string | null>(null);
+  const togglePause = (restaurant: RestaurantAdmin) => {
+    const nextAccepting = restaurant.acceptingOrders === false;
+    setPausingId(restaurant.id);
+    saveMutation.mutate(
+      {
+        id: restaurant.id,
+        restaurant: {
+          ...restaurantFormToRequest(restaurantToForm(restaurant)),
+          acceptingOrders: nextAccepting,
+        },
+      },
+      {
+        onSuccess: (saved) =>
+          setSnackbar({
+            severity: 'success',
+            message: `${saved.name} ${
+              saved.acceptingOrders === false
+                ? 'is paused: no new orders until you resume.'
+                : 'is taking orders again (within its opening hours).'
+            }`,
+          }),
+        onError: (error) =>
+          setSnackbar({ severity: 'error', message: error.message }),
+        onSettled: () => setPausingId(null),
+      }
+    );
+  };
+
   const loadError = restaurantsQuery.error ?? marketsQuery.error;
 
   return (
@@ -162,6 +194,8 @@ const RestaurantsTab: React.FC = () => {
 
       {visibleRestaurants.map((restaurant) => {
         const market = marketsById[restaurant.marketId];
+        const openStatus = restaurantOpenStatus(restaurant);
+        const paused = restaurant.acceptingOrders === false;
         return (
           <Card
             key={restaurant.id}
@@ -215,6 +249,13 @@ const RestaurantsTab: React.FC = () => {
                           size="small"
                           color="warning"
                           label="Market inactive"
+                        />
+                      )}
+                      {openStatus && (
+                        <Chip
+                          size="small"
+                          color={openStatus.color}
+                          label={openStatus.label}
                         />
                       )}
                     </Stack>
@@ -279,6 +320,15 @@ const RestaurantsTab: React.FC = () => {
                     onClick={() => setToggleTarget(restaurant)}
                   >
                     {restaurant.active ? 'Deactivate' : 'Activate'}
+                  </Button>
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    color={paused ? 'success' : 'warning'}
+                    disabled={pausingId === restaurant.id}
+                    onClick={() => togglePause(restaurant)}
+                  >
+                    {paused ? 'Resume orders' : 'Pause orders'}
                   </Button>
                 </Stack>
               </Stack>

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import {
   Box,
+  Chip,
   Dialog,
   DialogContent,
   Drawer,
@@ -28,6 +29,7 @@ import {
   RestaurantInfoRowKind,
 } from '../../utils/restaurantDisplay';
 import RestaurantPhoneLink from './RestaurantPhoneLink';
+import { getNextOpensText } from '../../utils/restaurantHours';
 
 const ROW_ICONS: Record<RestaurantInfoRowKind, typeof NotesIcon> = {
   description: NotesIcon,
@@ -77,6 +79,34 @@ export const RestaurantInfoSheet = ({
             <Typography variant="body2" color="text.secondary">
               {cuisines.join(', ')}
             </Typography>
+          )}
+          {/* Only when the server sends openNow (D15). */}
+          {typeof restaurant.openNow === 'boolean' && (
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                flexWrap: 'wrap',
+                gap: 1,
+                mt: 0.75,
+              }}
+            >
+              <Chip
+                size="small"
+                label={restaurant.openNow ? 'Open now' : 'Closed'}
+                color={restaurant.openNow ? 'success' : 'default'}
+                sx={{ fontWeight: 700, height: 22 }}
+              />
+              {!restaurant.openNow && getNextOpensText(restaurant) && (
+                <Typography
+                  variant="caption"
+                  color="text.secondary"
+                  sx={{ mb: 0 }}
+                >
+                  {getNextOpensText(restaurant)}
+                </Typography>
+              )}
+            </Box>
           )}
         </Box>
         <IconButton

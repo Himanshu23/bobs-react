@@ -19,6 +19,7 @@ import {
   FormErrors,
   RestaurantFormValues,
   bobsCollisionWarning,
+  defaultScheduleRows,
   emptyRestaurantForm,
   hasErrors,
   restaurantDeactivationWarnings,
@@ -28,6 +29,7 @@ import {
   validateRestaurantForm,
 } from '../../admin/utils/marketplaceForms';
 import { useSaveRestaurant } from '../../admin/hooks/useMarketplaceAdmin';
+import OpeningHoursEditor from './OpeningHoursEditor';
 
 interface RestaurantFormDrawerProps {
   open: boolean;
@@ -86,7 +88,10 @@ const RestaurantFormDrawer: React.FC<RestaurantFormDrawerProps> = ({
     if (hasErrors(nextErrors)) return;
 
     saveMutation.mutate(
-      { id: restaurant?.id, restaurant: restaurantFormToRequest(values) },
+      {
+        id: restaurant?.id,
+        restaurant: restaurantFormToRequest(values, { isCreate: !restaurant }),
+      },
       {
         onSuccess: (saved) => {
           onSaved?.(saved);
@@ -277,6 +282,80 @@ const RestaurantFormDrawer: React.FC<RestaurantFormDrawerProps> = ({
                 />
               )}
             />
+          </Stack>
+
+          <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 1 }}>
+            Opening hours
+          </Typography>
+          <Stack spacing={1.5} sx={{ mb: 3 }}>
+            <Box>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={values.acceptingOrders}
+                    onChange={(e) =>
+                      setField('acceptingOrders', e.target.checked)
+                    }
+                  />
+                }
+                label="Accepting orders"
+              />
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{ display: 'block' }}
+              >
+                Turn off to pause orders now; the schedule resumes when you turn
+                it back on.
+              </Typography>
+            </Box>
+            <Box>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={values.hoursEnabled}
+                    disabled={values.hasStoredSchedule}
+                    onChange={(e) => {
+                      const enabled = e.target.checked;
+                      setValues((current) => ({
+                        ...current,
+                        hoursEnabled: enabled,
+                        // Prefill: every day open 11:00–23:00.
+                        schedule: enabled
+                          ? defaultScheduleRows()
+                          : current.schedule,
+                      }));
+                      setErrors((current) => ({
+                        ...current,
+                        schedule: undefined,
+                      }));
+                    }}
+                  />
+                }
+                label="Set opening hours"
+              />
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{ display: 'block' }}
+              >
+                {values.hasStoredSchedule
+                  ? 'Times are India time. To be open all day, set open and close to the same time.'
+                  : values.hoursEnabled
+                    ? 'Times are India time. A close time before the open time means after midnight.'
+                    : 'Off: always open (while accepting orders).'}
+              </Typography>
+            </Box>
+            {values.hoursEnabled && (
+              <OpeningHoursEditor
+                rows={values.schedule}
+                onChange={(rows) => setField('schedule', rows)}
+                showErrors={Boolean(errors.schedule)}
+              />
+            )}
+            {errors.schedule && (
+              <Alert severity="error">{errors.schedule}</Alert>
+            )}
           </Stack>
 
           <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 2 }}>

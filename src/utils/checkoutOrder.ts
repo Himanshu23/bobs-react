@@ -362,6 +362,14 @@ export const describePlaceOrderError = (
       action: 'review-cart',
     };
   }
+  // D15: "<Name> is closed now. Opens tomorrow at 11:00 AM." or
+  // "<Name> is not accepting orders right now."
+  if (/is closed now|not accepting orders right now/i.test(message)) {
+    return {
+      message: `${withStop(message)} Remove its items from your cart to place the order now.`,
+      action: 'review-cart',
+    };
+  }
   if (/not taking orders right now|is not available right now/i.test(message)) {
     return {
       message: `${withStop(message)} Remove it from your cart to continue.`,

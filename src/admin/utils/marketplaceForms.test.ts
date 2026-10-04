@@ -204,6 +204,8 @@ describe('validateRestaurantForm', () => {
       discountSharePercent: 10,
       active: true,
       displayOrder: 1,
+      // Edit with no stored schedule: weeklySchedule omitted (kept).
+      acceptingOrders: true,
     });
   });
 });
@@ -282,6 +284,8 @@ describe('restaurant round trip with null fields', () => {
       discountSharePercent: 0,
       active: true,
       displayOrder: 0,
+      // Edit with no stored schedule: weeklySchedule omitted (kept).
+      acceptingOrders: true,
     });
   });
 });

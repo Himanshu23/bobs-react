@@ -37,6 +37,34 @@ export interface MarketRequest {
   displayOrder?: number | null;
 }
 
+/** Days of `weeklySchedule`, in the required order (D15). */
+export const WEEK_DAYS = [
+  'MONDAY',
+  'TUESDAY',
+  'WEDNESDAY',
+  'THURSDAY',
+  'FRIDAY',
+  'SATURDAY',
+  'SUNDAY',
+] as const;
+
+export type WeekDay = (typeof WEEK_DAYS)[number];
+
+/**
+ * One day of a restaurant's opening hours (D15). Times are 24h "HH:mm" in
+ * India time. `closed` = closed all day; `close < open` = closes after
+ * midnight; `open == close` = open 24 hours.
+ */
+export interface DaySchedule {
+  day: WeekDay;
+  open: string;
+  close: string;
+  closed: boolean;
+}
+
+/** Why a restaurant is closed now (computed by the server). */
+export type ClosedReason = 'PAUSED' | 'SCHEDULE';
+
 /** Response of GET/POST/PUT /api/admin/restaurants. */
 export interface RestaurantAdmin {
   id: string;
@@ -52,6 +80,19 @@ export interface RestaurantAdmin {
   discountSharePercent: number;
   active: boolean;
   displayOrder: number;
+  /** 7 entries MONDAY..SUNDAY; null/absent = always open. */
+  weeklySchedule?: DaySchedule[] | null;
+  /** false = paused (closed regardless of the schedule). Default true. */
+  acceptingOrders?: boolean | null;
+  // Read-only, computed by the server at response time (D15):
+  openNow?: boolean;
+  closedReason?: ClosedReason | null;
+  /** ISO-8601 with offset, e.g. "2026-10-04T11:00:00+05:30". */
+  nextOpensAt?: string | null;
+  /** e.g. "Opens tomorrow at 11:00 AM", "Not accepting orders right now". */
+  nextOpensLabel?: string | null;
+  /** Server-generated summary when weeklySchedule is set. */
+  openingHours?: string | null;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -70,6 +111,13 @@ export interface RestaurantRequest {
   discountSharePercent?: number | null;
   active?: boolean | null;
   displayOrder?: number | null;
+  /**
+   * Omitted (undefined) on PUT = keep the stored value. On POST, null =
+   * always open.
+   */
+  weeklySchedule?: DaySchedule[] | null;
+  /** Omitted/null on PUT = keep the stored value. */
+  acceptingOrders?: boolean | null;
 }
 
 /**

@@ -324,6 +324,33 @@ describe('place-order errors', () => {
     );
   });
 
+  it('explains closed restaurants (D15) and sends back to the cart', () => {
+    expect(
+      describePlaceOrderError(
+        new PlaceOrderError(
+          400,
+          "Bob's is closed now. Opens tomorrow at 11:00 AM."
+        )
+      )
+    ).toEqual({
+      message:
+        "Bob's is closed now. Opens tomorrow at 11:00 AM. Remove its items from your cart to place the order now.",
+      action: 'review-cart',
+    });
+    expect(
+      describePlaceOrderError(
+        new PlaceOrderError(
+          400,
+          'Mutka King is not accepting orders right now.'
+        )
+      )
+    ).toEqual({
+      message:
+        'Mutka King is not accepting orders right now. Remove its items from your cart to place the order now.',
+      action: 'review-cart',
+    });
+  });
+
   it('handles the location, schedule, empty-body and unknown cases', () => {
     expect(
       describePlaceOrderError(

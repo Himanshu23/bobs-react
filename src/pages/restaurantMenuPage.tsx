@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef } from 'react';
+import { AccessTime as AccessTimeIcon } from '@mui/icons-material';
 import {
   Box,
   Button,
@@ -12,6 +13,11 @@ import { useRestaurant } from '../data/hooks/useRestaurants';
 import { useCurrentMarketId } from '../data/hooks/useMarkets';
 import { CurrentRestaurantProvider } from '../context/CurrentRestaurantContext';
 import { usePublishRestaurantHeader } from '../context/RestaurantHeaderContext';
+import { MenuOrderingProvider } from '../context/MenuOrderingContext';
+import {
+  getClosedBannerText,
+  isRestaurantOrderable,
+} from '../utils/restaurantHours';
 import CartBar from '../components/marketplace/CartBar';
 import {
   DEFAULT_RESTAURANT_ID,
@@ -132,6 +138,13 @@ const RestaurantMenuPage: React.FC<RestaurantMenuPageProps> = ({ slug }) => {
     });
   };
 
+  const orderable = isRestaurantOrderable(restaurant);
+  const closedText = restaurant ? getClosedBannerText(restaurant) : null;
+  const menuOrdering = useMemo(
+    () => ({ orderable, closedText }),
+    [orderable, closedText]
+  );
+
   // The app header shows back + name + ⓘ for this restaurant (header.tsx).
   usePublishRestaurantHeader(restaurant ?? null, isLoading, backToList);
 
@@ -164,12 +177,40 @@ const RestaurantMenuPage: React.FC<RestaurantMenuPageProps> = ({ slug }) => {
 
   return (
     <CurrentRestaurantProvider value={cartRestaurant}>
-      {/* The name/back/ⓘ now live in the app header; keep a little top space. */}
-      <FoodList
-        restaurantId={restaurant.id}
-        restaurantHeader={<Box aria-hidden sx={{ pt: 1.5 }} />}
-      />
-      <CartBar />
+      <MenuOrderingProvider value={menuOrdering}>
+        {closedText && (
+          <Box
+            role="status"
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 0.75,
+              px: 2,
+              py: 0.875,
+              bgcolor: 'rgba(43, 38, 36, 0.06)',
+              borderBottom: '1px solid',
+              borderColor: 'divider',
+              color: 'text.primary',
+              fontSize: '0.875rem',
+              fontWeight: 600,
+              textAlign: 'center',
+            }}
+          >
+            <AccessTimeIcon
+              aria-hidden
+              sx={{ fontSize: '1rem', color: 'secondary.main' }}
+            />
+            {closedText}
+          </Box>
+        )}
+        {/* The name/back/ⓘ now live in the app header; keep a little top space. */}
+        <FoodList
+          restaurantId={restaurant.id}
+          restaurantHeader={<Box aria-hidden sx={{ pt: 1.5 }} />}
+        />
+        <CartBar />
+      </MenuOrderingProvider>
     </CurrentRestaurantProvider>
   );
 };

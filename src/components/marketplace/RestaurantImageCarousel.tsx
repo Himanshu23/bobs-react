@@ -1,4 +1,11 @@
-import { RefObject, TouchEvent, useEffect, useRef, useState } from 'react';
+import {
+  ReactNode,
+  RefObject,
+  TouchEvent,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { Box, ButtonBase, Skeleton, useMediaQuery } from '@mui/material';
 import {
   RESTAURANT_IMAGE_FALLBACK,
@@ -15,6 +22,10 @@ interface RestaurantImageCarouselProps {
   height?: number;
   /** Images are still being looked up: show a skeleton instead. */
   loading?: boolean;
+  /** Restaurant closed: greyscale, faded, no auto-rotation. */
+  dimmed?: boolean;
+  /** Drawn over the images (e.g. a "Closed" badge). */
+  overlay?: ReactNode;
 }
 
 /** Rotates only while the element is at least partly on screen. */
@@ -58,6 +69,8 @@ const RestaurantImageCarousel = ({
   restaurantName,
   height = 180,
   loading = false,
+  dimmed = false,
+  overlay,
 }: RestaurantImageCarouselProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [index, setIndex] = useState(0);
@@ -74,7 +87,8 @@ const RestaurantImageCarousel = ({
   const count = images.length;
   const current = count > 0 ? index % count : 0;
   const canRotate = !loading && shouldAutoRotate(count);
-  const autoRotate = canRotate && onScreen && pageVisible && !reducedMotion;
+  const autoRotate =
+    canRotate && !dimmed && onScreen && pageVisible && !reducedMotion;
 
   // Restarts after each change, so a manual swipe/dot gets a full interval.
   useEffect(() => {
@@ -139,6 +153,8 @@ const RestaurantImageCarousel = ({
             display: 'flex',
             height: '100%',
             transform: `translateX(-${current * 100}%)`,
+            filter: dimmed ? 'grayscale(1)' : 'none',
+            opacity: dimmed ? 0.55 : 1,
             transition: reducedMotion ? 'none' : 'transform 450ms ease',
           }}
         >
@@ -172,6 +188,8 @@ const RestaurantImageCarousel = ({
           ))}
         </Box>
       )}
+
+      {overlay}
 
       {canRotate && (
         <>

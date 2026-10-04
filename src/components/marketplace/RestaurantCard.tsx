@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { alpha, Box, ButtonBase, Card, Typography } from '@mui/material';
 import {
+  AccessTime as AccessTimeIcon,
   LocalOffer as LocalOfferIcon,
   Star as StarIcon,
 } from '@mui/icons-material';
@@ -13,6 +14,10 @@ import {
   resolveCardMeta,
   RestaurantCardMeta,
 } from '../../utils/restaurantDisplay';
+import {
+  getNextOpensText,
+  isRestaurantOrderable,
+} from '../../utils/restaurantHours';
 import RestaurantImageCarousel from './RestaurantImageCarousel';
 import RestaurantInfoButton from './RestaurantInfoSheet';
 
@@ -58,6 +63,9 @@ const RestaurantCard = ({
   );
 
   const open = () => onOpen(restaurant);
+  // Closed restaurants stay tappable: their menus can be browsed (D15).
+  const isClosed = !isRestaurantOrderable(restaurant);
+  const nextOpensText = isClosed ? getNextOpensText(restaurant) : null;
 
   return (
     <Card
@@ -77,6 +85,29 @@ const RestaurantCard = ({
           restaurantName={restaurant.name}
           height={190}
           loading={imagesLoading}
+          dimmed={isClosed}
+          overlay={
+            isClosed ? (
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: 10,
+                  left: 10,
+                  px: 1.25,
+                  py: 0.375,
+                  borderRadius: 999,
+                  bgcolor: 'rgba(43, 38, 36, 0.85)',
+                  color: 'common.white',
+                  fontSize: '0.75rem',
+                  fontWeight: 700,
+                  letterSpacing: 0.4,
+                  textTransform: 'uppercase',
+                }}
+              >
+                Closed
+              </Box>
+            ) : null
+          }
         />
       </Box>
 
@@ -96,7 +127,7 @@ const RestaurantCard = ({
           >
             {/* Keyboard/screen-reader entry point; the click bubbles to the card. */}
             <ButtonBase
-              aria-label={`Open ${restaurant.name} menu`}
+              aria-label={`Open ${restaurant.name} menu${isClosed ? ' (closed now)' : ''}`}
               disableRipple
               sx={{
                 display: 'block',
@@ -134,6 +165,25 @@ const RestaurantCard = ({
           >
             {cuisines.join(', ')}
           </Typography>
+        )}
+
+        {nextOpensText && (
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 0.5,
+              mt: 0.5,
+              color: 'secondary.main',
+              fontSize: '0.825rem',
+              fontWeight: 600,
+            }}
+          >
+            <AccessTimeIcon aria-hidden sx={{ fontSize: '0.95rem' }} />
+            <Box component="span" sx={{ minWidth: 0 }}>
+              {nextOpensText}
+            </Box>
+          </Box>
         )}
 
         {resolvedMeta && (

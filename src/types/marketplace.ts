@@ -24,6 +24,27 @@ export interface Market {
   displayOrder: number;
 }
 
+export type DayOfWeek =
+  | 'MONDAY'
+  | 'TUESDAY'
+  | 'WEDNESDAY'
+  | 'THURSDAY'
+  | 'FRIDAY'
+  | 'SATURDAY'
+  | 'SUNDAY';
+
+/** One day of a restaurant's week (D15). Times are 24h "HH:mm", India time. */
+export interface DaySchedule {
+  day: DayOfWeek;
+  open: string;
+  close: string;
+  /** Closed all day (open/close ignored). */
+  closed: boolean;
+}
+
+/** Why `openNow` is false (D15). */
+export type RestaurantClosedReason = 'PAUSED' | 'SCHEDULE';
+
 /**
  * `GET /api/restaurants?marketId=` and `GET /api/restaurants/{idOrSlug}`.
  * `phone` is always present (D6). Commission fields are never sent publicly.
@@ -49,6 +70,19 @@ export interface Restaurant {
   openingHours?: string | null;
   /** FSSAI licence number, shown in the info sheet. */
   fssaiNumber?: string | null;
+  // Opening hours (D15). The server computes the open/closed fields in India
+  // time; the client never works out hours or timezones itself.
+  /** 7 entries MONDAY..SUNDAY; null/absent = always open. */
+  weeklySchedule?: DaySchedule[] | null;
+  /** False = paused by the admin (closed regardless of the schedule). */
+  acceptingOrders?: boolean | null;
+  /** Server-computed. Missing (older backend) is treated as open. */
+  openNow?: boolean | null;
+  closedReason?: RestaurantClosedReason | null;
+  /** ISO-8601 with offset, e.g. "2026-10-04T11:00:00+05:30". */
+  nextOpensAt?: string | null;
+  /** e.g. "Opens tomorrow at 11:00 AM", "Not accepting orders right now", "Closed". */
+  nextOpensLabel?: string | null;
 }
 
 /** Bob's public number (also in the app header). */
@@ -72,6 +106,13 @@ export const FALLBACK_DEFAULT_RESTAURANT: Restaurant = {
   description: undefined,
   openingHours: undefined,
   fssaiNumber: undefined,
+  // Always orderable: no schedule means always open (D15).
+  weeklySchedule: undefined,
+  acceptingOrders: true,
+  openNow: true,
+  closedReason: null,
+  nextOpensAt: null,
+  nextOpensLabel: null,
 };
 
 /** `{ "error": "..." }` body sent with 400/404 by the marketplace endpoints. */

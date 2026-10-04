@@ -6,10 +6,13 @@
 import {
   DEFAULT_MARKET_ID,
   DEFAULT_RESTAURANT_ID,
+  DaySchedule,
   MarketAdmin,
   MarketRequest,
   RestaurantAdmin,
   RestaurantRequest,
+  WEEK_DAYS,
+  WeekDay,
 } from '../types/marketplace';
 
 export type FormErrors<T> = Partial<Record<keyof T, string>>;
@@ -138,6 +141,131 @@ export const marketFormToRequest = (
   active: values.active,
 });
 
+// -------------------------------------------------------- opening hours
+
+/** One row of the opening-hours editor (D15). Times are "HH:mm" (24h). */
+export interface ScheduleRowForm {
+  day: WeekDay;
+  open: string;
+  close: string;
+  closed: boolean;
+}
+
+export const DEFAULT_OPEN_TIME = '11:00';
+export const DEFAULT_CLOSE_TIME = '23:00';
+
+export const DAY_LABELS: Record<WeekDay, string> = {
+  MONDAY: 'Mon',
+  TUESDAY: 'Tue',
+  WEDNESDAY: 'Wed',
+  THURSDAY: 'Thu',
+  FRIDAY: 'Fri',
+  SATURDAY: 'Sat',
+  SUNDAY: 'Sun',
+};
+
+/** 24h "HH:mm", 00:00–23:59 (the server's rule). */
+export const isValidTime = (value: string): boolean =>
+  /^([01]\d|2[0-3]):[0-5]\d$/.test(value);
+
+/** All 7 days open 11:00–23:00: the prefill when hours are switched on. */
+export const defaultScheduleRows = (): ScheduleRowForm[] =>
+  WEEK_DAYS.map((day) => ({
+    day,
+    open: DEFAULT_OPEN_TIME,
+    close: DEFAULT_CLOSE_TIME,
+    closed: false,
+  }));
+
+/**
+ * Editor rows from a stored schedule, always Mon..Sun. A missing day gets the
+ * default hours; null/empty gives the default rows.
+ */
+export const scheduleToRows = (
+  schedule?: DaySchedule[] | null
+): ScheduleRowForm[] =>
+  WEEK_DAYS.map((day) => {
+    const entry = schedule?.find((item) => item.day === day);
+    return {
+      day,
+      open: entry?.open || DEFAULT_OPEN_TIME,
+      close: entry?.close || DEFAULT_CLOSE_TIME,
+      closed: Boolean(entry?.closed),
+    };
+  });
+
+/** "Copy Monday to all days": every row gets the first row's hours. */
+export const copyFirstDayToAll = (
+  rows: ScheduleRowForm[]
+): ScheduleRowForm[] => {
+  const [first] = rows;
+  if (!first) return rows;
+  return rows.map((row) => ({
+    ...row,
+    open: first.open,
+    close: first.close,
+    closed: first.closed,
+  }));
+};
+
+/** Small hint under a row: overnight, 24 hours, or null. */
+export const scheduleRowHint = (row: ScheduleRowForm): string | null => {
+  if (row.closed || !isValidTime(row.open) || !isValidTime(row.close)) {
+    return null;
+  }
+  if (row.open === row.close) return '24 hours';
+  if (row.close < row.open) return 'Closes after midnight';
+  return null;
+};
+
+/**
+ * Per-row errors (index-aligned; undefined = ok). Closed days aren't checked:
+ * their times are ignored, and invalid ones are replaced by the defaults.
+ */
+export const validateScheduleRows = (
+  rows: ScheduleRowForm[]
+): (string | undefined)[] =>
+  rows.map((row) => {
+    if (row.closed) return undefined;
+    if (!isValidTime(row.open)) return 'Open time must be HH:mm';
+    if (!isValidTime(row.close)) return 'Close time must be HH:mm';
+    return undefined;
+  });
+
+/** Error for the whole schedule: all 7 days exactly once, valid times. */
+export const scheduleError = (rows: ScheduleRowForm[]): string | undefined => {
+  const days = rows.map((row) => row.day);
+  const allDays =
+    rows.length === WEEK_DAYS.length &&
+    WEEK_DAYS.every((day) => days.filter((d) => d === day).length === 1);
+  if (!allDays) return 'Opening hours need every day, Monday to Sunday';
+  const rowErrors = validateScheduleRows(rows);
+  const index = rowErrors.findIndex(Boolean);
+  return index >= 0
+    ? `${DAY_LABELS[rows[index].day]}: ${rowErrors[index]}`
+    : undefined;
+};
+
+/** Request entries, Mon..Sun. Closed days with bad times get the defaults. */
+export const scheduleRowsToRequest = (rows: ScheduleRowForm[]): DaySchedule[] =>
+  WEEK_DAYS.map((day) => {
+    const row = rows.find((item) => item.day === day);
+    if (!row) {
+      return {
+        day,
+        open: DEFAULT_OPEN_TIME,
+        close: DEFAULT_CLOSE_TIME,
+        closed: true,
+      };
+    }
+    return {
+      day,
+      open: isValidTime(row.open) ? row.open : DEFAULT_OPEN_TIME,
+      close: isValidTime(row.close) ? row.close : DEFAULT_CLOSE_TIME,
+      closed: row.closed,
+    };
+  });
+
 // ------------------------------------------------------------ restaurants
 
 export interface RestaurantFormValues {
@@ -154,6 +282,15 @@ export interface RestaurantFormValues {
   discountSharePercent: string;
   displayOrder: string;
   active: boolean;
+  /** Opening hours set? Off = always open (no weeklySchedule). */
+  hoursEnabled: boolean;
+  /**
+   * The restaurant already has a stored schedule. A PUT can't clear it
+   * (null/omitted keeps it, D15), so the editor stays on.
+   */
+  hasStoredSchedule: boolean;
+  schedule: ScheduleRowForm[];
+  acceptingOrders: boolean;
 }
 
 export const emptyRestaurantForm = (marketId = ''): RestaurantFormValues => ({
@@ -170,6 +307,10 @@ export const emptyRestaurantForm = (marketId = ''): RestaurantFormValues => ({
   discountSharePercent: '0',
   displayOrder: '0',
   active: true,
+  hoursEnabled: false,
+  hasStoredSchedule: false,
+  schedule: defaultScheduleRows(),
+  acceptingOrders: true,
 });
 
 export const restaurantToForm = (
@@ -190,6 +331,10 @@ export const restaurantToForm = (
   discountSharePercent: String(restaurant.discountSharePercent ?? 0),
   displayOrder: String(restaurant.displayOrder ?? 0),
   active: restaurant.active !== false,
+  hoursEnabled: Boolean(restaurant.weeklySchedule?.length),
+  hasStoredSchedule: Boolean(restaurant.weeklySchedule?.length),
+  schedule: scheduleToRows(restaurant.weeklySchedule),
+  acceptingOrders: restaurant.acceptingOrders !== false,
 });
 
 /**
@@ -238,16 +383,34 @@ export const validateRestaurantForm = (
 
   const displayOrder = checkInteger(values.displayOrder);
   if (displayOrder) errors.displayOrder = displayOrder;
+
+  if (values.hoursEnabled) {
+    const hours = scheduleError(values.schedule);
+    if (hours) errors.schedule = hours;
+  }
   return errors;
 };
 
-/** Assumes validateRestaurantForm passed. */
+/**
+ * Assumes validateRestaurantForm passed. Opening hours (D15):
+ * - hours on → the 7-day `weeklySchedule`;
+ * - hours off on CREATE → `weeklySchedule: null` (always open);
+ * - hours off on EDIT → omitted, so the server keeps the stored value.
+ */
 export const restaurantFormToRequest = (
-  values: RestaurantFormValues
+  values: RestaurantFormValues,
+  { isCreate = false }: { isCreate?: boolean } = {}
 ): RestaurantRequest => {
   const lat = parseNumber(values.locationLat);
   const lng = parseNumber(values.locationLng);
+  const hours: Pick<RestaurantRequest, 'weeklySchedule'> = values.hoursEnabled
+    ? { weeklySchedule: scheduleRowsToRequest(values.schedule) }
+    : isCreate
+      ? { weeklySchedule: null }
+      : {};
   return {
+    ...hours,
+    acceptingOrders: values.acceptingOrders,
     name: values.name.trim(),
     slug: values.slug.trim(),
     marketId: values.marketId,
@@ -372,4 +535,41 @@ export const bobsCollisionWarning = (
   const slug = values.slug.trim() ? slugify(values.slug) : slugify(values.name);
   if (slug !== DEFAULT_RESTAURANT_ID) return null;
   return `There is no "${DEFAULT_RESTAURANT_ID}" restaurant record yet. The data migration creates it (id "${DEFAULT_RESTAURANT_ID}") and assigns the existing menu to it. Run the migration instead of creating Bob's here, or the two will collide.`;
+};
+
+// ------------------------------------------------------ open-now status
+
+export interface RestaurantOpenStatus {
+  label: string;
+  color: 'success' | 'default' | 'warning';
+}
+
+/**
+ * Status chip from the server-computed fields (D15): "Paused" (orange),
+ * "Open now" (green) or "Closed · <next opening>" (grey). Null for an
+ * inactive restaurant (its Active chip says enough) or when the server
+ * doesn't send `openNow` yet.
+ */
+export const restaurantOpenStatus = (
+  restaurant: Pick<
+    RestaurantAdmin,
+    'active' | 'acceptingOrders' | 'openNow' | 'closedReason' | 'nextOpensLabel'
+  >
+): RestaurantOpenStatus | null => {
+  if (!restaurant.active) return null;
+  if (
+    restaurant.closedReason === 'PAUSED' ||
+    restaurant.acceptingOrders === false
+  ) {
+    return { label: 'Paused', color: 'warning' };
+  }
+  if (restaurant.openNow === undefined || restaurant.openNow === null) {
+    return null;
+  }
+  if (restaurant.openNow) return { label: 'Open now', color: 'success' };
+  const next = restaurant.nextOpensLabel;
+  return {
+    label: next && next !== 'Closed' ? `Closed · ${next}` : 'Closed',
+    color: 'default',
+  };
 };

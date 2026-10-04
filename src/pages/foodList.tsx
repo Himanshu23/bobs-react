@@ -38,6 +38,7 @@ import { trackEvent } from '../utils/analytics';
 import { getLowestNowPrice } from '../utils/priceUtils';
 import { DEFAULT_RESTAURANT_ID } from '../types/marketplace';
 import { useCurrentRestaurant } from '../context/CurrentRestaurantContext';
+import { useMenuOrdering } from '../context/MenuOrderingContext';
 import {
   AnalyticsRestaurant,
   buildCartItemsParams,
@@ -181,6 +182,7 @@ const FoodListPage: React.FC<FoodListPageProps> = ({
   // Restaurant for analytics (brand of each item): the menu page's, else the
   // id with the default name fallback.
   const currentRestaurant = useCurrentRestaurant();
+  const { orderable } = useMenuOrdering();
   const analyticsRestaurant = useMemo<AnalyticsRestaurant>(
     () => resolveCartRestaurant({ restaurantId }, currentRestaurant),
     [restaurantId, currentRestaurant]
@@ -314,6 +316,8 @@ const FoodListPage: React.FC<FoodListPageProps> = ({
   }, [scrollToItemId]);
 
   const handleCart = (id: string, action: CartActions) => {
+    // Restaurant closed (D15): the buttons are disabled; guard anyway.
+    if (!orderable) return;
     const cartItem = cartItems.find((el) => el.id === id);
     const foodItem = items.find((el) => el.id === id);
     if (action === 'Add') {

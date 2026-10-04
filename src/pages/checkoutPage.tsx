@@ -64,9 +64,16 @@ import { printReceipt } from '../utils/printService';
 import { usePlaceOrder } from '../data/hooks/usePlaceOrder';
 import { useFoodItems } from '../data/hooks/useFoodItems';
 import { useDeliveryArea } from '../data/hooks/useMarkets';
-import { useRestaurantDirectory } from '../data/hooks/useRestaurants';
+import {
+  buildRestaurantsById,
+  useRestaurantDirectory,
+} from '../data/hooks/useRestaurants';
+import {
+  getClosedCartGroups,
+  getClosedCheckoutMessage,
+} from '../utils/restaurantHours';
 import { useGuardedAddToCart } from '../context/CartGuardContext';
-import { FoodItem } from '../types';
+import { FoodItem, OrderFulfillmentType } from '../types';
 import { useAddressBook } from '../context/AddressContext';
 import { formatAddressForDelivery, SavedAddress } from '../types/address';
 import CustomerOtpDialog from '../components/auth/CustomerOtpDialog';
@@ -179,7 +186,8 @@ const CheckoutPage: React.FC = () => {
   const { data: menuItems = [] } = useFoodItems();
   const { mutateAsync: placeOrder } = usePlaceOrder();
   const addToCartGuarded = useGuardedAddToCart();
-  const { restaurantsById, restaurantRefsById } = useRestaurantDirectory();
+  const { restaurantsById, restaurantRefsById, refetchRestaurants } =
+    useRestaurantDirectory();
   // The cart is locked to one market (D5): its area and flat fee apply.
   const cartMarketId =
     cartItems.length > 0 ? getCartItemMarketId(cartItems[0]) : undefined;
@@ -443,6 +451,25 @@ const CheckoutPage: React.FC = () => {
     setIsProcessing(true);
 
     setOrderError(null);
+
+    // D15: re-check opening hours on the latest restaurant data before an
+    // order for now. SCHEDULED orders skip this (TODO D15-a). The server
+    // rejects closed restaurants too; this just answers sooner.
+    if (fulfillmentType !== OrderFulfillmentType.SCHEDULED) {
+      const latest = await refetchRestaurants();
+      const closedMessage = getClosedCheckoutMessage(
+        getClosedCartGroups(
+          groupCartByRestaurant(cartItems),
+          latest.data ? buildRestaurantsById(latest.data) : restaurantsById
+        ).map((closed) => closed.name)
+      );
+      if (closedMessage) {
+        setIsProcessing(false);
+        setOrderError({ message: closedMessage, action: 'review-cart' });
+        return;
+      }
+    }
+
     const orderRequest = buildOrderRequest();
 
     try {

@@ -74,7 +74,11 @@ function AddressLaunchDialog() {
 function AppLayout() {
   const location = useLocation();
   const isMenuLaunch = isBrowsePath(location.pathname);
-  const promoLaunch = usePromotionalAddonLaunch(isMenuLaunch);
+  // "Steal Deals @ ₹9" launch popup is switched off for now; set to true to bring it back.
+  const SHOW_PROMO_LAUNCH_DIALOG = false;
+  const promoLaunch = usePromotionalAddonLaunch(
+    SHOW_PROMO_LAUNCH_DIALOG && isMenuLaunch
+  );
   const shouldShowHeader =
     location.pathname !== '/bobs/landing' &&
     location.pathname !== '/bobs/menu' &&

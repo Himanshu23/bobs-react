@@ -33,6 +33,7 @@ import {
 } from '../utils/marketplaceRoutes';
 import { trackEvent } from '../utils/analytics';
 import { groupDishImagesByRestaurant } from '../utils/restaurantDisplay';
+import { sortOpenFirst } from '../utils/restaurantHours';
 
 /** Same footprint as a RestaurantCard, so the list doesn't jump on load. */
 const RestaurantCardSkeleton = () => (
@@ -130,11 +131,16 @@ const RestaurantListPage: React.FC = () => {
   const { data: markets, isPending: isMarketsPending } = useMarkets();
   // On `/`, wait for the markets so we don't fetch the fallback market first.
   const {
-    data: restaurants = [],
+    data: restaurantData,
     isLoading,
     error,
     refetch,
   } = useRestaurants(marketId, { enabled: isMarketResolved });
+  // Open restaurants first (D15); otherwise the API order.
+  const restaurants = useMemo(
+    () => sortOpenFirst(restaurantData ?? []),
+    [restaurantData]
+  );
   const totalItems = useSelector((state: RootState) => state.cart.totalItems);
   // One request for all public items (shared cache with the menu and cart),
   // grouped into each restaurant's dish photos for its card carousel.

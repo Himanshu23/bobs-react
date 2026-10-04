@@ -9,6 +9,16 @@ import { CartRestaurantRef } from '../../utils/cartUtils';
 import { fetchPublicJson } from './marketplaceFetch';
 
 const RESTAURANTS_STALE_TIME = 1000 * 60 * 5; // 5 minutes
+// Open/closed (D15) is computed by the server, so poll while a list, menu,
+// cart or checkout page shows restaurants, and refetch on focus, so the state
+// flips without a reload. Polling stops when no component uses the query and
+// while the tab is in the background.
+const RESTAURANTS_REFETCH_INTERVAL = 1000 * 60 * 2; // 2 minutes
+const freshness = {
+  refetchInterval: RESTAURANTS_REFETCH_INTERVAL,
+  refetchIntervalInBackground: false,
+  refetchOnWindowFocus: 'always',
+} as const;
 
 /**
  * Active restaurants in active markets, sorted by displayOrder then name.
@@ -28,6 +38,7 @@ export const useRestaurants = (
     },
     enabled: options.enabled ?? true,
     staleTime: RESTAURANTS_STALE_TIME,
+    ...freshness,
     retry: 2,
   });
 
@@ -41,6 +52,7 @@ export const useRestaurant = (idOrSlug: string | undefined) =>
       ),
     enabled: Boolean(idOrSlug),
     staleTime: RESTAURANTS_STALE_TIME,
+    ...freshness,
     retry: (failureCount, error) =>
       (error as Error & { status?: number }).status !== 404 && failureCount < 2,
   });
@@ -51,14 +63,9 @@ export const useRestaurant = (idOrSlug: string | undefined) =>
  * its record exists, else the built-in fallback.
  */
 export const useRestaurantDirectory = () => {
-  const { data: restaurants } = useRestaurants();
-  return useMemo(() => {
-    const byId = new Map<string, Restaurant>([
-      [FALLBACK_DEFAULT_RESTAURANT.id, FALLBACK_DEFAULT_RESTAURANT],
-    ]);
-    (restaurants ?? []).forEach((restaurant) =>
-      byId.set(restaurant.id, restaurant)
-    );
+  const { data: restaurants, refetch } = useRestaurants();
+  const directory = useMemo(() => {
+    const byId = buildRestaurantsById(restaurants);
     const refs = new Map<string, CartRestaurantRef>();
     byId.forEach((restaurant, id) =>
       refs.set(id, {
@@ -69,4 +76,18 @@ export const useRestaurantDirectory = () => {
     );
     return { restaurantsById: byId, restaurantRefsById: refs };
   }, [restaurants]);
+  return { ...directory, refetchRestaurants: refetch };
+};
+
+/** `restaurantsById` built from a fresh list (e.g. right after a refetch). */
+export const buildRestaurantsById = (
+  restaurants: Restaurant[] | undefined
+): Map<string, Restaurant> => {
+  const byId = new Map<string, Restaurant>([
+    [FALLBACK_DEFAULT_RESTAURANT.id, FALLBACK_DEFAULT_RESTAURANT],
+  ]);
+  (restaurants ?? []).forEach((restaurant) =>
+    byId.set(restaurant.id, restaurant)
+  );
+  return byId;
 };
