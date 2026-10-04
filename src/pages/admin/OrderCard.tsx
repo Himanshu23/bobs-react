@@ -119,6 +119,15 @@ const OrderCard: React.FC<OrderCardProps> = ({
             size="small"
             sx={{ flexShrink: 0, fontSize: isMobile ? '0.65rem' : '0.75rem' }}
           />
+          {order.directSale && (
+            <Chip
+              label="Direct sale"
+              color="secondary"
+              variant="outlined"
+              size="small"
+              sx={{ flexShrink: 0, fontSize: isMobile ? '0.65rem' : '0.75rem' }}
+            />
+          )}
           {progress && (
             <Typography variant="caption" color="text.secondary">
               {progress}

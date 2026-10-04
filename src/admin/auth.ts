@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { ENDPOINTS } from '../config/api';
+import { decodeJwtClaims, isJwtExpired } from '../utils/jwt';
 
 const AUTH_TOKEN_KEY = 'admin_auth_token';
 
@@ -8,10 +9,11 @@ export interface LoginCredentials {
   password: string;
 }
 
+/** Login response. Only `token` is sent; username and role come from its claims. */
 export interface AuthResponse {
   token: string;
-  username: string;
-  role: string;
+  username?: string;
+  role?: string;
 }
 
 export interface AuthState {
@@ -72,10 +74,13 @@ export const getAuthState = (): AuthState => {
   if (stored) {
     try {
       const data: AuthResponse = JSON.parse(stored);
+      // The role is a claim in the token (e.g. "admin"); the server reads the
+      // same claim, so normalise it the way the server does (ROLE_ADMIN).
+      const claims = decodeJwtClaims(data.token);
       return {
         isAuthenticated: true,
-        username: data.username,
-        role: data.role,
+        username: claims?.sub ?? data.username ?? null,
+        role: claims?.role ? claims.role.toUpperCase() : null,
         token: data.token,
       };
     } catch {
@@ -98,6 +103,12 @@ export const getRole = (): string | null => {
   return getAuthState().role;
 };
 
+/** Logged in with an unexpired token whose role claim is admin. */
 export const isAuthenticatedAndAdmin = (): boolean => {
-  return getAuthState().isAuthenticated && getAuthState().role === 'ADMIN';
+  const state = getAuthState();
+  return (
+    state.isAuthenticated &&
+    state.role === 'ADMIN' &&
+    !isJwtExpired(decodeJwtClaims(state.token))
+  );
 };

@@ -284,18 +284,21 @@ const CheckoutPage: React.FC = () => {
   // );
   const hasHabitatAddress = false;
   const hasSelectedSavedAddress = Boolean(selectedAddress);
-  const isAdminLoggedIn = isAuthenticatedAndAdmin() || isAuthenticated();
+  // Admin role from the token's claim, as the server checks it.
+  const isAdminLoggedIn = isAuthenticatedAndAdmin();
   const isCustomerLoggedIn = getCustomerAuthState().isAuthenticated;
   const isGuestOrder =
     !isAdminLoggedIn && !isCustomerLoggedIn && !isAuthenticated();
   const isGuestOrderBelowMinimum =
     isGuestOrder && totalPrice < GUEST_MINIMUM_ORDER_VALUE;
   const fulfillmentType = getFulfillmentType(deliveryMethod, orderTiming);
-  // Server rule, for every customer: market fee for delivery, ₹0 for pickup.
-  const deliveryFee = getDisplayDeliveryFee(
-    fulfillmentType,
-    market?.deliveryFee
-  );
+  // Placed while logged in as admin → the server records a direct sale and
+  // charges no delivery fee (usePlaceOrder sends the admin token).
+  const isDirectSale = isAdminLoggedIn;
+  // Server rule: market fee for delivery, ₹0 for pickup and direct sales.
+  const deliveryFee = isDirectSale
+    ? 0
+    : getDisplayDeliveryFee(fulfillmentType, market?.deliveryFee);
   const finalTotal = computePayableTotal(
     totalPrice,
     discountAmount,
@@ -725,6 +728,7 @@ const CheckoutPage: React.FC = () => {
     setPrintModalOpen(false);
   };
 
+  const hasActiveDiscount = DISCOUNTS.some((discount) => discount.active);
   if (cartItems.length === 0) {
     return (
       <Container maxWidth="lg" sx={{ py: 4 }}>
@@ -1172,26 +1176,28 @@ const CheckoutPage: React.FC = () => {
                   >
                     🎁 Discount
                   </Typography>
-                  <FormControl fullWidth size="small" sx={{ mb: 1 }}>
-                    <InputLabel>Select Discount</InputLabel>
-                    <Select
-                      value={selectedDiscountId}
-                      label="Select Discount"
-                      disabled={hasFreeDish || hasPromotionalDish}
-                      onChange={(e) => setSelectedDiscountId(e.target.value)}
-                    >
-                      <MenuItem value="">No Discount</MenuItem>
-                      {DISCOUNTS.filter((d) => d.active).map((discount) => (
-                        <MenuItem key={discount.id} value={discount.id}>
-                          {discount.name} -{' '}
-                          {discount.percent > 0
-                            ? `${discount.percent}%`
-                            : `₹${discount.fixedValue}`}
-                          {discount.code && ` (${discount.code})`}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
+                  {hasActiveDiscount && (
+                    <FormControl fullWidth size="small" sx={{ mb: 1 }}>
+                      <InputLabel>Select Discount</InputLabel>
+                      <Select
+                        value={selectedDiscountId}
+                        label="Select Discount"
+                        disabled={hasFreeDish || hasPromotionalDish}
+                        onChange={(e) => setSelectedDiscountId(e.target.value)}
+                      >
+                        <MenuItem value="">No Discount</MenuItem>
+                        {DISCOUNTS.filter((d) => d.active).map((discount) => (
+                          <MenuItem key={discount.id} value={discount.id}>
+                            {discount.name} -{' '}
+                            {discount.percent > 0
+                              ? `${discount.percent}%`
+                              : `₹${discount.fixedValue}`}
+                            {discount.code && ` (${discount.code})`}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  )}
                   {(hasFreeDish || hasPromotionalDish) && (
                     <Typography variant="caption" color="text.secondary">
                       Discounts are unavailable when a free dish is selected.
@@ -1275,7 +1281,11 @@ const CheckoutPage: React.FC = () => {
                       variant="body2"
                       color={deliveryFee > 0 ? 'text.primary' : '#4CAF50'}
                     >
-                      {deliveryFee > 0 ? `₹${deliveryFee.toFixed(2)}` : 'Free'}
+                      {deliveryFee > 0
+                        ? `₹${deliveryFee.toFixed(2)}`
+                        : isDirectSale
+                          ? 'No fee (direct sale)'
+                          : 'Free'}
                     </Typography>
                   </Box>
                   <Box

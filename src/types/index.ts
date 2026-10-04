@@ -176,6 +176,8 @@ export interface Order {
   createdAt?: string;
   updatedAt?: string;
   isPaidOnline: boolean;
+  /** Recorded by staff while logged in as admin: no delivery fee. */
+  directSale?: boolean | null;
 }
 
 export interface OrderResponse {

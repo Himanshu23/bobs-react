@@ -20,7 +20,7 @@ export const DISCOUNTS: Discount[] = [
     fixedValue: 0,
     maxCap: 100,
     code: 'ONLINE10',
-    active: true,
+    active: false,
   },
 ];
 

@@ -95,7 +95,7 @@ export interface PublicOrder {
   discountCode?: string | null;
   discountName?: string | null;
   promotionalSavings?: number | null;
-  /** Server fee rule: market fee for DELIVERY/SCHEDULED, 0 for PICKUP. */
+  /** Server fee rule: market fee for DELIVERY/SCHEDULED, 0 for PICKUP and direct sales. */
   deliveryFee?: number | null;
   taxAmount?: number | null;
   marketId?: string | null;
@@ -106,6 +106,8 @@ export interface PublicOrder {
    * more restaurants → one order per restaurant). Absent otherwise.
    */
   checkoutGroupId?: string | null;
+  /** True for an order placed while logged in as admin (no delivery fee). */
+  directSale?: boolean | null;
   /**
    * D12, `POST /orders` response only: every order of a split pickup, in cart
    * order, this (the first) one included. Each has one `restaurantOrders`

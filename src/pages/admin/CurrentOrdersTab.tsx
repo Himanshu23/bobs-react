@@ -546,6 +546,14 @@ const OrderCard: React.FC<OrderCardProps> = ({
               color={getStatusChipColor(order.status)}
               size="small"
             />
+            {order.directSale && (
+              <Chip
+                label="Direct sale"
+                color="secondary"
+                variant="outlined"
+                size="small"
+              />
+            )}
             {progress && (
               <Typography variant="caption" color="text.secondary">
                 {progress}

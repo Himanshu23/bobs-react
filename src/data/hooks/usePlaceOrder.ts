@@ -2,7 +2,8 @@ import { useMutation } from '@tanstack/react-query';
 import { ENDPOINTS } from '../../config/api';
 import { ApiErrorBody } from '../../types/marketplace';
 import { CreateOrderRequest, PublicOrder } from '../../types/order';
-import { getHeaders } from '../../utils/authHelpers';
+import { getAdminHeaders, getHeaders } from '../../utils/authHelpers';
+import { isAuthenticatedAndAdmin } from '../../admin/auth';
 import { PlaceOrderError } from '../../utils/checkoutOrder';
 
 /**
@@ -21,7 +22,9 @@ export const placeOrder = async (
   try {
     response = await fetch(ENDPOINTS.CREATE_ORDER, {
       method: 'POST',
-      headers: getHeaders(),
+      // Logged in as admin → send the admin token even if a customer session
+      // also exists: the server records it as a direct sale (no delivery fee).
+      headers: isAuthenticatedAndAdmin() ? getAdminHeaders() : getHeaders(),
       body: JSON.stringify(order),
     });
   } catch {
