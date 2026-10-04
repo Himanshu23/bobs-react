@@ -31,6 +31,7 @@ import { useMostReorderedItems } from '../data/hooks/useMostReorderedItems';
 import { CartActions, CATEGORY_ORDER, FoodItem } from '../types';
 import MostReorderedSection from '../components/MostReorderedSection';
 import FoodItemCard from '../components/listing/foodItemCard';
+import FoodImage from '../components/FoodImage';
 import ProductDetailModal from '../components/productDetail';
 import QuantityUpdate from '../components/quanityUpdate/quantityUpdate';
 import VariantRemovalModal from '../components/variantRemovalModal';
@@ -49,6 +50,16 @@ import {
   getCartItemRestaurantId,
   resolveCartRestaurant,
 } from '../utils/cartUtils';
+
+/**
+ * Slot around each dish card: the full row on phones, 360px max, so every card
+ * gets the same width (the card fills its slot) and never runs off the screen.
+ */
+const FOOD_CARD_SLOT_SX = {
+  position: 'relative',
+  width: '100%',
+  maxWidth: 360,
+} as const;
 
 /** Tab value for the "All" tab (every dish); the default tab. */
 const ALL_CATEGORY = 'All';
@@ -591,7 +602,7 @@ const FoodListPage: React.FC<FoodListPageProps> = ({
                     <Box
                       key={`list_${food.id}`}
                       data-item-id={food.id}
-                      sx={{ position: 'relative' }}
+                      sx={FOOD_CARD_SLOT_SX}
                     >
                       <Typography
                         variant="caption"
@@ -695,7 +706,7 @@ const FoodListPage: React.FC<FoodListPageProps> = ({
                         <Box
                           key={`list_${food.id}`}
                           data-item-id={food.id}
-                          sx={{ position: 'relative' }}
+                          sx={FOOD_CARD_SLOT_SX}
                         >
                           <FoodItemCard
                             item={food}
@@ -768,7 +779,7 @@ const FoodListPage: React.FC<FoodListPageProps> = ({
                         <Box
                           key={`list_${food.id}`}
                           data-item-id={food.id}
-                          sx={{ position: 'relative' }}
+                          sx={FOOD_CARD_SLOT_SX}
                         >
                           <FoodItemCard
                             item={food}
@@ -934,16 +945,13 @@ const FoodListPage: React.FC<FoodListPageProps> = ({
                           width: '100%',
                         }}
                       >
-                        <Box
-                          component="img"
+                        {/* Falls back to a placeholder when the dish has no
+                            image or it fails to load. */}
+                        <FoodImage
                           src={item.image}
                           alt={item.name}
-                          sx={{
-                            width: 32,
-                            height: 32,
-                            borderRadius: '4px',
-                            objectFit: 'cover',
-                          }}
+                          size={32}
+                          sx={{ borderRadius: '4px' }}
                         />
                         <Typography sx={{ fontSize: '0.875rem', flex: 1 }}>
                           {item.name}

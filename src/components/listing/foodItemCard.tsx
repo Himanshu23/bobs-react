@@ -118,7 +118,11 @@ const FoodItemCard = ({ item, handleCart, searchQuery }: FoodItemCardProps) => {
         display: 'flex',
         alignItems: 'stretch',
         gap: 2,
-        width: 360,
+        // Fill the row on phones (a fixed 360px overflowed the screen and the
+        // image touched the right edge); 16px padding keeps it off the edge.
+        width: '100%',
+        maxWidth: 360,
+        boxSizing: 'border-box',
         padding: 2,
         borderRadius: 2,
         boxShadow: 3,
@@ -126,7 +130,9 @@ const FoodItemCard = ({ item, handleCart, searchQuery }: FoodItemCardProps) => {
         flexShrink: 0,
       }}
     >
-      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+      <Box
+        sx={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}
+      >
         <Box
           sx={{ display: 'flex', alignItems: 'center', gap: 1, minHeight: 28 }}
         >
@@ -182,6 +188,8 @@ const FoodItemCard = ({ item, handleCart, searchQuery }: FoodItemCardProps) => {
             sx={{
               alignSelf: 'flex-start',
               mt: 1,
+              width: '100%',
+              maxWidth: 220,
               '& .MuiBadge-badge': {
                 top: 0,
                 right: 0,
@@ -204,7 +212,7 @@ const FoodItemCard = ({ item, handleCart, searchQuery }: FoodItemCardProps) => {
                 flexDirection: 'column',
                 gap: 1,
                 mt: 1,
-                width: '220px',
+                width: '100%',
               }}
             >
               <Button
@@ -234,7 +242,8 @@ const FoodItemCard = ({ item, handleCart, searchQuery }: FoodItemCardProps) => {
             sx={{
               mt: 1,
               alignSelf: 'flex-start',
-              width: '220px',
+              width: '100%',
+              maxWidth: 220,
               textTransform: 'none',
             }}
             disabled={!orderable}
