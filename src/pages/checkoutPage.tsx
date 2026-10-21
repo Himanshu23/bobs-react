@@ -106,7 +106,7 @@ import {
 import { getSizeLabel } from '../utils/sizeLabels';
 
 const WHATSAPP_PHONE = '9643310092'; // Replace with your number
-const GUEST_MINIMUM_ORDER_VALUE = 299;
+const GUEST_MINIMUM_ORDER_VALUE = 399;
 
 /** What the confirmation dialog shows after WhatsApp opens. */
 interface PlacedOrderSummary {
