@@ -210,3 +210,28 @@ export const averageOrderValue = (
   row: Pick<SalesRow, 'orders' | 'grossSubtotal'>
 ): number =>
   row.orders ? roundMoney((row.grossSubtotal ?? 0) / row.orders) : 0;
+
+/**
+ * Profit & loss for the Reporting tab: revenue (item sales at menu prices,
+ * cancelled orders excluded) minus expenses for the same dates.
+ */
+export const profitAndLoss = (
+  revenue: number,
+  expenses: number
+): {
+  revenue: number;
+  expenses: number;
+  profit: number;
+  margin: number | null;
+} => {
+  const r = roundMoney(revenue || 0);
+  const e = roundMoney(expenses || 0);
+  const profit = roundMoney(r - e);
+  return {
+    revenue: r,
+    expenses: e,
+    profit,
+    // Share of revenue kept, in percent (one decimal); none without revenue.
+    margin: r > 0 ? Math.round((profit / r) * 1000) / 10 : null,
+  };
+};

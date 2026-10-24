@@ -24,6 +24,7 @@ export const ENDPOINTS = {
   ADMIN_PAYOUTS: `${API_BASE_URL}/admin/payouts`,
   ADMIN_PAYOUTS_MARK_PAID: `${API_BASE_URL}/admin/payouts/mark-paid`,
   REPORTING_SALES: `${API_BASE_URL}/reporting/sales`,
+  REPORTING_TAX: `${API_BASE_URL}/reporting/tax`,
   SEND_VOICE: `${API_BASE_URL}/voice`,
   CATEGORIES: `${API_BASE_URL}/expense-categories`,
   EXPENSES: `${API_BASE_URL}/expenses`,
@@ -31,3 +32,18 @@ export const ENDPOINTS = {
   PROMOTIONAL_ADDONS_CONFIG: `${API_BASE_URL}/promotional-addons/config`,
   PROMOTIONAL_ADDONS_VALIDATE: `${API_BASE_URL}/promotional-addons/validate`,
 } as const;
+
+/** Public legal pages (static HTML on the website; absolute so they also open from the app). */
+export const LEGAL_URLS = {
+  privacy: 'https://www.grokheads.com/privacy',
+  terms: 'https://www.grokheads.com/terms',
+  dataDeletion: 'https://www.grokheads.com/data-deletion',
+} as const;
+
+/**
+ * Customer login with a WhatsApp code before the first order. Off until the
+ * WhatsApp `bobs_auth` template is approved and a permanent token is set on the
+ * backend; set VITE_WHATSAPP_LOGIN_ENABLED=true (or change the default) to turn it on.
+ */
+export const WHATSAPP_LOGIN_ENABLED =
+  import.meta.env.VITE_WHATSAPP_LOGIN_ENABLED === 'true';

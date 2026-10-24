@@ -26,7 +26,11 @@ import { formatPrice } from '../../utils/priceUtils';
 import { useExpenses } from '../../data/hooks/useExpenses';
 import { useOrdersByDateRange } from '../../data/hooks/useOrders';
 import { OrderFulfillmentType } from '../../types';
-import { useSalesReport } from '../../admin/hooks/useAdminReports';
+import {
+  fetchTaxReport,
+  useSalesReport,
+} from '../../admin/hooks/useAdminReports';
+import { downloadTaxReportPdf } from '../../admin/utils/taxReportPdf';
 import { useAdminRestaurants } from '../../admin/hooks/useMarketplaceAdmin';
 import { SalesGroupBy, SalesRow } from '../../admin/types/orders';
 import {
@@ -38,6 +42,7 @@ import {
   UTC_DAY_NOTE,
   averageOrderValue,
   dateRangeError,
+  profitAndLoss,
   salesRowLabel,
   sumSalesRows,
   utcIsoDate,
@@ -96,6 +101,32 @@ const ReportingTab: React.FC = () => {
   const [restaurantId, setRestaurantId] = useState('');
   const [groupBy, setGroupBy] = useState<SalesGroupBy>('restaurant');
   const rangeError = dateRangeError(fromDate, toDate);
+  const [gstBusy, setGstBusy] = useState(false);
+  const [gstError, setGstError] = useState<string | null>(null);
+
+  /** GST PDF for the chosen dates (India time) and restaurant filter. */
+  const handleDownloadGstReport = async () => {
+    setGstError(null);
+    if (!fromDate || !toDate) {
+      setGstError('Choose both a From and a To date for the GST report.');
+      return;
+    }
+    setGstBusy(true);
+    try {
+      const report = await fetchTaxReport({
+        from: fromDate,
+        to: toDate,
+        restaurantId: restaurantId || undefined,
+      });
+      downloadTaxReportPdf(report);
+    } catch (err) {
+      setGstError(
+        err instanceof Error ? err.message : 'Could not create the GST report.'
+      );
+    } finally {
+      setGstBusy(false);
+    }
+  };
 
   // Per-restaurant rows for the headline tiles (always grouped by restaurant).
   const {
@@ -187,6 +218,11 @@ const ReportingTab: React.FC = () => {
     [expenses]
   );
   const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
+  // Revenue = the tiles' item sales (follows the restaurant filter).
+  const pnl = profitAndLoss(tileTotals.grossSubtotal, totalExpenses);
+  const pnlOrders = restaurantId
+    ? tileTotals.orders
+    : (byRestaurant?.platform?.orders ?? tileTotals.orders);
 
   const handleRefresh = () => {
     void refetchOrders();
@@ -316,6 +352,44 @@ const ReportingTab: React.FC = () => {
               {UTC_DAY_NOTE} Sales exclude cancelled orders; item sales are at
               menu prices (free items included).
             </Typography>
+            <Box
+              sx={{
+                mt: 2,
+                display: 'flex',
+                gap: 1.5,
+                alignItems: 'center',
+                flexWrap: 'wrap',
+              }}
+            >
+              <Button
+                variant="contained"
+                startIcon={
+                  gstBusy ? (
+                    <CircularProgress size={16} color="inherit" />
+                  ) : undefined
+                }
+                onClick={() => void handleDownloadGstReport()}
+                disabled={gstBusy || !!rangeError}
+                sx={{ textTransform: 'none' }}
+              >
+                {gstBusy
+                  ? 'Preparing GST report…'
+                  : 'Download GST report (PDF)'}
+              </Button>
+              <Typography variant="caption" color="text.secondary">
+                For the dates and restaurant above, in India time. Menu prices
+                include GST (food 5%, delivery 18%).
+              </Typography>
+            </Box>
+            {gstError && (
+              <Alert
+                severity="error"
+                onClose={() => setGstError(null)}
+                sx={{ mt: 1.5 }}
+              >
+                {gstError}
+              </Alert>
+            )}
           </CardContent>
         </Card>
 
@@ -373,6 +447,89 @@ const ReportingTab: React.FC = () => {
             {tileRows.length === 0 && (
               <Grid item xs={12}>
                 <Alert severity="info">No orders in this range.</Alert>
+              </Grid>
+            )}
+
+            {/* Profit & loss: revenue vs expenses for the same dates. */}
+            <Grid item xs={12} md={6} lg={4}>
+              <Card variant="outlined" sx={{ height: '100%' }}>
+                <CardContent>
+                  <Typography
+                    variant="subtitle2"
+                    color="text.secondary"
+                    gutterBottom
+                  >
+                    Total Revenue
+                  </Typography>
+                  <Typography variant="h4" sx={{ fontWeight: 800 }}>
+                    {formatPrice(pnl.revenue)}
+                  </Typography>
+                  <Typography color="text.secondary" sx={{ mt: 1 }}>
+                    Orders: {pnlOrders} · Avg order:{' '}
+                    {formatPrice(
+                      averageOrderValue({
+                        orders: pnlOrders,
+                        grossSubtotal: pnl.revenue,
+                      })
+                    )}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={12} md={6} lg={4}>
+              <Card variant="outlined" sx={{ height: '100%' }}>
+                <CardContent>
+                  <Typography
+                    variant="subtitle2"
+                    color="text.secondary"
+                    gutterBottom
+                  >
+                    Total Expenses
+                  </Typography>
+                  <Typography variant="h4" sx={{ fontWeight: 800 }}>
+                    {formatPrice(pnl.expenses)}
+                  </Typography>
+                  <Typography color="text.secondary" sx={{ mt: 1 }}>
+                    {expenses.length} entries
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={12} md={6} lg={4}>
+              <Card variant="outlined" sx={{ height: '100%' }}>
+                <CardContent>
+                  <Typography
+                    variant="subtitle2"
+                    color="text.secondary"
+                    gutterBottom
+                  >
+                    Profit
+                  </Typography>
+                  <Typography
+                    variant="h4"
+                    sx={{
+                      fontWeight: 800,
+                      color: pnl.profit < 0 ? 'error.main' : 'success.main',
+                    }}
+                  >
+                    {formatPrice(pnl.profit)}
+                  </Typography>
+                  <Typography color="text.secondary" sx={{ mt: 1 }}>
+                    {pnl.profit < 0
+                      ? 'Negative profit'
+                      : 'Net income after expenses'}
+                    {pnl.margin !== null ? ` · ${pnl.margin}% margin` : ''}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+            {!restaurantId && tileRows.length > 1 && (
+              <Grid item xs={12}>
+                <Typography variant="caption" color="text.secondary">
+                  Revenue here includes every restaurant&apos;s sales, while
+                  expenses are your own. Choose a restaurant in the filter to
+                  see its profit on its own.
+                </Typography>
               </Grid>
             )}
 

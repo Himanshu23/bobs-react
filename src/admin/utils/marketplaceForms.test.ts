@@ -200,6 +200,8 @@ describe('validateRestaurantForm', () => {
       location: { lat: 28.6, lng: 77.2 },
       imageUrl: 'https://x/y.jpg',
       cuisineTags: ['North Indian'],
+      // Edit: a blank GSTIN field is sent as '' (no GSTIN).
+      gstin: '',
       commissionPercent: 5,
       discountSharePercent: 10,
       active: true,
@@ -280,6 +282,7 @@ describe('restaurant round trip with null fields', () => {
       location: null,
       imageUrl: null,
       cuisineTags: [],
+      gstin: '',
       commissionPercent: 0,
       discountSharePercent: 0,
       active: true,
@@ -325,5 +328,55 @@ describe('bobsCollisionWarning', () => {
     expect(
       bobsCollisionWarning({ name: "Bob's", slug: '' }, [{ id: 'bobs' }])
     ).toBeNull();
+  });
+});
+
+describe('restaurant GSTIN', () => {
+  const form = (gstin: string) => ({
+    ...emptyRestaurantForm('market1'),
+    name: 'R',
+    phone: '+91',
+    gstin,
+  });
+
+  it('accepts a valid GSTIN, ignoring case and spaces', () => {
+    expect(
+      validateRestaurantForm(form(' 09abcde1234f1z5 ')).gstin
+    ).toBeUndefined();
+    expect(
+      restaurantFormToRequest(form('09abcde 1234f1z5'), { isCreate: true })
+        .gstin
+    ).toBe('09ABCDE1234F1Z5');
+  });
+
+  it('rejects a malformed GSTIN', () => {
+    expect(validateRestaurantForm(form('09ABCDE1234')).gstin).toMatch(
+      /15 characters/
+    );
+  });
+
+  it('blank means none: null on create, cleared on edit', () => {
+    expect(validateRestaurantForm(form('')).gstin).toBeUndefined();
+    expect(
+      restaurantFormToRequest(form(''), { isCreate: true }).gstin
+    ).toBeNull();
+    expect(restaurantFormToRequest(form('')).gstin).toBe('');
+  });
+
+  it('loads a stored GSTIN into the form', () => {
+    expect(
+      restaurantToForm({
+        id: 'r',
+        name: 'R',
+        slug: 'r',
+        marketId: 'market1',
+        phone: '+91',
+        commissionPercent: 0,
+        discountSharePercent: 0,
+        active: true,
+        displayOrder: 0,
+        gstin: '09ABCDE1234F1Z5',
+      }).gstin
+    ).toBe('09ABCDE1234F1Z5');
   });
 });

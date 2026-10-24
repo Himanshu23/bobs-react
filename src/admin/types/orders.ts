@@ -172,3 +172,70 @@ export interface SalesFilters {
   groupBy?: SalesGroupBy;
   restaurantId?: string;
 }
+
+// ---------------------------------------------------------------- GST report
+
+/** Amounts for a group of orders (TaxReportDTO.Totals). Net = paid, GST included. */
+export interface TaxTotals {
+  orders: number;
+  grossSales: number;
+  freeItems: number;
+  promotionalSavings: number;
+  discounts: number;
+  netSales: number;
+  taxableValue: number;
+  cgst: number;
+  sgst: number;
+  deliveryFees: number;
+  deliveryTaxableValue: number;
+  deliveryCgst: number;
+  deliverySgst: number;
+  totalTaxableValue: number;
+  totalGst: number;
+  totalInvoiceValue: number;
+}
+
+/** One restaurant's part of one order (TaxReportDTO.OrderLine). */
+export interface TaxOrderLine {
+  orderId: string;
+  /** India time, "YYYY-MM-DD HH:mm". */
+  createdAt: string | null;
+  day: string | null;
+  customerName?: string | null;
+  fulfillmentType?: string | null;
+  directSale: boolean;
+  grossSales: number;
+  freeItems: number;
+  promotionalSavings: number;
+  discount: number;
+  netSales: number;
+  taxableValue: number;
+  cgst: number;
+  sgst: number;
+  deliveryFee: number;
+  deliveryTaxableValue: number;
+  deliveryCgst: number;
+  deliverySgst: number;
+  invoiceValue: number;
+}
+
+export interface TaxRestaurantSection {
+  restaurantId: string;
+  restaurantName: string;
+  gstin?: string | null;
+  address?: string | null;
+  fssaiNumber?: string | null;
+  totals: TaxTotals;
+  days: { day: string; totals: TaxTotals }[];
+  orders: TaxOrderLine[];
+}
+
+/** Response of `GET /reporting/tax` (TaxReportDTO). Days are India dates. */
+export interface TaxReport {
+  from: string;
+  to: string;
+  timezone: string;
+  foodGstRatePercent: number;
+  deliveryGstRatePercent: number;
+  restaurants: TaxRestaurantSection[];
+}

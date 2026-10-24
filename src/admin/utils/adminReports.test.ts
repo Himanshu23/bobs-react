@@ -16,6 +16,7 @@ import {
   unpaidSelection,
   utcIsoDate,
   utcMonthStart,
+  profitAndLoss,
 } from './adminReports';
 
 const line = (overrides: Partial<PayoutLine> = {}): PayoutLine => ({
@@ -267,6 +268,31 @@ describe('sales report helpers', () => {
       discountShare: 0,
       payout: 23099.9,
       freeClaimValue: 750,
+    });
+  });
+});
+
+describe('profitAndLoss', () => {
+  it('subtracts expenses from revenue and gives the margin', () => {
+    expect(profitAndLoss(10000, 7550.5)).toEqual({
+      revenue: 10000,
+      expenses: 7550.5,
+      profit: 2449.5,
+      margin: 24.5,
+    });
+  });
+
+  it('shows a loss as a negative profit', () => {
+    expect(profitAndLoss(1000, 1500).profit).toBe(-500);
+    expect(profitAndLoss(1000, 1500).margin).toBe(-50);
+  });
+
+  it('has no margin without revenue', () => {
+    expect(profitAndLoss(0, 200)).toEqual({
+      revenue: 0,
+      expenses: 200,
+      profit: -200,
+      margin: null,
     });
   });
 });

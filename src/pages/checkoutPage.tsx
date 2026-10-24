@@ -77,6 +77,7 @@ import { FoodItem, OrderFulfillmentType } from '../types';
 import { useAddressBook } from '../context/AddressContext';
 import { formatAddressForDelivery, SavedAddress } from '../types/address';
 import CustomerOtpDialog from '../components/auth/CustomerOtpDialog';
+import { WHATSAPP_LOGIN_ENABLED } from '../config/api';
 import RestaurantPhoneLink from '../components/marketplace/RestaurantPhoneLink';
 import { DeliveryArea, isWithinDeliveryArea } from '../utils/geo';
 import { getCartItemMarketId, groupCartByRestaurant } from '../utils/cartUtils';
@@ -603,15 +604,21 @@ const CheckoutPage: React.FC = () => {
       setScheduleError('Choose a time between 12:00 PM and 12:00 AM.');
       return;
     }
-    //TODO: implement OTP verification for customers before placing order
-    // if (!isCustomerAuthenticated()) {
-    //   if (!getAddressForOtp()) {
-    //     setAddressError('Add a delivery address before verifying your phone.');
-    //     return;
-    //   }
-    //   setOtpDialogOpen(true);
-    //   return;
-    // }
+    // Customers log in with a WhatsApp code (customer JWT) before their first
+    // order; the login is kept, so later orders skip this. Admin direct sales
+    // don't need it. Switched off for now: see WHATSAPP_LOGIN_ENABLED.
+    if (
+      WHATSAPP_LOGIN_ENABLED &&
+      !isAdminLoggedIn &&
+      !isCustomerAuthenticated()
+    ) {
+      if (!getAddressForOtp()) {
+        setAddressError('Add a delivery address before verifying your phone.');
+        return;
+      }
+      setOtpDialogOpen(true);
+      return;
+    }
 
     await placeOrderAfterAuth();
   };

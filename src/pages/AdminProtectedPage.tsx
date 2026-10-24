@@ -38,15 +38,20 @@ const AdminProtectedPage: React.FC = () => {
     <Box>
       <Box
         sx={{
-          position: 'fixed',
+          // Phones: a normal bar above the page, so it doesn't cover the
+          // admin screens. Wider screens: pinned top-right as before.
+          position: { xs: 'static', md: 'fixed' },
           top: 0,
           right: 0,
-          p: 2,
+          p: { xs: 1.5, md: 2 },
           display: 'flex',
           gap: 2,
           alignItems: 'center',
+          justifyContent: { xs: 'space-between', md: 'flex-start' },
+          flexWrap: 'wrap',
           backgroundColor: 'rgba(255, 255, 255, 0.9)',
-          borderLeft: '1px solid #ddd',
+          borderLeft: { md: '1px solid #ddd' },
+          borderBottom: { xs: '1px solid #ddd', md: 'none' },
           zIndex: 1000,
         }}
       >

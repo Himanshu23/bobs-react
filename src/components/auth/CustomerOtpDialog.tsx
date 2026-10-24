@@ -22,8 +22,12 @@ import {
   toApiPhoneNumber,
 } from '../../utils/phone';
 import { trackEvent } from '../../utils/analytics';
+import { LEGAL_URLS } from '../../config/api';
 
 type OtpStep = 'phone' | 'otp';
+
+/** Matches the server's resend cooldown (OTPService.RESEND_COOLDOWN). */
+const RESEND_COOLDOWN_SECONDS = 30;
 
 interface CustomerOtpDialogProps {
   open: boolean;
@@ -43,6 +47,7 @@ const CustomerOtpDialog: React.FC<CustomerOtpDialogProps> = ({
   const [otp, setOtp] = useState('');
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [error, setError] = useState('');
+  const [resendIn, setResendIn] = useState(0);
 
   const sendOtp = useSendOtp();
   const verifyOtp = useVerifyOtp();
@@ -56,7 +61,15 @@ const CustomerOtpDialog: React.FC<CustomerOtpDialogProps> = ({
     setOtp('');
     setSessionId(null);
     setError('');
+    setResendIn(0);
   }, [open]);
+
+  // Counts down to when "Resend code" is allowed again.
+  useEffect(() => {
+    if (resendIn <= 0) return undefined;
+    const timer = window.setTimeout(() => setResendIn((s) => s - 1), 1000);
+    return () => window.clearTimeout(timer);
+  }, [resendIn]);
 
   const phoneDigits = normalizeIndianPhone(phoneInput);
   const apiPhone = phoneDigits ? toApiPhoneNumber(phoneInput) : '';
@@ -82,9 +95,10 @@ const CustomerOtpDialog: React.FC<CustomerOtpDialogProps> = ({
       setSessionId(result.sessionId);
       setStep('otp');
       setOtp('');
+      setResendIn(RESEND_COOLDOWN_SECONDS);
       trackEvent('customer_otp_sent', { phone_suffix: phoneDigits.slice(-4) });
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to send OTP.');
+      setError(err instanceof Error ? err.message : 'Failed to send the code.');
     }
   };
 
@@ -98,7 +112,7 @@ const CustomerOtpDialog: React.FC<CustomerOtpDialogProps> = ({
     }
 
     if (!/^\d{4,8}$/.test(otp.trim())) {
-      setError('Enter the OTP sent to your phone.');
+      setError('Enter the 6-digit code sent to your WhatsApp.');
       return;
     }
 
@@ -140,7 +154,8 @@ const CustomerOtpDialog: React.FC<CustomerOtpDialogProps> = ({
       <DialogTitle>Verify mobile number</DialogTitle>
       <DialogContent>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-          We need to verify your Indian mobile number before placing the order.
+          We&apos;ll send a code to this number on WhatsApp. Verify once and you
+          stay logged in for your next orders.
         </Typography>
 
         {error ? (
@@ -169,11 +184,27 @@ const CustomerOtpDialog: React.FC<CustomerOtpDialogProps> = ({
           sx={{ mb: 2 }}
         />
 
+        <Typography
+          variant="caption"
+          color="text.secondary"
+          sx={{ display: 'block', mb: 2 }}
+        >
+          By continuing you agree to our{' '}
+          <a href={LEGAL_URLS.terms} target="_blank" rel="noreferrer">
+            Terms of Service
+          </a>{' '}
+          and{' '}
+          <a href={LEGAL_URLS.privacy} target="_blank" rel="noreferrer">
+            Privacy Policy
+          </a>
+          .
+        </Typography>
+
         {step === 'otp' ? (
           <Box>
             <TextField
               fullWidth
-              label="Enter OTP"
+              label="WhatsApp code"
               value={otp}
               onChange={(e) => {
                 setOtp(e.target.value.replace(/\D/g, '').slice(0, 8));
@@ -185,7 +216,9 @@ const CustomerOtpDialog: React.FC<CustomerOtpDialogProps> = ({
               sx={{ mb: 1 }}
             />
             <Typography variant="caption" color="text.secondary">
-              OTP sent to +91 {formatIndianPhoneDisplay(phoneInput)}
+              Code sent on WhatsApp to +91{' '}
+              {formatIndianPhoneDisplay(phoneInput)}. It&apos;s valid for 5
+              minutes.
             </Typography>
           </Box>
         ) : null}
@@ -219,10 +252,10 @@ const CustomerOtpDialog: React.FC<CustomerOtpDialogProps> = ({
               </Button>
               <Button
                 onClick={() => void handleSendOtp()}
-                disabled={busy}
+                disabled={busy || resendIn > 0}
                 sx={{ textTransform: 'none' }}
               >
-                Resend OTP
+                {resendIn > 0 ? `Resend in ${resendIn}s` : 'Resend code'}
               </Button>
               <Button
                 variant="contained"
@@ -248,7 +281,7 @@ const CustomerOtpDialog: React.FC<CustomerOtpDialogProps> = ({
               }
               sx={{ textTransform: 'none' }}
             >
-              Send OTP
+              Send code on WhatsApp
             </Button>
           )}
         </Box>

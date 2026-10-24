@@ -13,6 +13,7 @@ import {
   PayoutReport,
   SalesFilters,
   SalesReport,
+  TaxReport,
 } from '../types/orders';
 import {
   dateRangeError,
@@ -65,6 +66,23 @@ export const useMarkPayoutsPaid = () => {
       queryClient.invalidateQueries({ queryKey: ['currentOrders'] });
     },
   });
+};
+
+/**
+ * `GET /reporting/tax` for the GST PDF. Fetched on demand (not cached):
+ * from/to are India dates, inclusive; restaurantId optional.
+ */
+export const fetchTaxReport = (filters: {
+  from: string;
+  to: string;
+  restaurantId?: string;
+}): Promise<TaxReport> => {
+  const params = new URLSearchParams({ from: filters.from, to: filters.to });
+  if (filters.restaurantId) params.set('restaurantId', filters.restaurantId);
+  return getJson<TaxReport>(
+    `${ENDPOINTS.REPORTING_TAX}?${params}`,
+    'Failed to load the GST report'
+  );
 };
 
 export const useSalesReport = (filters: SalesFilters) =>

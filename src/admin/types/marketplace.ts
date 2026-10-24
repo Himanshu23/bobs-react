@@ -76,6 +76,8 @@ export interface RestaurantAdmin {
   location?: AdminGeoPoint | null;
   imageUrl?: string | null;
   cuisineTags?: string[] | null;
+  /** GST registration number, printed on the GST sales report. */
+  gstin?: string | null;
   commissionPercent: number;
   discountSharePercent: number;
   active: boolean;
@@ -107,6 +109,8 @@ export interface RestaurantRequest {
   location?: AdminGeoPoint | null;
   imageUrl?: string | null;
   cuisineTags?: string[];
+  /** Omitted/null keeps the stored GSTIN; '' clears it. */
+  gstin?: string | null;
   commissionPercent?: number | null;
   discountSharePercent?: number | null;
   active?: boolean | null;

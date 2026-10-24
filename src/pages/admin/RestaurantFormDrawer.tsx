@@ -384,6 +384,17 @@ const RestaurantFormDrawer: React.FC<RestaurantFormDrawerProps> = ({
                 helperText="Or paste a link to an image that is already hosted"
               />
             )}
+            <TextField
+              label="GSTIN (optional)"
+              fullWidth
+              value={values.gstin}
+              onChange={(e) => setField('gstin', e.target.value.toUpperCase())}
+              error={Boolean(errors.gstin)}
+              helperText={
+                errors.gstin ?? 'Printed on this restaurant’s GST sales report'
+              }
+              inputProps={{ maxLength: 20, autoCapitalize: 'characters' }}
+            />
             <Autocomplete
               multiple
               freeSolo

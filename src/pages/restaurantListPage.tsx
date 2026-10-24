@@ -21,6 +21,7 @@ import { useCurrentMarketId, useMarkets } from '../data/hooks/useMarkets';
 import { useRestaurants } from '../data/hooks/useRestaurants';
 import { useFoodItems } from '../data/hooks/useFoodItems';
 import RestaurantCard from '../components/marketplace/RestaurantCard';
+import { LEGAL_URLS } from '../config/api';
 import {
   RESTAURANT_CARD_ASPECT_RATIO,
   RESTAURANT_CARD_MIN_HEIGHT,
@@ -294,6 +295,30 @@ const RestaurantListPage: React.FC = () => {
         </Typography>
 
         {content}
+
+        <Box
+          component="footer"
+          sx={{
+            mt: 4,
+            display: 'flex',
+            gap: 2,
+            flexWrap: 'wrap',
+            justifyContent: 'center',
+            typography: 'caption',
+            color: 'text.secondary',
+            '& a': { color: 'inherit' },
+          }}
+        >
+          <a href={LEGAL_URLS.privacy} target="_blank" rel="noreferrer">
+            Privacy Policy
+          </a>
+          <a href={LEGAL_URLS.terms} target="_blank" rel="noreferrer">
+            Terms of Service
+          </a>
+          <a href={LEGAL_URLS.dataDeletion} target="_blank" rel="noreferrer">
+            Delete my data
+          </a>
+        </Box>
       </Container>
       <CartBar />
     </>

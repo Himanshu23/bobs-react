@@ -278,6 +278,7 @@ export interface RestaurantFormValues {
   locationLng: string;
   imageUrl: string;
   cuisineTags: string[];
+  gstin: string;
   commissionPercent: string;
   discountSharePercent: string;
   displayOrder: string;
@@ -303,6 +304,7 @@ export const emptyRestaurantForm = (marketId = ''): RestaurantFormValues => ({
   locationLng: '',
   imageUrl: '',
   cuisineTags: [],
+  gstin: '',
   commissionPercent: '0',
   discountSharePercent: '0',
   displayOrder: '0',
@@ -327,6 +329,7 @@ export const restaurantToForm = (
     restaurant.location?.lng != null ? String(restaurant.location.lng) : '',
   imageUrl: restaurant.imageUrl ?? '',
   cuisineTags: restaurant.cuisineTags ?? [],
+  gstin: restaurant.gstin ?? '',
   commissionPercent: String(restaurant.commissionPercent ?? 0),
   discountSharePercent: String(restaurant.discountSharePercent ?? 0),
   displayOrder: String(restaurant.displayOrder ?? 0),
@@ -359,6 +362,13 @@ const checkPercent = (value: string): string | undefined => {
   return undefined;
 };
 
+/** GSTIN: state code, PAN, entity number, 'Z', checksum (same rule as the server). */
+export const GSTIN_PATTERN = /^\d{2}[A-Z]{5}\d{4}[A-Z][1-9A-Z]Z[0-9A-Z]$/;
+
+/** Upper-case, without spaces. */
+export const normalizeGstin = (value: string): string =>
+  value.replace(/\s/g, '').toUpperCase();
+
 export const validateRestaurantForm = (
   values: RestaurantFormValues
 ): FormErrors<RestaurantFormValues> => {
@@ -383,6 +393,11 @@ export const validateRestaurantForm = (
 
   const displayOrder = checkInteger(values.displayOrder);
   if (displayOrder) errors.displayOrder = displayOrder;
+
+  const gstin = normalizeGstin(values.gstin);
+  if (gstin && !GSTIN_PATTERN.test(gstin)) {
+    errors.gstin = 'GSTIN must be 15 characters, e.g. 09ABCDE1234F1Z5';
+  }
 
   if (values.hoursEnabled) {
     const hours = scheduleError(values.schedule);
@@ -420,6 +435,8 @@ export const restaurantFormToRequest = (
     location: lat !== null && lng !== null ? { lat, lng } : null,
     imageUrl: values.imageUrl.trim() || null,
     cuisineTags: values.cuisineTags.map((tag) => tag.trim()).filter(Boolean),
+    // Edit: '' clears a stored GSTIN (null would keep it). Create: blank = none.
+    gstin: normalizeGstin(values.gstin) || (isCreate ? null : ''),
     commissionPercent: parseNumber(values.commissionPercent),
     discountSharePercent: parseNumber(values.discountSharePercent),
     displayOrder: parseNumber(values.displayOrder),
