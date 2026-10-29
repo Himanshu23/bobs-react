@@ -73,8 +73,8 @@ describe('validateMarketForm', () => {
     ).toBeUndefined();
   });
 
-  it('defaults the delivery fee to 20', () => {
-    expect(emptyMarketForm().deliveryFee).toBe('20');
+  it('defaults the delivery fee to 39', () => {
+    expect(emptyMarketForm().deliveryFee).toBe('39');
   });
 });
 

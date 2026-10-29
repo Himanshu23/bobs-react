@@ -13,4 +13,4 @@ export const FALLBACK_DELIVERY_AREA = {
 } as const;
 
 /** Fallback flat delivery fee (D3), used only when the market call fails. */
-export const FALLBACK_DELIVERY_FEE = 20;
+export const FALLBACK_DELIVERY_FEE = 39;

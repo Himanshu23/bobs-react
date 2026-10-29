@@ -29,7 +29,7 @@ export interface MarketFormValues {
   active: boolean;
 }
 
-export const DEFAULT_DELIVERY_FEE = 20;
+export const DEFAULT_DELIVERY_FEE = 39;
 
 export const emptyMarketForm = (): MarketFormValues => ({
   name: '',
