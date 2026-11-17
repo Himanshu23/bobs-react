@@ -73,8 +73,8 @@ describe('validateMarketForm', () => {
     ).toBeUndefined();
   });
 
-  it('defaults the delivery fee to 20', () => {
-    expect(emptyMarketForm().deliveryFee).toBe('20');
+  it('defaults the delivery fee to 39', () => {
+    expect(emptyMarketForm().deliveryFee).toBe('39');
   });
 });
 
@@ -159,6 +159,17 @@ describe('validateRestaurantForm', () => {
     expect(errors.discountSharePercent).toBeDefined();
   });
 
+  it('validates and sends the price markup percent', () => {
+    expect(
+      validateRestaurantForm({ ...validRestaurant, priceMarkupPercent: '101' })
+        .priceMarkupPercent
+    ).toBeDefined();
+    expect(
+      restaurantFormToRequest({ ...validRestaurant, priceMarkupPercent: '10' })
+        .priceMarkupPercent
+    ).toBe(10);
+  });
+
   it('rejects a slug with no letters or digits', () => {
     expect(
       validateRestaurantForm({ ...validRestaurant, slug: '---' }).slug
@@ -204,6 +215,7 @@ describe('validateRestaurantForm', () => {
       gstin: '',
       commissionPercent: 5,
       discountSharePercent: 10,
+      priceMarkupPercent: 0,
       active: true,
       displayOrder: 1,
       // Edit with no stored schedule: weeklySchedule omitted (kept).
@@ -285,6 +297,7 @@ describe('restaurant round trip with null fields', () => {
       gstin: '',
       commissionPercent: 0,
       discountSharePercent: 0,
+      priceMarkupPercent: 0,
       active: true,
       displayOrder: 0,
       // Edit with no stored schedule: weeklySchedule omitted (kept).

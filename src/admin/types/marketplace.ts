@@ -80,6 +80,8 @@ export interface RestaurantAdmin {
   gstin?: string | null;
   commissionPercent: number;
   discountSharePercent: number;
+  /** Markup on menu prices (customers pay base × (1 + %/100), rounded to the rupee). Absent = 0. */
+  priceMarkupPercent?: number | null;
   active: boolean;
   displayOrder: number;
   /** 7 entries MONDAY..SUNDAY; null/absent = always open. */
@@ -113,6 +115,7 @@ export interface RestaurantRequest {
   gstin?: string | null;
   commissionPercent?: number | null;
   discountSharePercent?: number | null;
+  priceMarkupPercent?: number | null;
   active?: boolean | null;
   displayOrder?: number | null;
   /**

@@ -44,10 +44,15 @@ const fetchFoodItems = async (
  * - `includeInactiveRestaurants=true`, so items of inactive restaurants or
  *   markets stay visible to the admin;
  * - no `available` param: the backend keeps only available items for ANY value
- *   of `available`, so omitting it is how the admin also sees unavailable items.
+ *   of `available`, so omitting it is how the admin also sees unavailable items;
+ * - `basePrices=true`: the restaurant's base prices, not the marked-up customer
+ *   prices. The editor saves these back, so it must never get marked-up ones.
  */
 const fetchAdminFoodItems = async (): Promise<AdminFoodItem[]> => {
-  const params = new URLSearchParams({ includeInactiveRestaurants: 'true' });
+  const params = new URLSearchParams({
+    includeInactiveRestaurants: 'true',
+    basePrices: 'true',
+  });
   const response = await fetchWithAdminAuth(`${FOOD_ITEMS_API_URL}?${params}`);
 
   if (!response.ok) {

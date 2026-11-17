@@ -512,6 +512,10 @@ const RestaurantFormDrawer: React.FC<RestaurantFormDrawerProps> = ({
                 helperText: '0–100, default 0',
               })}
             </Stack>
+            {numberField('priceMarkupPercent', 'Price markup %', {
+              helperText:
+                'Added to every menu price customers see, rounded to the rupee (₹40 at 10% → ₹44). The restaurant is paid on the base price.',
+            })}
             {numberField('displayOrder', 'Display order', {
               helperText: 'Lower numbers are listed first',
               step: '1',

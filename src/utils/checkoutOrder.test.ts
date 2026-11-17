@@ -86,12 +86,12 @@ describe('getDisplayDeliveryFee (server fee rule)', () => {
     expect(getDisplayDeliveryFee(OrderFulfillmentType.DELIVERY, 0)).toBe(0);
   });
 
-  it('falls back to the flat ₹20 when the market is unavailable', () => {
+  it('falls back to the flat ₹39 when the market is unavailable', () => {
     expect(
       getDisplayDeliveryFee(OrderFulfillmentType.DELIVERY, undefined)
-    ).toBe(20);
-    expect(getDisplayDeliveryFee(OrderFulfillmentType.DELIVERY, null)).toBe(20);
-    expect(getDisplayDeliveryFee(OrderFulfillmentType.DELIVERY, NaN)).toBe(20);
+    ).toBe(39);
+    expect(getDisplayDeliveryFee(OrderFulfillmentType.DELIVERY, null)).toBe(39);
+    expect(getDisplayDeliveryFee(OrderFulfillmentType.DELIVERY, NaN)).toBe(39);
   });
 });
 

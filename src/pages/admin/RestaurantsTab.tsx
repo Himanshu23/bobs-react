@@ -294,6 +294,14 @@ const RestaurantsTab: React.FC = () => {
                         variant="outlined"
                         label={`Commission ${restaurant.commissionPercent ?? 0}%`}
                       />
+                      {Boolean(restaurant.priceMarkupPercent) && (
+                        <Chip
+                          size="small"
+                          variant="outlined"
+                          color="primary"
+                          label={`Markup ${restaurant.priceMarkupPercent}%`}
+                        />
+                      )}
                       <Chip
                         size="small"
                         variant="outlined"
