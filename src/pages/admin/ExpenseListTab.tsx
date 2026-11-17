@@ -4,6 +4,7 @@ import {
   Button,
   Card,
   CardContent,
+  Checkbox,
   CircularProgress,
   Grid2,
   MenuItem,
@@ -21,6 +22,11 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Expense, ExpenseCategory } from '../../types';
 import { useDeleteExpense, useExpenses } from '../../data/hooks/useExpenses';
+import {
+  EXPENSE_GROUP_OPTIONS,
+  ExpenseGroupBy,
+  groupExpenses,
+} from '../../admin/utils/expenseGroups';
 
 interface ExpenseListTabProps {
   categories: ExpenseCategory[];
@@ -59,6 +65,45 @@ const ExpenseListTab: React.FC<ExpenseListTabProps> = ({
     () => expenses.reduce((sum, expense) => sum + expense.amount, 0),
     [expenses]
   );
+
+  // Selected rows (ids). Only rows still in the filtered list count, so a
+  // filter change never totals hidden expenses.
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [groupBy, setGroupBy] = useState<ExpenseGroupBy>('category');
+  const selectedExpenses = useMemo(
+    () => expenses.filter((expense) => selectedIds.has(expense.id)),
+    [expenses, selectedIds]
+  );
+  const allSelected =
+    expenses.length > 0 && selectedExpenses.length === expenses.length;
+  const someSelected = selectedExpenses.length > 0 && !allSelected;
+  // Group the selection; with nothing selected, everything in the filter.
+  const grouped = useMemo(() => {
+    const categoryNames = Object.fromEntries(
+      categories.map((category) => [category.id, category.name])
+    );
+    return groupExpenses(
+      selectedExpenses.length > 0 ? selectedExpenses : expenses,
+      groupBy,
+      categoryNames
+    );
+  }, [selectedExpenses, expenses, groupBy, categories]);
+  const groupByLabel =
+    EXPENSE_GROUP_OPTIONS.find((option) => option.value === groupBy)?.label ??
+    '';
+
+  const toggleExpense = (id: string) =>
+    setSelectedIds((current) => {
+      const next = new Set(current);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+
+  const toggleAll = () =>
+    setSelectedIds(
+      allSelected ? new Set() : new Set(expenses.map((expense) => expense.id))
+    );
 
   const handleFilterReset = () => {
     setFromDate(
@@ -153,6 +198,90 @@ const ExpenseListTab: React.FC<ExpenseListTabProps> = ({
         </CardContent>
       </Card>
 
+      {expenses.length > 0 && (
+        <Card>
+          <CardContent>
+            <Stack
+              direction={{ xs: 'column', sm: 'row' }}
+              spacing={2}
+              justifyContent="space-between"
+              alignItems={{ xs: 'stretch', sm: 'center' }}
+              sx={{ mb: 2 }}
+            >
+              <Box>
+                <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                  Totals by {groupByLabel.toLowerCase()}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {selectedExpenses.length > 0
+                    ? `${selectedExpenses.length} selected expense${selectedExpenses.length === 1 ? '' : 's'}`
+                    : `All ${expenses.length} expenses in this filter (tick rows below to total only those)`}
+                </Typography>
+              </Box>
+              <Stack direction="row" spacing={1} alignItems="center">
+                <TextField
+                  select
+                  size="small"
+                  label="Group by"
+                  value={groupBy}
+                  onChange={(event) =>
+                    setGroupBy(event.target.value as ExpenseGroupBy)
+                  }
+                  sx={{ minWidth: 150 }}
+                >
+                  {EXPENSE_GROUP_OPTIONS.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
+                {selectedExpenses.length > 0 && (
+                  <Button
+                    size="small"
+                    onClick={() => setSelectedIds(new Set())}
+                    sx={{ whiteSpace: 'nowrap' }}
+                  >
+                    Clear selection
+                  </Button>
+                )}
+              </Stack>
+            </Stack>
+            <TableContainer>
+              <Table size="small">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>{groupByLabel}</TableCell>
+                    <TableCell align="right">Expenses</TableCell>
+                    <TableCell align="right">Total</TableCell>
+                    <TableCell align="right">Share</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {grouped.groups.map((group) => (
+                    <TableRow key={group.key}>
+                      <TableCell>{group.label}</TableCell>
+                      <TableCell align="right">{group.count}</TableCell>
+                      <TableCell align="right">
+                        ₹{group.total.toFixed(2)}
+                      </TableCell>
+                      <TableCell align="right">{group.percent}%</TableCell>
+                    </TableRow>
+                  ))}
+                  <TableRow sx={{ '& td': { fontWeight: 700 } }}>
+                    <TableCell>Total</TableCell>
+                    <TableCell align="right">{grouped.count}</TableCell>
+                    <TableCell align="right">
+                      ₹{grouped.total.toFixed(2)}
+                    </TableCell>
+                    <TableCell align="right">100%</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </CardContent>
+        </Card>
+      )}
+
       <Card>
         <CardContent>
           {isLoading ? (
@@ -168,6 +297,14 @@ const ExpenseListTab: React.FC<ExpenseListTabProps> = ({
               <Table size="small">
                 <TableHead>
                   <TableRow>
+                    <TableCell padding="checkbox">
+                      <Checkbox
+                        checked={allSelected}
+                        indeterminate={someSelected}
+                        onChange={toggleAll}
+                        inputProps={{ 'aria-label': 'Select all expenses' }}
+                      />
+                    </TableCell>
                     <TableCell>Date</TableCell>
                     <TableCell>Category</TableCell>
                     <TableCell>Amount</TableCell>
@@ -183,7 +320,20 @@ const ExpenseListTab: React.FC<ExpenseListTabProps> = ({
                       (item) => item.id === expense.categoryId
                     );
                     return (
-                      <TableRow key={expense.id}>
+                      <TableRow
+                        key={expense.id}
+                        hover
+                        selected={selectedIds.has(expense.id)}
+                      >
+                        <TableCell padding="checkbox">
+                          <Checkbox
+                            checked={selectedIds.has(expense.id)}
+                            onChange={() => toggleExpense(expense.id)}
+                            inputProps={{
+                              'aria-label': `Select expense of ₹${expense.amount} on ${expense.date}`,
+                            }}
+                          />
+                        </TableCell>
                         <TableCell>{expense.date}</TableCell>
                         <TableCell>
                           {category?.name || 'Deleted category'}

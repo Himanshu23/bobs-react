@@ -281,6 +281,7 @@ export interface RestaurantFormValues {
   gstin: string;
   commissionPercent: string;
   discountSharePercent: string;
+  priceMarkupPercent: string;
   displayOrder: string;
   active: boolean;
   /** Opening hours set? Off = always open (no weeklySchedule). */
@@ -307,6 +308,7 @@ export const emptyRestaurantForm = (marketId = ''): RestaurantFormValues => ({
   gstin: '',
   commissionPercent: '0',
   discountSharePercent: '0',
+  priceMarkupPercent: '0',
   displayOrder: '0',
   active: true,
   hoursEnabled: false,
@@ -332,6 +334,7 @@ export const restaurantToForm = (
   gstin: restaurant.gstin ?? '',
   commissionPercent: String(restaurant.commissionPercent ?? 0),
   discountSharePercent: String(restaurant.discountSharePercent ?? 0),
+  priceMarkupPercent: String(restaurant.priceMarkupPercent ?? 0),
   displayOrder: String(restaurant.displayOrder ?? 0),
   active: restaurant.active !== false,
   hoursEnabled: Boolean(restaurant.weeklySchedule?.length),
@@ -390,6 +393,8 @@ export const validateRestaurantForm = (
   if (commission) errors.commissionPercent = commission;
   const discountShare = checkPercent(values.discountSharePercent);
   if (discountShare) errors.discountSharePercent = discountShare;
+  const markup = checkPercent(values.priceMarkupPercent);
+  if (markup) errors.priceMarkupPercent = markup;
 
   const displayOrder = checkInteger(values.displayOrder);
   if (displayOrder) errors.displayOrder = displayOrder;
@@ -439,6 +444,7 @@ export const restaurantFormToRequest = (
     gstin: normalizeGstin(values.gstin) || (isCreate ? null : ''),
     commissionPercent: parseNumber(values.commissionPercent),
     discountSharePercent: parseNumber(values.discountSharePercent),
+    priceMarkupPercent: parseNumber(values.priceMarkupPercent),
     displayOrder: parseNumber(values.displayOrder),
     active: values.active,
   };
