@@ -82,19 +82,15 @@ const ProductDetailModal = ({
     [product, selectedType, selectedSize, selectedBase]
   );
 
-  const unitWasPrice = useMemo(
-    () =>
-      (selectedSize
-        ? (product.priceOptions.wasPrice.size?.[selectedSize] ?? 0)
-        : 0) +
-      (selectedType && product.priceOptions.wasPrice.type?.[selectedType]
-        ? product.priceOptions.wasPrice.type?.[selectedType]
-        : 0) +
-      (selectedBase && product.priceOptions.wasPrice.base?.[selectedBase]
-        ? product.priceOptions.wasPrice.base?.[selectedBase]
-        : 0),
-    [product, selectedBase, selectedSize, selectedType]
-  );
+  // wasPrice is null on dishes created without strike-through prices.
+  const unitWasPrice = useMemo(() => {
+    const wasPrice = product.priceOptions.wasPrice;
+    return (
+      (selectedSize ? (wasPrice?.size?.[selectedSize] ?? 0) : 0) +
+      (selectedType ? (wasPrice?.type?.[selectedType] ?? 0) : 0) +
+      (selectedBase ? (wasPrice?.base?.[selectedBase] ?? 0) : 0)
+    );
+  }, [product, selectedBase, selectedSize, selectedType]);
 
   const totalPrice = unitPrice * quantity;
   const totalWasPrice = unitWasPrice > 0 ? unitWasPrice * quantity : undefined;

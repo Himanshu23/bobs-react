@@ -172,8 +172,10 @@ const EditItemDrawer: React.FC<EditItemDrawerProps> = ({
         [priceType]: {
           ...formData.priceOptions[priceType],
           [variantType]: {
-            ...((formData.priceOptions[priceType][
-              variantType as keyof (typeof formData.priceOptions)[typeof priceType]
+            ...((formData.priceOptions[priceType]?.[
+              variantType as keyof NonNullable<
+                (typeof formData.priceOptions)[typeof priceType]
+              >
             ] || {}) as Record<string, number>),
             [key]: value,
           },

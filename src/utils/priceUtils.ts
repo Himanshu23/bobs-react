@@ -39,10 +39,10 @@ export const getPriceForSize = (
   item: FoodItem,
   size: string
 ): { wasPrice?: number; nowPrice?: number } => {
-  const wasSize = size as keyof typeof item.priceOptions.wasPrice.size;
+  const key = size as ItemOptions['size'];
   const nowSize = size as keyof typeof item.priceOptions.nowPrice.size;
   return {
-    wasPrice: item.priceOptions.wasPrice?.size[wasSize],
+    wasPrice: item.priceOptions.wasPrice?.size?.[key],
     nowPrice: item.priceOptions.nowPrice.size[nowSize],
   };
 };

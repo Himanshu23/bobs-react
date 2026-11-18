@@ -58,7 +58,8 @@ export interface FoodItem {
   available?: boolean;
   category: FoodCategory;
   priceOptions: {
-    wasPrice: {
+    /** Strike-through prices. Null/absent on dishes created without one. */
+    wasPrice?: {
       size: Partial<Record<ItemOptions['size'], number>>;
       type?: Record<TypeKey, number>;
       base?: Record<BaseKey, number>;

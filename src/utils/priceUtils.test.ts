@@ -1,10 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import { FoodItem } from '../types';
-import { getAvailableSizes, getLowestWasPrice } from './priceUtils';
+import {
+  getAvailableSizes,
+  getLowestWasPrice,
+  getPriceForSize,
+} from './priceUtils';
 
 const dish = (
   nowSize: FoodItem['priceOptions']['nowPrice']['size'],
-  wasSize: FoodItem['priceOptions']['wasPrice']['size'] = {}
+  wasSize: NonNullable<FoodItem['priceOptions']['wasPrice']>['size'] = {}
 ): FoodItem =>
   ({
     id: 'd1',
@@ -39,5 +43,20 @@ describe('getLowestWasPrice', () => {
     expect(getLowestWasPrice(dish({ Full: 250 }, { Full: 300, Half: 0 }))).toBe(
       300
     );
+  });
+});
+
+describe('dish without was prices (wasPrice null)', () => {
+  const noWas = {
+    ...dish({ Full: 280 }),
+    priceOptions: { wasPrice: null, nowPrice: { size: { Full: 280 } } },
+  } as unknown as FoodItem;
+
+  it('has no strike-through price and does not throw', () => {
+    expect(getLowestWasPrice(noWas)).toBeUndefined();
+    expect(getPriceForSize(noWas, 'Full')).toEqual({
+      wasPrice: undefined,
+      nowPrice: 280,
+    });
   });
 });
