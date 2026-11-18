@@ -8,7 +8,7 @@ Google Analytics is configured with a Vite env variable (e.g. in `.env.local`):
 VITE_GA_MEASUREMENT_ID=G-XXXXXXXXXX
 ```
 
-Notes:
+Notes:  
 
 - This app reads `VITE_GA_MEASUREMENT_ID` in `src/utils/analytics.ts` (rules in `src/utils/analyticsConfig.ts`).
 - If the variable is missing, production builds use the production property and dev builds / localhost send nothing. When set on a dev build or localhost, GA debug mode is on (GA Admin → DebugView). See `../docs/ANALYTICS.md`.
