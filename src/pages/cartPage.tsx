@@ -201,7 +201,13 @@ const CartPage: React.FC = () => {
   const getOptionLabel = (item: CartItem): string => {
     const options = [];
     if (item.option?.size)
-      options.push(getSizeLabel(item.option.size, item.product?.category));
+      options.push(
+        getSizeLabel(
+          item.option.size,
+          item.product?.category,
+          item.product?.sizeLabels
+        )
+      );
     if (item.option?.style) options.push(item.option.style);
     if (item.option?.base) options.push(item.option.base);
     return options.length > 0 ? options.join(', ') : 'Standard';

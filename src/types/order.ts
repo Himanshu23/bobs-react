@@ -59,6 +59,8 @@ export interface PublicOrderItem {
   restaurantName?: string | null;
   /** Dish category, stamped by the server (newer orders only). */
   category?: string | null;
+  /** The dish's custom size name at order time, stamped by the server. */
+  sizeLabel?: string | null;
 }
 
 /** `PublicRestaurantOrderDTO`: no commission/payout fields. */

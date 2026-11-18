@@ -1,4 +1,4 @@
-import { FoodCategory } from '../types';
+import { FoodCategory, SizeLabels } from '../types';
 
 const CUP_SIZE_LABELS: Readonly<Record<string, string>> = {
   Full: 'Large',
@@ -24,14 +24,18 @@ const SIZE_LABELS_BY_CATEGORY: Readonly<
 
 /**
  * Display name of a portion size. The stored value stays Full/Half/Quarter
- * (cart, orders, pricing); Coffee and Shakes show Large/Medium/Small and
- * Ice Cream shows Taco/Cone/Cup.
+ * (cart, orders, pricing). The dish's own `sizeLabels` win (e.g. Signature
+ * Chicken: Boneless/Boned/Leg); otherwise Coffee and Shakes show
+ * Large/Medium/Small and Ice Cream shows Taco/Cone/Cup.
  */
 export const getSizeLabel = (
   size: string | null | undefined,
-  category: string | null | undefined
+  category: string | null | undefined,
+  sizeLabels?: SizeLabels | null
 ): string => {
   if (!size) return '';
+  const own = sizeLabels?.[size as keyof SizeLabels]?.trim();
+  if (own) return own;
   const labels = category ? SIZE_LABELS_BY_CATEGORY[category] : undefined;
   return labels?.[size] ?? size;
 };

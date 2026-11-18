@@ -820,7 +820,12 @@ const CheckoutPage: React.FC = () => {
                       {item.name}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      Free {getSizeLabel(item.freeClaimPortion, item.category)}{' '}
+                      Free{' '}
+                      {getSizeLabel(
+                        item.freeClaimPortion,
+                        item.category,
+                        item.sizeLabels
+                      )}{' '}
                       portion
                     </Typography>
                   </Box>
@@ -1127,7 +1132,7 @@ const CheckoutPage: React.FC = () => {
                         <ListItemText
                           primary={`${item.name} ${
                             item.option?.size
-                              ? `(${getSizeLabel(item.option.size, item.product?.category)})`
+                              ? `(${getSizeLabel(item.option.size, item.product?.category, item.product?.sizeLabels)})`
                               : ''
                           }${item.isPromotionalAddon ? ' · ₹9 Deal' : ''}`}
                           secondary={

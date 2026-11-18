@@ -121,6 +121,9 @@ describe('formatting helpers', () => {
       ' (Full, Dry)'
     );
     expect(formatItemVariant({ size: '' })).toBe('');
+    expect(
+      formatItemVariant({ size: 'Full', sizeLabel: 'Boneless (5 pcs)' })
+    ).toBe(' (Boneless (5 pcs))');
   });
 });
 

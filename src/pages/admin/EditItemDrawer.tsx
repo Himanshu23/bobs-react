@@ -150,6 +150,15 @@ const EditItemDrawer: React.FC<EditItemDrawerProps> = ({
     setFormData({ ...formData, [field]: value });
   };
 
+  /** Custom size name shown to customers; blank = the default name. */
+  const handleSizeLabelChange = (size: string, label: string) => {
+    setFormData((prev) =>
+      prev
+        ? { ...prev, sizeLabels: { ...prev.sizeLabels, [size]: label } }
+        : prev
+    );
+  };
+
   const handlePriceChange = (
     priceType: 'wasPrice' | 'nowPrice',
     variantType: 'size' | 'type' | 'base',
@@ -526,6 +535,7 @@ const EditItemDrawer: React.FC<EditItemDrawerProps> = ({
               <TableHead>
                 <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
                   <TableCell sx={{ fontWeight: 700 }}>Size</TableCell>
+                  <TableCell sx={{ fontWeight: 700 }}>Customer name</TableCell>
                   <TableCell sx={{ fontWeight: 700 }}>Was Price (₹)</TableCell>
                   <TableCell sx={{ fontWeight: 700 }}>Now Price (₹)</TableCell>
                 </TableRow>
@@ -535,6 +545,18 @@ const EditItemDrawer: React.FC<EditItemDrawerProps> = ({
                   <TableRow key={`size-${size}`}>
                     <TableCell>
                       {getSizeLabel(size, formData.category)}
+                    </TableCell>
+                    <TableCell>
+                      <TextField
+                        size="small"
+                        placeholder="Default"
+                        value={formData.sizeLabels?.[size] ?? ''}
+                        onChange={(e) =>
+                          handleSizeLabelChange(size, e.target.value)
+                        }
+                        inputProps={{ maxLength: 40 }}
+                        sx={{ width: 150 }}
+                      />
                     </TableCell>
                     <TableCell>
                       <TextField

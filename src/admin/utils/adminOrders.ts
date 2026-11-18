@@ -42,14 +42,18 @@ export const telHref = (phone?: string | null): string | null => {
 };
 
 /**
- * `(Full, Dry)` for an item's size/style/base, or '' when it has none. Coffee
- * and Shakes sizes read Large/Medium/Small (`category` is on newer orders).
+ * `(Full, Dry)` for an item's size/style/base, or '' when it has none. The
+ * dish's size name from order time wins (`sizeLabel`, e.g. Boneless); else
+ * Coffee and Shakes sizes read Large/Medium/Small (`category` is on newer orders).
  */
 export const formatItemVariant = (
-  item: Pick<AdminOrderItem, 'size' | 'style' | 'base' | 'category'>
+  item: Pick<
+    AdminOrderItem,
+    'size' | 'style' | 'base' | 'category' | 'sizeLabel'
+  >
 ): string => {
   const parts = [
-    getSizeLabel(item.size, item.category),
+    item.sizeLabel?.trim() || getSizeLabel(item.size, item.category),
     item.style,
     item.base,
   ].filter((part): part is string => Boolean(part));

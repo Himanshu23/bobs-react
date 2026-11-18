@@ -28,4 +28,12 @@ describe('getSizeLabel', () => {
     expect(getSizeLabel(undefined, 'Coffee')).toBe('');
     expect(getSizeLabel('', 'Coffee')).toBe('');
   });
+
+  it("uses the dish's own size names first, then the default", () => {
+    const labels = { Full: 'Boneless (5 pcs)', Half: '  ' };
+    expect(getSizeLabel('Full', 'Starters', labels)).toBe('Boneless (5 pcs)');
+    expect(getSizeLabel('Half', 'Starters', labels)).toBe('Half'); // blank
+    expect(getSizeLabel('Quarter', 'Coffee', labels)).toBe('Small');
+    expect(getSizeLabel('Full', 'Coffee', null)).toBe('Large');
+  });
 });
