@@ -234,7 +234,11 @@ const ProductDetailModal = ({
                       value={size}
                       control={<Radio />}
                       label={renderOptionPriceLabel(
-                        getSizeLabel(size, product.category),
+                        getSizeLabel(
+                          size,
+                          product.category,
+                          product.sizeLabels
+                        ),
                         product.priceOptions.nowPrice.size[size],
                         product.priceOptions.wasPrice?.size?.[size]
                       )}

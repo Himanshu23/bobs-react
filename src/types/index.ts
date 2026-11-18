@@ -71,11 +71,19 @@ export interface FoodItem {
   };
   freeClaimPortion?: ItemOptions['size'] | null;
   /**
+   * Optional names shown to customers for this dish's sizes, e.g.
+   * `{ Full: 'Boneless (5 pcs)' }`. The stored size stays Full/Half/Quarter.
+   */
+  sizeLabels?: SizeLabels | null;
+  /**
    * Owning restaurant. The backend always sends it (legacy items resolve to
    * `bobs`); optional here so older cached/static data still type-checks.
    */
   restaurantId?: string;
 }
+
+/** Custom size names of one dish, keyed by size (Full/Half/Quarter). */
+export type SizeLabels = Partial<Record<ItemOptions['size'], string>>;
 
 export interface ItemOptions {
   size: 'Full' | 'Half' | 'Quarter';
@@ -160,6 +168,8 @@ export interface OrderItem {
   originalPrice?: number;
   /** Dish category, stamped by the server on newer orders (size labels). */
   category?: string | null;
+  /** The dish's custom size name at order time (e.g. "Boneless (5 pcs)"), stamped by the server. */
+  sizeLabel?: string | null;
 }
 
 export interface Order {

@@ -26,7 +26,7 @@ const QuantityUpdateCard = ({
     const parts = [];
     if (item.option.size)
       parts.push(
-        `Size: ${getSizeLabel(item.option.size, item.product?.category)}`
+        `Size: ${getSizeLabel(item.option.size, item.product?.category, item.product?.sizeLabels)}`
       );
     if (item.option.style) parts.push(`Style: ${item.option.style}`);
     if (item.option.base) parts.push(`Base: ${item.option.base}`);

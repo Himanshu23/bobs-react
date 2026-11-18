@@ -33,7 +33,7 @@ const VariantRemovalModal = ({
     const parts = [];
     if (variant.option.size)
       parts.push(
-        `Size: ${getSizeLabel(variant.option.size, variant.product?.category)}`
+        `Size: ${getSizeLabel(variant.option.size, variant.product?.category, variant.product?.sizeLabels)}`
       );
     if (variant.option.style) parts.push(`Style: ${variant.option.style}`);
     if (variant.option.base) parts.push(`Base: ${variant.option.base}`);

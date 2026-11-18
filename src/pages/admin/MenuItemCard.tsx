@@ -114,7 +114,7 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
                       variant="caption"
                       color="text.secondary"
                     >
-                      {getSizeLabel(size, item.category)}:{' '}
+                      {getSizeLabel(size, item.category, item.sizeLabels)}:{' '}
                       {wasPrice && nowPrice && wasPrice > nowPrice && (
                         <span
                           style={{

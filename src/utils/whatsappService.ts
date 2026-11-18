@@ -77,7 +77,12 @@ const toItemLine = (item: CartItem): WhatsAppItemLine => ({
   name: item.name,
   quantity: item.quantity,
   price: roundMoney(item.price * item.quantity),
-  size: getSizeLabel(item.option?.size, item.product?.category) || undefined,
+  size:
+    getSizeLabel(
+      item.option?.size,
+      item.product?.category,
+      item.product?.sizeLabels
+    ) || undefined,
   style: item.option?.style,
   base: item.option?.base,
   isFreeClaim: Boolean(item.isFreeClaim),

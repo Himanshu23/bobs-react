@@ -35,7 +35,11 @@ const round2 = (value: number) =>
 
 const lineDetail = (item: CartItem): string => {
   const variant = [
-    getSizeLabel(item.option?.size, item.product?.category),
+    getSizeLabel(
+      item.option?.size,
+      item.product?.category,
+      item.product?.sizeLabels
+    ),
     item.option?.style,
     item.option?.base,
   ]
